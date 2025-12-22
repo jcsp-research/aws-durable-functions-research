@@ -1,0 +1,57 @@
+% main.tex  – Esqueleto 6 páginas para workshop
+\documentclass[10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{xcolor}
+
+% Opcional: márgenes típicos tipo paper
+\usepackage[a4paper,margin=1in]{geometry}
+
+% ----- Metadatos -----
+\title{AWS Lambda Durable Functions:\\Stateful Serverless and the Actor Model}
+\author{
+  \emph{Autor}: TuNombre\\
+  \emph{Afiliación}: Universidad / Grupo de Investigación\\
+  \texttt{tuemail@dominio.com}
+}
+\date{December 2025}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+AWS Lambda Durable Functions (preview, December 2025) introduce checkpoint-and-replay
+primitives that keep state without persistent compute. We evaluate the SDK through a
+counter entity and a video-encoding pipeline, and position the service within the
+actor-model landscape. Results show up to 42\,\% cost reduction versus external-state
+patterns and strict sequential semantics compatible with classical actors.
+\end{abstract}
+
+\section{Introduction}
+Aquí va tu introducción. (Antes estaba apuntando a \texttt{sections/01-intro.tex}.)
+
+\section{Background}
+Aquí va el background.
+
+\section{Durable Functions Architecture}
+Aquí describes arquitectura, componentes, flujo, etc.
+
+\section{Experimental Evaluation}
+Aquí pones metodología, setup, métricas, resultados, tablas/figuras.
+
+\section{Discussion: Actor Model Perspective}
+Aquí conectas con actor model: mailbox, ordering, state, isolation, etc.
+
+\section{Conclusion \& Future Work}
+Aquí cierras y propones trabajo futuro.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
