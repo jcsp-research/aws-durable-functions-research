@@ -1,0 +1,10 @@
+\section*{1. Introduction}
+Serverless computing promises elastic scale and pay-per-use billing, but its stateless nature complicates long-running workflows.
+AWS Lambda Durable Functions (preview, December 2025) introduce checkpoint-and-replay primitives that keep state without persistent compute.
+We evaluate the SDK through a counter entity and a video-encoding pipeline, and position the service within the actor-model landscape.
+Our contributions are:
+\begin{itemize}
+  \item Practical assessment of the SDK (counter + video pipeline).
+  \item Cost/latency comparison with traditional Lambda + DynamoDB.
+  \item Conceptual analysis of durable functions as actors.
+\end{itemize}
