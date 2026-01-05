@@ -2,10 +2,23 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Durable Functions Workshop
 
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.13
+    MemorySize: 256
+
 Resources:
-  HelloFunction:
+  HelloDurableFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: python3.13
       Handler: app.lambda_handler
       CodeUri: ../src/01-hello-step/
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+          - Effect: Allow
+            Action:
+              - states:StartDurableExecution
+              - states:SendDurableExecutionCallback
+            Resource: "*"
