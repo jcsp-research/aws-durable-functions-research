@@ -1,0 +1,5 @@
+paper,year,actor_property,fulfilled_by_durable_functions
+"Azure Durable Entities",2022,location_transparency,YES
+"Orleans Virtual Actors",2021,activation/passivation,PARTIAL
+"ExCamera NSDI'17",2017,parallel_stateful_tasks,YES
+"Spenger Survey 2024",2024,strict_message_ordering,YES
