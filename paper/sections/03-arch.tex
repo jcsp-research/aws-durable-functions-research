@@ -1,0 +1,9 @@
+\section*{3. Durable Functions Architecture}
+\subsection*{3.1 Checkpoint-and-Replay}
+Each durable execution persists its state at every step; on failure AWS replays from the last checkpoint, ensuring exactly-once semantics without idle cost.
+
+\subsection*{3.2 SDK Primitives}
+\texttt{context.step()}, \texttt{context.map()}, \texttt{context.wait()} enable sequential and parallel composition.
+
+\subsection*{3.3 Guarantees}
+At-least-once execution, strict ordering per entity, automatic idempotency.
