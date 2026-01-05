@@ -1,0 +1,13 @@
+\section*{2. Background and Related Work}
+
+\subsection*{2.1 Serverless Computing}
+Serverless platforms automatically manage resource provisioning and billing per invocation, but state must be handled externally (e.g., DynamoDB, S3).
+
+\subsection*{2.2 Actor Model}
+Actors encapsulate state and communicate via messages. Properties: location transparency, sequential processing, fault isolation. Virtual actors add activation/passivation.
+
+\subsection*{2.3 Stateful Serverless}
+Azure Durable Functions offers orchestrations and entities; AWS Durable Functions (2025) extends Lambda with checkpoint-and-replay, maintaining strict ordering and avoiding idle cost.
+
+\subsection*{2.4 Video Processing Benchmarks}
+ExCamera showed fine-grained parallelism for encoding; we reuse its chunking strategy to stress-test durable execution.
