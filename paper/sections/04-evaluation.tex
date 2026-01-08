@@ -1,15 +1,57 @@
-\section*{4. Experimental Evaluation}
-\subsection*{4.1 Methodology}
-We implement (1) a counter entity and (2) a 30 s video-encoding pipeline, measure latency, replay overhead and AWS cost, and compare with a traditional Lambda + DynamoDB baseline.
+\section{Evaluation}
+\label{sec:evaluation}
 
-\subsection*{4.2 Metrics}
-\begin{itemize}
-  \item Execution latency (ms)
-  \item Replay time (ms)
-  \item Cost per 1M invocations (USD)
-  \item Checkpoint size (KB)
-\end{itemize}
+This section evaluates AWS Lambda durable functions through two progressively complex case studies. We compare durable execution against traditional serverless designs that rely on explicit external state management. Our evaluation focuses on correctness, fault tolerance, code complexity, and operational overhead.
 
-\subsection*{4.3 Preliminary Results}
-Table~\ref{tab:results} will be filled once AWS experiments are run.
-% \input{tables/results.tex}
+\subsection{Phase 1: Stateful Counter}
+
+The first case study implements a stateful counter supporting increment, decrement, and read operations. Although functionally simple, the counter provides a minimal yet representative workload for evaluating durable execution semantics.
+
+\paragraph{Correctness and Ordering}
+The durable counter preserves strict operation ordering. Concurrent or repeated invocations are serialized by the durable execution context, ensuring deterministic state transitions. Local tests confirm that replays do not re-execute completed steps and that state remains consistent under retries.
+
+\paragraph{Failure Handling}
+We injected transient failures using a deliberately flaky step. When failures occurred, the runtime automatically replayed the workflow from the last successful checkpoint. Completed steps were not re-executed, demonstrating correct checkpoint-and-replay behavior.
+
+\paragraph{Baseline Comparison}
+In the baseline implementation, the counter state is stored explicitly using an external key-value store. This design requires manual coordination, explicit read-modify-write logic, and careful handling of race conditions. The durable implementation eliminates this complexity while preserving equivalent functionality.
+
+\subsection{Phase 2: Video Processing Pipeline}
+
+The second case study evaluates a video encoding pipeline inspired by prior serverless video processing systems. The workflow consists of validation, chunking, parallel encoding, and final assembly.
+
+\paragraph{Durable Pipeline Execution}
+In the durable implementation, each pipeline stage is expressed as a durable step. Video chunks are encoded independently, and failures in individual chunks trigger automatic retries without affecting completed work. The final assembly step executes only after all encoding steps have completed successfully.
+
+Local execution confirms that the workflow tolerates failures during chunk processing and resumes execution without manual intervention or global restarts.
+
+\paragraph{Explicit-State Baseline}
+The baseline pipeline uses explicit job and chunk state stored in an external store. Each stage updates job metadata and chunk status manually. This approach requires significantly more coordination logic, including polling, status tracking, and failure propagation.
+
+Instrumentation of the baseline reveals a large number of store operations, even for a small input video. These operations increase code complexity and introduce additional latency and cost.
+
+\subsection{Code Complexity and Maintainability}
+
+Across both case studies, durable execution reduces code complexity by removing explicit state management and coordination logic. Durable workflows are expressed in a sequential, readable manner, while fault tolerance is delegated to the runtime.
+
+The baseline implementations require additional abstractions for state storage, retries, and consistency, making them harder to reason about and maintain.
+
+\subsection{Cost and Performance Considerations}
+
+While our evaluation is primarily qualitative, we simulated cost behavior using a simplified model. Durable execution avoids billing for idle wait time by suspending workflows between steps. In contrast, baseline implementations incur repeated compute and storage costs due to polling and state updates.
+
+Figure~\ref{fig:cost-sim} illustrates a simulated cost comparison between durable execution and explicit-state designs for increasing workflow complexity.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/cost_sim.pdf}
+  \caption{Simulated cost comparison between durable execution and explicit state management.}
+  \label{fig:cost-sim}
+\end{figure}
+
+\subsection{Summary}
+
+The evaluation demonstrates that durable functions provide strong correctness and fault-tolerance guarantees while significantly simplifying application logic. For stateful and long-running workflows, durable execution reduces developer burden and improves reliability compared to traditional serverless approaches.
+
+---
+

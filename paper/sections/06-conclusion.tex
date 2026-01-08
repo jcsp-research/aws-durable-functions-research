@@ -1,4 +1,5 @@
 \section*{6. Conclusion and Future Work}
-We evaluated AWS Lambda Durable Functions through a counter entity and a video-encoding pipeline.
-Results show up to 42\,\% cost reduction and lower latency compared to traditional Lambda + DynamoDB, while preserving strict sequential semantics compatible with the actor model.
-Future directions include multi-region workflows, finer-grained cost optimisations, and integration with AI agents that require long-lived stateful conversations.
+We evaluated AWS Lambda Durable Functions through a stateful counter and a video encoding pipeline using local execution and controlled simulations. Our study shows that durable execution significantly reduces coordination complexity compared to traditional Lambda-based designs with explicit external state management, while preserving deterministic execution and strict ordering semantics compatible with the actor model.
+
+Although our cost analysis is based on simulated models rather than production deployments, the results suggest potential economic advantages by avoiding idle compute time and redundant state operations. Future work includes evaluating durable functions on real AWS deployments, exploring multi-region workflows, and investigating integrations with AI-driven applications that require long-lived, stateful interactions.
+

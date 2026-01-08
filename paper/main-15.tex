@@ -1,58 +1,54 @@
-% main.tex  – Esqueleto 6 páginas para workshop
-\documentclass[10pt]{article}
+\documentclass[sigconf]{acmart}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{microtype}
+% -------------------------------------------------
+% Metadata
+% -------------------------------------------------
+\title{Evaluating Durable Functions for Stateful Serverless Computing}
+
+\author{Julio Sigüenza Pacheco}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+% -------------------------------------------------
+% Packages
+% -------------------------------------------------
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{hyperref}
-\usepackage{amsmath}
-\usepackage{xcolor}
 
-% Opcional: márgenes típicos tipo paper
-\usepackage[a4paper,margin=1in]{geometry}
+\graphicspath{{figures/}}
 
-% ----- Metadatos -----
-\title{AWS Lambda Durable Functions:\\Stateful Serverless and the Actor Model}
-\author{
-  \emph{Autor}: TuNombre\\
-  \emph{Afiliación}: Universidad / Grupo de Investigación\\
-  \texttt{tuemail@dominio.com}
-}
-\date{December 2025}
-
+% -------------------------------------------------
+% Document
+% -------------------------------------------------
 \begin{document}
-\maketitle
 
 \begin{abstract}
-AWS Lambda Durable Functions (preview, December 2025) introduce checkpoint-and-replay
-primitives that keep state without persistent compute. We evaluate the SDK through a
-counter entity and a video-encoding pipeline, and position the service within the
-actor-model landscape. Results show up to 42\,\% cost reduction versus external-state
-patterns and strict sequential semantics compatible with classical actors.
+Serverless platforms offer scalability and pay-per-use economics, but they remain poorly suited for stateful and long-running applications. To address this limitation, AWS recently introduced durable functions for AWS Lambda, enabling stateful execution through checkpoint-and-replay mechanisms.
+
+This paper presents a practical investigation of AWS Lambda durable functions through progressively complex applications. We first study a stateful counter to evaluate ordering guarantees, fault tolerance, and deterministic replay. We then explore a video encoding pipeline that orchestrates parallel tasks and manages workflow state across failures. For both cases, we compare durable execution against traditional serverless designs based on explicit external state management.
+
+Our evaluation, conducted through local execution and controlled simulations, shows that durable functions significantly reduce coordination complexity while preserving correctness and fault tolerance. Finally, we analyze durable functions through the lens of the actor model, highlighting their alignment with actor-like semantics in serverless environments and discussing their limitations. These findings position durable functions as a promising abstraction for stateful serverless systems.
 \end{abstract}
 
-\section*{1. Introduction}
-Serverless computing promises elastic scale and pay-per-use billing, but
-its stateless nature complicates long-running workflows \ldots (continuar después)
+\maketitle
 
-\section{Background}
-Aquí va el background.
+% -------------------------------------------------
+% Sections
+% -------------------------------------------------
+\input{sections/01-intro}
+\input{sections/02-background}
+\input{sections/03-arch}
+\input{sections/04-evaluation}
+\input{sections/05-actors}
+\input{sections/06-conclusion}
 
-\section{Durable Functions Architecture}
-Aquí describes arquitectura, componentes, flujo, etc.
-
-\section{Experimental Evaluation}
-Aquí pones metodología, setup, métricas, resultados, tablas/figuras.
-
-\section{Discussion: Actor Model Perspective}
-Aquí conectas con actor model: mailbox, ordering, state, isolation, etc.
-
-\section{Conclusion \& Future Work}
-Aquí cierras y propones trabajo futuro.
-
-\bibliographystyle{plain}
+% -------------------------------------------------
+% References
+% -------------------------------------------------
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
 
 \end{document}

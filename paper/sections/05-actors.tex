@@ -1,9 +1,71 @@
-\section*{5. Discussion: Actor Model Perspective}
-\subsection*{5.1 Actor Properties}
-We map durable entities to classic actors: identity, mailbox, sequential processing, fault isolation.
+\section{Durable Functions and the Actor Model}
+\label{sec:actors}
 
-\subsection*{5.2 Comparison}
-Table~\ref{tab:actor-comp} summarises differences with Azure Durable Entities, Orleans and Akka.
+The actor model is a foundational abstraction for building concurrent and distributed systems. Actors encapsulate state, process messages sequentially, and interact exclusively through asynchronous communication. This section analyzes how AWS Lambda durable functions relate to the actor model and evaluates the extent to which they enable actor-like programming in a serverless environment.
 
-\subsection*{5.3 Implications}
-Checkpoint-and-replay enables \textbf{virtual-actor-like} activation/passivation while keeping serverless billing.
+\subsection{Actor Model Fundamentals}
+
+In the classical actor model, each actor:
+(i) owns private state,
+(ii) processes messages one at a time,
+(iii) can create new actors, and
+(iv) communicates exclusively through message passing.
+These properties simplify reasoning about concurrency and fault tolerance.
+
+However, traditional serverless platforms struggle to support actors due to stateless execution, lack of message ordering guarantees, and the absence of durable identities.
+
+\subsection{Durable Functions as Actor-Like Abstractions}
+
+AWS Lambda durable functions partially bridge this gap by introducing durable execution contexts with checkpoint-and-replay semantics. A durable execution instance can be identified by a stable execution name, which serves a role similar to an actor identity.
+
+Within a durable execution:
+state is persisted implicitly through checkpoints,
+steps are executed sequentially,
+and failures trigger deterministic replays rather than ad-hoc retries.
+
+These properties closely align with actor semantics. In particular, the durable counter entity implemented in Phase 1 functions as a classical actor: it maintains internal state, processes operations in order, and guarantees atomic updates.
+
+\subsection{Mapping Durable Primitives to Actor Concepts}
+
+Table~\ref{tab:actor-mapping} summarizes the conceptual correspondence between actor model primitives and AWS durable execution mechanisms.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{ll}
+\hline
+Actor Model Concept & Durable Execution Mechanism \\
+\hline
+Actor identity & Execution name \\
+Message & Durable execution invocation \\
+Mailbox ordering & Sequential step execution \\
+Actor state & Checkpointed local variables \\
+Failure recovery & Deterministic replay \\
+\hline
+\end{tabular}
+\caption{Conceptual mapping between the actor model and durable execution.}
+\label{tab:actor-mapping}
+\end{table}
+
+Unlike traditional actor systems, durable functions do not expose explicit mailboxes or message queues. Instead, message handling is implicit in the invocation and replay mechanism.
+
+\subsection{Comparison with Related Systems}
+
+\paragraph{Azure Durable Functions}
+Azure Durable Functions provide Durable Entities, which explicitly expose actor-like abstractions. AWS durable functions offer similar semantics but emphasize general durable workflows rather than dedicated actor APIs. This design choice reflects AWS's preference for composable primitives over specialized abstractions.
+
+\paragraph{Traditional Actor Frameworks}
+Systems such as Akka or Orleans provide richer actor semantics, including dynamic actor creation and supervision hierarchies. However, these systems require persistent infrastructure and incur idle resource costs. Durable functions trade expressiveness for serverless scalability and pay-per-use economics.
+
+\paragraph{Serverless Video Pipelines}
+In Phase 2, each video chunk encoder can be interpreted as a short-lived actor, while the pipeline orchestration acts as a supervising coordinator. Durable execution enables this structure without explicit actor runtime management.
+
+\subsection{Limitations and Open Questions}
+
+Despite their alignment with actor principles, durable functions lack certain features of full actor systems, such as explicit actor-to-actor messaging and dynamic topology management. Additionally, the semantics of exactly-once execution depend on the correctness of the underlying replay mechanism and external side effects.
+
+Nevertheless, durable functions represent a significant step toward practical actor-like programming in serverless platforms.
+
+\subsection{Summary}
+
+AWS Lambda durable functions enable a restricted but powerful form of actor-based programming. By combining implicit state management, deterministic execution, and fault tolerance, they allow developers to express actor-like behavior without maintaining dedicated runtime infrastructure. This positions durable functions as a promising abstraction for stateful serverless applications.
+

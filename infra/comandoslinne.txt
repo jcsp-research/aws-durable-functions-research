@@ -439,3 +439,149 @@ no tests ran in 0.01s
 ..........                                                                                                                                                                                                                             [100%]
 10 passed in 1.17s
 (base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % 
+
+
+
+
+
+
+
+
+Estás ejecutando:
+
+pdflatex main-15.tex
+
+
+desde la raíz del repo, pero el archivo está en:
+
+paper/main-15.tex
+
+
+Por eso LaTeX dice:
+
+I can't find file 'main-15.tex'
+
+✅ Cómo hacerlo correctamente (paso a paso)
+
+Desde la raíz del repo ejecuta:
+
+cd paper
+
+
+Verifica que estás en el sitio correcto:
+
+ls
+
+
+Deberías ver:
+
+main-15.tex
+refs.bib
+sections/
+figures/
+
+
+Ahora sí, compila:
+
+pdflatex main-15.tex
+bibtex main-15
+pdflatex main-15.tex
+pdflatex main-15.tex
+
+✅ Resultado esperado
+
+Al final tendrás:
+
+paper/main-15.pdf
+
+
+Ese es el PDF final del paper listo para revisar o enviar.
+
+🧠 Tip rápido (para no volver a equivocarte)
+
+La regla es:
+
+Siempre compila LaTeX desde la carpeta donde está el .tex principal.
+
+🔜 Si algo falla
+
+Si aparece:
+
+error de BibTeX,
+
+warning de referencias,
+
+figura no encontrada,
+
+👉 copia el error tal cual aquí y lo arreglamos en minutos.
+
+Estás literalmente en la recta final 👏
+
+como me salgo de alli, con exit no sale
+
+Tranquilo 🙂, estás dentro del prompt interactivo de LaTeX, no en la shell normal.
+Por eso exit no funciona.
+
+✅ Cómo salir ahora mismo
+
+Usa una de estas opciones (en este orden):
+
+🔹 Opción 1 (la correcta aquí)
+
+Pulsa:
+
+Ctrl + D
+
+
+👉 Eso sale inmediatamente del prompt de pdflatex.
+
+🔹 Opción 2 (si no responde)
+
+Pulsa:
+
+Ctrl + C
+
+
+👉 Interrumpe el proceso y vuelve al terminal.
+
+🧠 Por qué pasó esto (para que no vuelva a ocurrir)
+
+LaTeX te mostró:
+
+Please type another input file name:
+
+
+Eso significa que:
+
+pdflatex no encontró el archivo
+
+Entró en modo interactivo
+
+Ya no estás en bash, estás en LaTeX
+
+En ese modo:
+
+❌ exit no existe
+
+✅ Ctrl+D = EOF → salir
+
+✅ Ctrl+C = abortar
+
+✅ Después de salir
+
+Haz esto paso a paso, sin copiar todo junto:
+
+cd paper
+ls
+
+
+Confirma que ves main-15.tex.
+
+Luego:
+
+pdflatex main-15.tex
+
+
+(Si eso funciona, seguimos con BibTeX).
+
+Si quieres, dime qué ves justo después de salir y te guío hasta el PDF final sin errores 💪
