@@ -1,6 +1,7 @@
-import boto3
-import pytest
+import sys
+from pathlib import Path
 
-@pytest.fixture
-def lambda_client():
-    return boto3.client("lambda", region_name="us-east-2")
+# Add ./src to PYTHONPATH so "import counter" works in tests
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
