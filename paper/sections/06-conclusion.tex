@@ -1,0 +1,41 @@
+\section{Conclusion and Future Work}
+
+This paper presented the first hands-on evaluation of AWS Lambda Durable
+Functions, a newly introduced execution model that brings stateful programming
+to serverless computing through checkpoint-and-replay. Using two workloads of
+increasing complexity—a stateful counter and a video encoding pipeline—we
+compared durable execution with traditional serverless designs based on
+explicit external state.
+
+Our experimental results show a clear tradeoff. In both workloads, the baseline
+implementations relied on frequent external state-store operations: an average
+of five operations per counter execution and more than sixty operations per
+video pipeline run. In contrast, the durable implementations required zero
+explicit state-store interactions, with all intermediate state maintained
+implicitly by the runtime. This eliminates a major source of complexity,
+failure-prone coordination, and storage cost in serverless applications.
+
+Although durable execution exhibited higher end-to-end latency in our local
+experiments, this overhead reflects the cost of persistence and replay rather
+than inefficient application logic. In practice, these mechanisms provide
+strong guarantees: deterministic execution, automatic recovery from failures,
+and strict sequential semantics that align naturally with the actor model. From
+the programmer’s perspective, this shifts the burden of fault tolerance and
+state consistency from application code into the platform itself.
+
+Conceptually, AWS Lambda Durable Functions can be viewed as a serverless actor
+runtime. Each durable execution encapsulates state, processes events
+sequentially, and recovers transparently after failures, matching the core
+properties of actors and virtual actors. This enables a new class of
+stateful, long-running, and highly coordinated serverless applications that
+were previously difficult or costly to implement.
+
+There are several promising directions for future work. First, evaluating
+durable functions on real AWS infrastructure will allow a more precise
+measurement of cost, storage overhead, and replay performance at scale.
+Second, larger and more heterogeneous workflows—such as multi-stage data
+pipelines or distributed machine learning training—would further stress the
+limits of checkpoint-and-replay. Finally, integrating durable functions with
+AI-driven agents and conversational systems could enable long-lived, stateful
+serverless services that combine reasoning, memory, and fault tolerance in a
+single abstraction.

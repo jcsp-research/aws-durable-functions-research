@@ -1,0 +1,34 @@
+\section{Background and Related Work}
+\label{sec:background}
+
+\subsection{Serverless Computing and the State Challenge}
+
+Serverless computing has become a dominant paradigm for deploying cloud applications due to its elasticity, fine-grained billing model, and reduced operational overhead. Platforms such as AWS Lambda allow developers to execute short-lived functions without managing servers, automatically scaling based on demand.
+
+Despite these advantages, traditional serverless platforms are inherently stateless. Each function invocation executes in isolation, with no built-in mechanism for preserving execution state across invocations. Applications that require coordination, long-running workflows, or fault-tolerant state transitions must therefore rely on external storage systems such as databases or object stores. This approach increases system complexity, introduces additional latency, and often leads to duplicated or error-prone coordination logic.
+
+\subsection{Durable Execution and Workflow Orchestration}
+
+To address the limitations of stateless serverless execution, several systems have introduced the concept of \emph{durable execution}. In this model, the execution progress of a workflow is persistently recorded, allowing it to be resumed, replayed, or retried transparently after failures.
+
+A prominent example is Azure Durable Functions, which implements deterministic workflow orchestration through event sourcing and replay. Developers write workflows as ordinary functions, while the platform records logical execution steps and replays them during recovery.
+
+More recently, AWS has introduced Durable Execution for AWS Lambda, extending similar concepts to the AWS ecosystem. This approach integrates checkpointing and replay directly into the Lambda runtime, enabling long-running workflows and stateful coordination without explicit state management code.
+
+\subsection{Actor Model and State Encapsulation}
+
+The actor model provides a useful abstraction for reasoning about stateful and concurrent systems. In this model, actors encapsulate state and behavior, processing messages sequentially and communicating exclusively through message passing. This design simplifies reasoning about concurrency and fault isolation.
+
+Durable serverless workflows can be interpreted as a constrained realization of the actor model. Each workflow instance corresponds to a logical actor, workflow steps represent message handlers, and persisted checkpoints encode the actor’s durable state. This perspective is valuable for understanding how durable execution systems provide consistency, failure recovery, and isolation while maintaining a functional programming interface.
+
+\subsection{Related Systems and Prior Work}
+
+Several prior systems have explored serverless orchestration for data-intensive workloads. ExCamera demonstrated large-scale video encoding using serverless functions coordinated through external storage and custom control logic. While effective, such approaches require explicit handling of retries, coordination, and state persistence.
+
+Durable execution platforms aim to reduce this burden by embedding fault tolerance and state management directly into the execution model. Rather than exposing low-level coordination primitives, these systems provide structured workflow abstractions that simplify development and improve correctness.
+
+\subsection{Positioning of This Work}
+
+This work builds upon existing research in serverless workflows and durable execution but differs in its emphasis on comparative evaluation. We analyze durable execution against traditional Lambda-based designs with explicit state management using concrete, reproducible workloads.
+
+Specifically, we evaluate a stateful counter and a video processing pipeline implemented using both durable execution primitives and baseline architectures relying on explicit state coordination. The goal is not to propose a new system, but to empirically and conceptually assess the trade-offs introduced by durable execution in modern serverless platforms.

@@ -1,0 +1,28 @@
+import pandas as pd
+
+CSV = "experiments/phase1_counter_runs.csv"
+df = pd.read_csv(CSV)
+
+for col in ["final_value","n_ops","store_ops","retries","time_ms"]:
+    df[col] = pd.to_numeric(df[col], errors="coerce")
+
+df = df.dropna(subset=["mode","time_ms"])
+df = df[df["mode"].isin(["durable-local","baseline-local"])]
+
+print("Phase 1 – Counter Summary\n")
+
+rows = []
+for mode, g in df.groupby("mode"):
+    rows.append({
+        "mode": mode,
+        "runs": len(g),
+        "mean_time_ms": round(g.time_ms.mean(), 1),
+        "p50_ms": int(g.time_ms.quantile(0.5)),
+        "p95_ms": int(g.time_ms.quantile(0.95)),
+        "mean_store_ops": round(g.store_ops.mean(), 1),
+        "final_value_mode": int(g.final_value.mode().iloc[0]) if len(g.final_value.mode()) else None,
+    })
+
+out = pd.DataFrame(rows).sort_values("mode")
+print(out.to_string(index=False))
+

@@ -1,0 +1,205 @@
+# Phase 3 – Actor Model Mapping: From Code to Theory
+
+## 1. Purpose of This Phase
+
+The purpose of Phase 3 is not to introduce new functionality, but to **reinterpret
+the existing implementations** (Phase 1 and Phase 2) through the lens of the
+**actor model**.
+
+The code written in previous phases serves as an experimental artifact that
+allows us to reason about:
+- state encapsulation,
+- message ordering,
+- fault tolerance,
+- and recovery semantics
+in a serverless context.
+
+---
+
+## 2. Actor Model Recap (Minimal)
+
+An actor is defined by:
+1. **Identity** – a stable address for sending messages
+2. **Private state** – not directly shared
+3. **Message handlers** – process one message at a time
+4. **Fault isolation** – failures do not corrupt global state
+
+This phase evaluates how closely AWS Lambda Durable Functions approximate
+these properties.
+
+---
+
+## 3. Phase 1: Durable Counter as a Canonical Actor
+
+### 3.1 Actor Identity
+
+In the counter implementation, the **execution ID** acts as the actor identity.
+
+- Each durable execution name uniquely identifies one logical counter.
+- All operations addressed to the same execution name are serialized.
+
+**Code reference:**
+- `handler.py` (durable entrypoint)
+- `counter_app.py::run_counter_workflow`
+
+This directly corresponds to the actor concept of **location transparency**:
+clients address the actor by name, not by where it runs.
+
+---
+
+### 3.2 Actor State
+
+The counter’s state is the integer value maintained across invocations.
+
+**Code reference:**
+- `steps.py::init_value`
+- `steps.py::apply_delta`
+
+The state is:
+- private to the execution,
+- never stored in an external database,
+- reconstructed via checkpoint-and-replay.
+
+This matches the actor principle of **state encapsulation**.
+
+---
+
+### 3.3 Messages and Message Handlers
+
+Operations such as `increment`, `decrement`, and `get` correspond to **actor messages**.
+
+**Code reference:**
+- `counter_app.py::_normalize_op`
+- `counter_app.py::run_counter_workflow`
+
+Each operation is handled by one or more durable steps, analogous to
+message handler functions in actor systems.
+
+---
+
+### 3.4 Sequential Processing Guarantee
+
+All operations within a single durable execution are processed sequentially.
+
+Evidence:
+- Batch execution (`commands[]`) preserves strict ordering.
+- No explicit locking or synchronization is required.
+
+This satisfies the actor model requirement of **single-threaded message handling**.
+
+---
+
+### 3.5 Fault Tolerance and Recovery
+
+Failures are simulated using `flaky_step`.
+
+**Code reference:**
+- `steps.py::flaky_step`
+
+Observations:
+- Failed steps are retried automatically.
+- Completed steps are replayed from checkpoints.
+- State transitions are not re-applied.
+
+This mirrors persistent actor systems that rely on logs or event sourcing.
+
+---
+
+## 4. Phase 2: Video Pipeline as an Actor System
+
+### 4.1 Orchestrator as a Supervisor Actor
+
+The main pipeline function acts as a **supervising actor**.
+
+**Code reference:**
+- `video_pipeline/pipeline.py::run_video_pipeline`
+
+Responsibilities:
+- maintain global workflow state,
+- initiate child computations,
+- aggregate results,
+- decide when to finalize output.
+
+This aligns with the supervisor pattern in actor systems.
+
+---
+
+### 4.2 Chunk Encoders as Virtual Actors
+
+Each video chunk encoder behaves like an independent logical actor.
+
+**Code reference:**
+- `video_pipeline/steps.py::encode_chunk`
+
+Properties:
+- isolated state per chunk,
+- failure isolation,
+- deterministic output.
+
+Chunk actors are not long-lived processes but are **reactivated from state**,
+matching the **virtual actor** model (e.g., Orleans).
+
+---
+
+### 4.3 Comparison with Explicit-State Baseline
+
+In the baseline pipeline:
+- actors are simulated manually,
+- state is externalized into explicit records,
+- retries and coordination are hand-written.
+
+**Code reference:**
+- `video_baseline/store_memory.py`
+- `video_baseline/pipeline.py`
+
+This highlights how durable execution shifts actor responsibilities
+from the application into the runtime.
+
+---
+
+## 5. Guarantees and Semantics
+
+### 5.1 Execution Guarantees
+
+Durable steps provide:
+- at-least-once execution at the step level,
+- effectively exactly-once state transitions for deterministic steps.
+
+This is consistent with actor systems that rely on persistent logs.
+
+---
+
+### 5.2 Determinism Requirement
+
+To ensure correct replay:
+- steps must be deterministic,
+- side effects must be isolated.
+
+This constraint is explicit in durable execution and implicit in many
+actor frameworks.
+
+---
+
+## 6. Limitations and Differences from Classical Actors
+
+Durable functions differ from traditional actor systems in that:
+- actors are not resident in memory,
+- execution is ephemeral,
+- scheduling and placement are opaque.
+
+These tradeoffs reflect serverless constraints rather than conceptual gaps.
+
+---
+
+## 7. Summary
+
+Across both phases, AWS Lambda Durable Functions exhibit strong alignment
+with the actor model:
+
+- execution IDs map to actor identities,
+- durable steps map to message handlers,
+- checkpoint-and-replay provides fault tolerance,
+- orchestration patterns resemble supervisor hierarchies.
+
+Durable functions therefore implement a **serverless-adapted actor model**,
+optimized for elasticity and cost efficiency rather than low-latency messaging.

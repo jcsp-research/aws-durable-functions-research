@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Durable Functions Research - Phase 1 (Counter durable + baseline)
+
+Globals:
+  Function:
+    Runtime: python3.11
+    Timeout: 30
+    MemorySize: 256
+    Tracing: Active
+    Environment:
+      Variables:
+        POWERTOOLS_SERVICE_NAME: aws-durable-research
+
+Resources:
+  # ---------------------------
+  # Baseline: DynamoDB table
+  # ---------------------------
+  CounterTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CounterTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: counter_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: counter_id
+          KeyType: HASH
+
+  # ---------------------------
+  # Phase 1: Durable counter
+  # ---------------------------
+  CounterDurableFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: counter-durable
+      CodeUri: ../src
+      Handler: counter.handler.lambda_handler
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      # Si durable execution requiere permisos adicionales, se añaden aquí más adelante.
+      # Events (opcional): cuando conectes API Gateway
+      # Events:
+      #   HttpApi:
+      #     Type: HttpApi
+      #     Properties:
+      #       Path: /counter/{proxy+}
+      #       Method: ANY
+
+  # ---------------------------
+  # Phase 1: Baseline (Lambda + DynamoDB)
+  # ---------------------------
+  CounterBaselineFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: counter-baseline
+      CodeUri: ../src
+      Handler: counter_baseline.handler.lambda_handler
+      Environment:
+        Variables:
+          COUNTER_TABLE: !Ref CounterTable
+          COUNTER_PK: counter_id
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CounterTable
+
+Outputs:
+  CounterDurableFunctionName:
+    Description: Durable counter Lambda function name
+    Value: !Ref CounterDurableFunction
+
+  CounterBaselineFunctionName:
+    Description: Baseline counter Lambda function name
+    Value: !Ref CounterBaselineFunction
+
+  CounterTableName:
+    Description: DynamoDB table for baseline
+    Value: !Ref CounterTable

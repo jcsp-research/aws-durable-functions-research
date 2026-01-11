@@ -1,0 +1,104 @@
+\section{Durable Functions as an Actor System}
+
+A central question in the design of stateful serverless platforms is whether
+they can provide the same semantic guarantees as actor-based systems.
+Actors provide a well-understood model of distributed state:
+each actor encapsulates state, processes one message at a time, and persists
+across failures through reliable messaging and replay \cite{spenger2024survey}.
+
+This section shows that AWS Lambda Durable Functions implement an actor-like
+execution model, even though the API exposes workflows and steps rather than
+actors and messages.
+
+\subsection{Actor Model Recap}
+
+In the classical actor model, each actor has three core properties:
+
+\begin{itemize}
+    \item \textbf{Encapsulated state}: the actor owns its state and no other
+    component may access it directly.
+    \item \textbf{Single-threaded execution}: messages are processed sequentially,
+    eliminating race conditions inside the actor.
+    \item \textbf{Persistence through replay}: an actor can be reconstructed by
+    replaying its message history after failure.
+\end{itemize}
+
+Modern cloud platforms such as Azure Durable Entities explicitly expose actors
+as first-class objects \cite{azure-durable-entities}. AWS Durable Functions do
+not expose actors directly, but as we show, they nevertheless implement the same
+semantics.
+
+\subsection{Mapping Durable Workflows to Actors}
+
+In AWS Durable Functions, each workflow execution is identified by an
+\texttt{execution\_id}. All steps executed within a workflow share this identity
+and are replayed deterministically from a durable log.
+
+This maps naturally to the actor model:
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Actor model} & \textbf{Durable Functions} \\
+\hline
+Actor ID & execution\_id \\
+Actor state & workflow local variables \\
+Message handler & workflow code \\
+Message & step invocation \\
+Mailbox & durable execution log \\
+Replay & deterministic re-execution of steps \\
+\end{tabular}
+\end{center}
+
+In our counter experiment (Phase~1), the workflow state consisted of a single
+integer. Each increment or decrement step corresponded to a message processed
+by the actor. The durable runtime ensured that these operations were executed
+in strict sequence, even across simulated failures.
+
+In the video pipeline (Phase~2), the workflow state contained the list of chunks
+and their encoding results. The fan-out and fan-in pattern corresponds to an
+actor coordinating a set of sub-tasks while preserving a single authoritative
+state.
+
+\subsection{Consistency and Failure Semantics}
+
+A key result of our experiments is that durable execution enforces actor-like
+consistency without explicit locking or external coordination.
+
+In the baseline implementations, correctness required:
+\begin{itemize}
+    \item Explicit state storage (job and chunk tables),
+    \item Polling loops,
+    \item Compare-and-swap style updates,
+    \item Manual retry logic.
+\end{itemize}
+
+In contrast, the durable implementations relied only on deterministic step
+functions. The runtime guarantees that each step is either completed once or
+re-executed during replay, which is equivalent to the message processing
+semantics of an actor.
+
+This was empirically confirmed in Phase~2, where the baseline required on average
+more than 60 store operations per run, while the durable pipeline required none,
+yet both produced identical final outputs.
+
+\subsection{Relation to Prior Systems}
+
+Systems such as ExCamera \cite{excamera17} demonstrated that large-scale video
+pipelines can be built from thousands of stateless functions coordinated by
+external storage and schedulers. Durable execution generalizes this approach by
+embedding the coordination logic inside the execution runtime itself.
+
+Compared to Azure Durable Entities, AWS Durable Functions provide similar actor
+semantics but expose them through a workflow abstraction rather than explicit
+actors. This allows developers to write sequential code while obtaining
+distributed, fault-tolerant execution.
+
+\subsection{Implications}
+
+These results suggest that AWS Durable Functions should be understood not merely
+as a workflow engine, but as a practical implementation of the actor model for
+serverless computing. Developers can program long-lived, stateful, failure-tolerant
+entities without managing databases, locks, or schedulers explicitly.
+
+The counter and video experiments demonstrate that this model scales from
+simple stateful services to complex, highly parallel data-processing pipelines.

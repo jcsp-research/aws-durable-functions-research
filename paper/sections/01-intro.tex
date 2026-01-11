@@ -1,0 +1,50 @@
+\section*{1. Introduction}
+Serverless computing has become a dominant paradigm for deploying scalable
+applications in the cloud. By charging only for execution time and
+automatically scaling on demand, platforms such as AWS Lambda enable developers
+to build highly elastic systems without managing servers. However, this model
+has a fundamental limitation: functions are stateless. Any application that
+requires persistent or coordinated state must rely on external services such
+as DynamoDB, S3, or Redis, introducing complexity, latency, and failure modes.
+
+To address this limitation, AWS introduced \emph{Durable Functions} for AWS
+Lambda in December~2025~\cite{aws-durable-2025}. Durable Functions provide a
+checkpoint-and-replay execution model that allows workflows to maintain state
+across invocations without holding compute resources while waiting. Developers 
+write code in a sequential style, while the runtime transparently persists state, 
+replays execution after failures, and guarantees deterministic behavior.
+
+This paper investigates the practical implications of this new execution model.
+Rather than relying on documentation alone, we conduct a hands-on experimental
+study using two workloads of increasing complexity. In Phase~1, we implement a
+stateful counter that supports increment, decrement, and read operations. In
+Phase~2, we implement a video encoding pipeline that splits a video into chunks,
+encodes them in parallel, and assembles the result. For each workload, we build
+two versions: a durable workflow and a traditional serverless baseline that
+uses explicit state storage and manual coordination.
+
+We evaluate both implementations using repeated local executions that record
+runtime and coordination overhead. For the counter workload, we execute 20 runs
+(10 durable and 10 baseline). For the video pipeline, we execute 30 runs (10
+durable and 20 baseline). Our results show that the baseline implementations
+require explicit state-store interactions---approximately 5 operations per
+counter run and more than 60 operations per video pipeline run---while the
+durable implementations require none. In contrast, durable execution shifts
+this coordination overhead into the runtime via checkpoint-and-replay.
+
+Beyond performance, these results have deeper implications for programming
+models. The strict sequential semantics, failure recovery through replay, and
+state encapsulation provided by Durable Functions closely resemble the actor
+model, a foundational abstraction for distributed systems. By eliminating the
+need for external coordination services, Durable Functions make it possible to
+build actor-like stateful services directly on a serverless platform.
+
+In summary, this paper makes three contributions:
+\begin{itemize}
+    \item A hands-on implementation and evaluation of AWS Lambda Durable
+    Functions using both simple and complex stateful workloads.
+    \item A quantitative comparison with traditional serverless designs based
+    on explicit state storage.
+    \item A conceptual analysis that positions Durable Functions as an actor
+    runtime for serverless computing.
+\end{itemize}

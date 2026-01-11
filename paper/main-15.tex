@@ -1,0 +1,70 @@
+\documentclass[sigconf]{acmart}
+
+% -------------------------------------------------
+% Metadata
+% -------------------------------------------------
+\title{Evaluating Durable Functions for Stateful Serverless Computing}
+
+\author{Julio Sigüenza Pacheco}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+% -------------------------------------------------
+% Packages
+% -------------------------------------------------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\graphicspath{{figures/}}
+
+% -------------------------------------------------
+% Document
+% -------------------------------------------------
+\begin{document}
+
+\begin{abstract}
+Serverless platforms are traditionally stateless, forcing developers to manage
+state explicitly through external storage systems. In December~2025, AWS
+introduced Durable Functions for AWS Lambda, a new execution model that enables
+stateful serverless workflows through checkpoint-and-replay semantics.
+
+This paper presents a hands-on evaluation of AWS Lambda Durable Functions using
+two representative workloads: a stateful counter and a video encoding pipeline.
+We implement each workload in two variants: a durable execution and a
+traditional Lambda-based baseline with explicit state storage. Using 20 runs for
+the counter and 30 runs for the video pipeline, we measure execution time,
+coordination overhead, and failure-handling behavior.
+
+Our results show that durable execution completely eliminates explicit state
+storage, reducing external coordination from an average of 5 operations per
+counter execution and more than 60 operations per video pipeline run to zero,
+while preserving strict sequential and actor-like semantics. Although durable
+execution incurs higher end-to-end latency in the local simulator, it
+significantly simplifies application logic and provides built-in fault
+tolerance without manual retries or polling. These findings position AWS
+Durable Functions as a practical realization of the actor model for serverless
+computing.
+\end{abstract}
+
+\maketitle
+
+% -------------------------------------------------
+% Sections
+% -------------------------------------------------
+\input{sections/01-intro}
+\input{sections/02-background}
+\input{sections/03-arch}
+\input{sections/04-evaluation}
+\input{sections/05-actors}
+\input{sections/06-conclusion}
+
+% -------------------------------------------------
+% References
+% -------------------------------------------------
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

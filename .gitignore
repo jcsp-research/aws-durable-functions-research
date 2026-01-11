@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.out
+paper/*.log
+paper/*.pdf
+
+# Jupyter
+notebooks/.ipynb_checkpoints/
+

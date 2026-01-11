@@ -1,0 +1,40 @@
+\section{Architecture and Durable Execution Primitives}
+\label{sec:architecture}
+
+This section describes the execution model and programming primitives used in our study. We focus on the durable execution abstraction provided by AWS Lambda and explain how checkpointing and replay are exposed to developers through a step-based programming model.
+
+\subsection{Durable Workflow Model}
+
+A durable workflow is expressed as a deterministic function composed of discrete execution steps. Each workflow instance represents a logical execution context whose progress is transparently persisted by the runtime. The workflow may span multiple physical executions while preserving logical continuity.
+
+The runtime records the inputs and outputs of each step, enabling the workflow to be resumed or replayed after failures without re-executing completed steps. From the developer perspective, the workflow is written as a standard function, while durability guarantees are provided by the platform.
+
+\subsection{Checkpointing and Replay Semantics}
+
+Checkpointing occurs at step boundaries. When a step completes successfully, its result is persisted. In the event of a failure, the runtime reconstructs the workflow state by replaying the execution from the beginning, substituting stored results for completed steps.
+
+Replay is deterministic: side effects must be isolated within steps, and non-deterministic operations are prohibited outside step boundaries. This constraint ensures that replayed executions produce identical control flow and state transitions.
+
+\subsection{Programming Interface}
+
+In our implementation, workflows interact with the durable runtime through a \texttt{DurableContext}. This context exposes a \texttt{step()} method, which is used to invoke durable steps.
+
+Each step is defined as a pure function decorated with a durable execution annotation. The workflow logic remains sequential and readable, while durability concerns are handled transparently by the runtime.
+
+\subsection{Example: Stateful Counter Workflow}
+
+The counter workflow implemented in Phase~1 demonstrates the basic use of durable steps. Initialization, state updates, and reads are all expressed as individual steps. This design allows the workflow to tolerate failures and retries without manual state recovery logic.
+
+Compared to a baseline implementation using explicit storage, the durable version eliminates the need for explicit read-modify-write cycles and coordination logic, resulting in simpler and more maintainable code.
+
+\subsection{Example: Video Processing Pipeline}
+
+The video processing pipeline implemented in Phase~2 extends the same execution model to a multi-step, fan-out/fan-in workload. The workflow validates metadata, partitions the input video into chunks, encodes each chunk independently, and finally assembles the output video.
+
+Each encoding task is represented as a durable step. Failures during chunk processing trigger automatic retries without affecting completed chunks. The final assembly step executes only after all encoding steps have successfully completed.
+
+This architecture highlights how durable execution simplifies coordination and failure handling in complex workflows without introducing explicit orchestration state.
+
+---
+
+

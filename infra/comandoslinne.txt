@@ -1,0 +1,587 @@
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_pipeline.local_run
+[step:validate_video] video_uri=s3://fake-bucket/input/sample.mp4
+[step:chunk_video] duration_s=10 chunk_s=1
+[step:encode_chunk] chunk_id=0 start=0 len=1
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/local_run.py", line 45, in <module>
+    main()
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/local_run.py", line 35, in main
+    out = run_video_pipeline(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/pipeline.py", line 50, in run_video_pipeline
+    encoded_chunks = [context.step(encode_chunk, c, fail_rate=fail_rate) for c in chunks]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/pipeline.py", line 50, in <listcomp>
+    encoded_chunks = [context.step(encode_chunk, c, fail_rate=fail_rate) for c in chunks]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/local_run.py", line 30, in step
+    return fn(FakeStepContext(), *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/steps.py", line 57, in encode_chunk
+    raise RuntimeError(f"Simulated encoding failure for chunk {cid}")
+RuntimeError: Simulated encoding failure for chunk 0
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % 
+
+
+
+resultados:
+
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_pipeline.local_run
+
+[step:validate_video] video_uri=s3://fake-bucket/input/sample.mp4
+[step:chunk_video] duration_s=10 chunk_s=1
+[step:encode_chunk] chunk_id=0 start=0 len=1
+[step:encode_chunk] chunk_id=1 start=1 len=1
+[step:encode_chunk] chunk_id=2 start=2 len=1
+[step:encode_chunk] chunk_id=3 start=3 len=1
+[step:encode_chunk] chunk_id=4 start=4 len=1
+[step:encode_chunk] chunk_id=5 start=5 len=1
+[step:encode_chunk] chunk_id=6 start=6 len=1
+[step:encode_chunk] chunk_id=7 start=7 len=1
+[step:encode_chunk] chunk_id=8 start=8 len=1
+[step:encode_chunk] chunk_id=9 start=9 len=1
+[step:assemble_video] n_chunks=10
+
+RESULT: {'ok': True, 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % cd video_pipeline                 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % vi local_run.py                   
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % vi local_run.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_pipeline.local_run
+
+[step:validate_video] video_uri=s3://fake-bucket/input/sample.mp4
+[step:chunk_video] duration_s=10 chunk_s=1
+[step:encode_chunk] chunk_id=0 start=0 len=1
+[step:encode_chunk] chunk_id=1 start=1 len=1
+[step:encode_chunk] chunk_id=2 start=2 len=1
+[step:encode_chunk] chunk_id=3 start=3 len=1
+[step:encode_chunk] chunk_id=4 start=4 len=1
+[step:encode_chunk] chunk_id=5 start=5 len=1
+[step:encode_chunk] chunk_id=6 start=6 len=1
+[step:encode_chunk] chunk_id=7 start=7 len=1
+[step:encode_chunk] chunk_id=8 start=8 len=1
+[step:encode_chunk] chunk_id=9 start=9 len=1
+[step:assemble_video] n_chunks=10
+
+RESULT: {'ok': True, 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % cd tests 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro tests % ls -la
+total 32
+drwxr-xr-x   7 juliosiguenaspacheco  staff   224  8 ene 12:47 .
+drwxr-xr-x  16 juliosiguenaspacheco  staff   512  8 ene 12:49 ..
+-rw-r--r--@  1 juliosiguenaspacheco  staff  6148  8 ene 12:49 .DS_Store
+drwxr-xr-x   5 juliosiguenaspacheco  staff   160  8 ene 12:47 __pycache__
+-rw-r--r--   1 juliosiguenaspacheco  staff   189  7 ene 03:16 conftest.py
+-rw-r--r--   1 juliosiguenaspacheco  staff  2390  7 ene 03:05 test_counter_logic.py
+-rw-r--r--   1 juliosiguenaspacheco  staff     0 22 dic 18:05 test_phase1_counter.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro tests % vi test_video_pipeline_logic.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro tests % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % python -m pytest -q
+
+........                                                                                                                                                                                                                               [100%]
+8 passed in 0.69s
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % 
+
+¡Perfectísimo! ✅ Ya tienes Phase 2 (pipeline) en local + tests y encima todo pasa:
+
+python -m video_pipeline.local_run ✅
+
+python -m pytest -q → 8 passed ✅
+
+Esto te deja en una posición muy fuerte: ya puedes documentar Phase 2 (pre-AWS) y preparar la comparación baseline cuando quieras.
+
+Lo que ya lograste (para el paper)
+Phase 2 – Local validation
+
+Pipeline completo: validate → chunk → encode → assemble
+
+Estado intermedio explícito (chunks, encoded_chunks, final)
+
+Ensamblado ordenado por chunk_id
+
+Tests que verifican:
+
+n_chunks correcto
+
+output final correcto
+
+orden consistente
+
+Esto es material directo para tu sección “Implementation & Methodology”.
+
+Pequeñas mejoras recomendadas (rápidas y muy útiles)
+1) Elimina .DS_Store del repo (Mac)
+
+Ya tienes .DS_Store en tests/ y antes en counter/. Pon esto en .gitignore (raíz):
+
+.DS_Store
+__pycache__/
+*.pyc
+
+
+Y luego:
+
+find . -name ".DS_Store" -delete
+
+2) Borra/usa tests/test_phase1_counter.py
+
+Veo este archivo vacío:
+
+test_phase1_counter.py (0 bytes)
+
+
+Opciones:
+
+✅ borrarlo (mejor)
+
+o usarlo para tests “durable AWS runtime” más adelante
+
+Por ahora, yo lo borraría para evitar ruido.
+
+3) Escribir docs/phase2_observations.md (pre-AWS)
+
+Como hiciste en Phase 1, te recomiendo un doc corto:
+
+qué implementaste
+
+qué validaste localmente
+
+qué faltará medir en AWS (paralelismo real + replay overhead + costos)
+
+Si quieres, te lo dejo en plantilla lista como el de Phase 1.
+
+¿Qué sigue ahora?
+
+Con tu estado actual, tienes tres caminos lógicos:
+
+A) Preparar baseline de video (video_baseline/) en local (simulado)
+
+Para comparar complejidad de estado externo:
+
+tabla “jobs”
+
+tabla “chunks”
+
+polling / coordinación manual
+
+idempotencia manual
+
+Esto te dará argumentos fuertes de “carga cognitiva” y “boilerplate”.
+
+B) Mejorar Phase 2 para incluir retries controlados
+
+Puedes añadir en local_run:
+
+contador de retries
+
+tiempo total
+
+tiempo por chunk
+Esto te da datos preliminares aunque no sean AWS.
+
+C) Integración con SAM (infra/) para incluir Phase 2
+
+Cuando ya tengas cuenta AWS, solo desplegar y correr.
+
+Mi recomendación (para paper fuerte)
+
+👉 Haz A (video_baseline simulado) ahora, porque no depende de AWS y te dará comparación real de diseño. Luego, cuando tengas AWS, solo cambias el backend por DynamoDB/S3 reales.
+
+Si me dices “vamos con A”, te paso:
+
+estructura de src/video_baseline/
+
+store.py (estado explícito)
+
+pipeline_baseline.py (coordinación manual)
+
+local_run.py (simulación)
+
+tests comparables
+
+¿Vamos con video_baseline ahora?
+
+ChatGPT puede cometer errores. Considera verificar la información importante. Ver preferencias de cookies.
+
+
+
+-------------------demas resultados:
+
+
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_pipeline.local_run
+[step:validate_video] video_uri=s3://fake-bucket/input/sample.mp4
+[step:chunk_video] duration_s=10 chunk_s=1
+[step:encode_chunk] chunk_id=0 start=0 len=1
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/local_run.py", line 45, in <module>
+    main()
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/local_run.py", line 35, in main
+    out = run_video_pipeline(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/pipeline.py", line 50, in run_video_pipeline
+    encoded_chunks = [context.step(encode_chunk, c, fail_rate=fail_rate) for c in chunks]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/pipeline.py", line 50, in <listcomp>
+    encoded_chunks = [context.step(encode_chunk, c, fail_rate=fail_rate) for c in chunks]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/local_run.py", line 30, in step
+    return fn(FakeStepContext(), *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_pipeline/steps.py", line 57, in encode_chunk
+    raise RuntimeError(f"Simulated encoding failure for chunk {cid}")
+RuntimeError: Simulated encoding failure for chunk 0
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % cd video_pipeline                 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % vi local_run.py 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % python -m video_pipeline.local_run
+
+/Users/juliosiguenaspacheco/miniconda3/bin/python: Error while finding module specification for 'video_pipeline.local_run' (ModuleNotFoundError: No module named 'video_pipeline')
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_pipeline.local_run
+
+[step:validate_video] video_uri=s3://fake-bucket/input/sample.mp4
+[step:chunk_video] duration_s=10 chunk_s=1
+[step:encode_chunk] chunk_id=0 start=0 len=1
+[step:encode_chunk] chunk_id=1 start=1 len=1
+[step:encode_chunk] chunk_id=2 start=2 len=1
+[step:encode_chunk] chunk_id=3 start=3 len=1
+[step:encode_chunk] chunk_id=4 start=4 len=1
+[step:encode_chunk] chunk_id=5 start=5 len=1
+[step:encode_chunk] chunk_id=6 start=6 len=1
+[step:encode_chunk] chunk_id=7 start=7 len=1
+[step:encode_chunk] chunk_id=8 start=8 len=1
+[step:encode_chunk] chunk_id=9 start=9 len=1
+[step:assemble_video] n_chunks=10
+
+RESULT: {'ok': True, 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % cd video_pipeline                 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % vi local_run.py                   
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % vi local_run.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_pipeline.local_run
+
+[step:validate_video] video_uri=s3://fake-bucket/input/sample.mp4
+[step:chunk_video] duration_s=10 chunk_s=1
+[step:encode_chunk] chunk_id=0 start=0 len=1
+[step:encode_chunk] chunk_id=1 start=1 len=1
+[step:encode_chunk] chunk_id=2 start=2 len=1
+[step:encode_chunk] chunk_id=3 start=3 len=1
+[step:encode_chunk] chunk_id=4 start=4 len=1
+[step:encode_chunk] chunk_id=5 start=5 len=1
+[step:encode_chunk] chunk_id=6 start=6 len=1
+[step:encode_chunk] chunk_id=7 start=7 len=1
+[step:encode_chunk] chunk_id=8 start=8 len=1
+[step:encode_chunk] chunk_id=9 start=9 len=1
+[step:assemble_video] n_chunks=10
+
+RESULT: {'ok': True, 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % cd tests 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro tests % ls -la
+total 32
+drwxr-xr-x   7 juliosiguenaspacheco  staff   224  8 ene 12:47 .
+drwxr-xr-x  16 juliosiguenaspacheco  staff   512  8 ene 12:49 ..
+-rw-r--r--@  1 juliosiguenaspacheco  staff  6148  8 ene 12:49 .DS_Store
+drwxr-xr-x   5 juliosiguenaspacheco  staff   160  8 ene 12:47 __pycache__
+-rw-r--r--   1 juliosiguenaspacheco  staff   189  7 ene 03:16 conftest.py
+-rw-r--r--   1 juliosiguenaspacheco  staff  2390  7 ene 03:05 test_counter_logic.py
+-rw-r--r--   1 juliosiguenaspacheco  staff     0 22 dic 18:05 test_phase1_counter.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro tests % vi test_video_pipeline_logic.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro tests % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % python -m pytest -q
+
+........                                                                                                                                                                                                                               [100%]
+8 passed in 0.69s
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % vi .gitignore
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % ls -la
+total 40
+drwxr-xr-x  16 juliosiguenaspacheco  staff    512  8 ene 13:41 .
+drwxr-xr-x  49 juliosiguenaspacheco  staff   1568  8 ene 13:37 ..
+-rw-r--r--@  1 juliosiguenaspacheco  staff  10244  8 ene 13:40 .DS_Store
+drwxr-xr-x  14 juliosiguenaspacheco  staff    448  6 ene 22:07 .git
+-rw-r--r--   1 juliosiguenaspacheco  staff    116  5 ene 01:24 .gitignore
+drwxr-xr-x   6 juliosiguenaspacheco  staff    192  7 ene 03:13 .pytest_cache
+-rw-r--r--   1 juliosiguenaspacheco  staff    544 22 dic 23:15 README.md
+drwxr-xr-x  11 juliosiguenaspacheco  staff    352  8 ene 11:43 docs
+drwxr-xr-x   4 juliosiguenaspacheco  staff    128  8 ene 13:19 infra
+drwxr-xr-x   8 juliosiguenaspacheco  staff    256  6 ene 22:03 notebooks
+drwxr-xr-x  12 juliosiguenaspacheco  staff    384  5 ene 02:01 paper
+-rw-r--r--   1 juliosiguenaspacheco  staff      0 22 dic 18:05 pyproject.toml
+drwxr-xr-x   2 juliosiguenaspacheco  staff     64 22 dic 13:48 scripts
+drwxr-xr-x   8 juliosiguenaspacheco  staff    256  7 ene 02:06 src
+drwxr-xr-x   7 juliosiguenaspacheco  staff    224  8 ene 13:38 tests
+drwxr-xr-x   2 juliosiguenaspacheco  staff     64  7 ene 02:00 video_baseline
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % cd src/video_pipeline 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % ls -la
+total 48
+drwxr-xr-x  9 juliosiguenaspacheco  staff   288  8 ene 13:30 .
+drwxr-xr-x  8 juliosiguenaspacheco  staff   256  7 ene 02:06 ..
+-rw-r--r--  1 juliosiguenaspacheco  staff  4171  7 ene 01:58 README.md
+-rw-r--r--  1 juliosiguenaspacheco  staff     0  8 ene 13:16 __init__.py
+drwxr-xr-x  6 juliosiguenaspacheco  staff   192  8 ene 13:31 __pycache__
+-rw-r--r--  1 juliosiguenaspacheco  staff  1653  8 ene 13:18 handler.py
+-rw-r--r--  1 juliosiguenaspacheco  staff  1515  8 ene 13:30 local_run.py
+-rw-r--r--  1 juliosiguenaspacheco  staff  1845  8 ene 13:17 pipeline.py
+-rw-r--r--  1 juliosiguenaspacheco  staff  2718  8 ene 13:17 steps.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_pipeline % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % cd video_baseline 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_baseline % vi __init__.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_baseline % vi store_memory.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_baseline % vi pipeline.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_baseline % vi local_run.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_baseline % ls -la
+total 32
+drwxr-xr-x  7 juliosiguenaspacheco  staff   224  8 ene 14:27 .
+drwxr-xr-x  8 juliosiguenaspacheco  staff   256  7 ene 02:06 ..
+-rw-r--r--  1 juliosiguenaspacheco  staff  3581  7 ene 02:06 README.md
+-rw-r--r--  1 juliosiguenaspacheco  staff     0  8 ene 14:26 __init__.py
+-rw-r--r--  1 juliosiguenaspacheco  staff   765  8 ene 14:27 local_run.py
+-rw-r--r--  1 juliosiguenaspacheco  staff  4055  8 ene 14:26 pipeline.py
+-rw-r--r--  1 juliosiguenaspacheco  staff  2507  8 ene 14:26 store_memory.py
+(base) juliosiguenaspacheco@Julios-MacBook-Pro video_baseline % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_baseline.local_run
+
+
+RESULT: {'ok': True, 'job_id': 'job-001', 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+
+JOB STATE: ASSEMBLED error= None
+CHUNK COUNTS: {'PENDING': 0, 'DONE': 10, 'FAILED': 0}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % cd ..
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % python -m pytest -q
+
+..........                                                                                                                                                                                                                             [100%]
+10 passed in 1.15s
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % python -m video_baseline.local_run
+
+/Users/juliosiguenaspacheco/miniconda3/bin/python: Error while finding module specification for 'video_baseline.local_run' (ModuleNotFoundError: No module named 'video_baseline')
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % cd src 
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_baseline.local_run
+
+
+RESULT: {'ok': True, 'job_id': 'job-001', 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+
+JOB STATE: ASSEMBLED error= None
+CHUNK COUNTS: {'PENDING': 0, 'DONE': 10, 'FAILED': 0}
+STORE OPS: {'put_job': 0, 'get_job': 0, 'update_job': 0, 'put_chunks': 0, 'list_chunks': 0, 'get_chunk': 0, 'update_chunk': 0, 'chunk_status_counts': 0}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_baseline.local_run
+
+STORE_MEMORY_PATH: /Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_baseline/store_memory.py
+
+RESULT: {'ok': True, 'job_id': 'job-001', 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+
+JOB STATE: ASSEMBLED error= None
+CHUNK COUNTS: {'PENDING': 0, 'DONE': 10, 'FAILED': 0}
+STORE OPS: {'put_job': 0, 'get_job': 0, 'update_job': 0, 'put_chunks': 0, 'list_chunks': 0, 'get_chunk': 0, 'update_chunk': 0, 'chunk_status_counts': 0}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m video_baseline.local_run
+
+STORE_MEMORY_PATH: /Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_baseline/store_memory.py
+
+RESULT: {'ok': True, 'job_id': 'job-001', 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+
+JOB STATE: ASSEMBLED error= None
+CHUNK COUNTS: {'PENDING': 0, 'DONE': 10, 'FAILED': 0}
+STORE CLASS: <class 'video_baseline.store_memory.MemoryStore'>
+HAS STATS: True
+STATS OBJ: {'put_job': 0, 'get_job': 0, 'update_job': 0, 'put_chunks': 0, 'list_chunks': 0, 'get_chunk': 0, 'update_chunk': 0, 'chunk_status_counts': 0}
+PUT_JOB FN: <bound method MemoryStore.put_job of <video_baseline.store_memory.MemoryStore object at 0x107dc6490>>
+STORE OPS: {'put_job': 0, 'get_job': 0, 'update_job': 0, 'put_chunks': 0, 'list_chunks': 0, 'get_chunk': 0, 'update_chunk': 0, 'chunk_status_counts': 0}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % pwd
+/Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % find . -name "__pycache__" -type d -exec rm -rf {} +
+python -m video_baseline.local_run
+
+STORE_MEMORY_PATH: /Users/juliosiguenaspacheco/urv_doctorado/aws-durable-functions-research-GP-7012025/src/video_baseline/store_memory.py
+
+RESULT: {'ok': True, 'job_id': 'job-001', 'metadata': {'video_uri': 's3://fake-bucket/input/sample.mp4', 'duration_s': 10, 'fps': 30, 'codec': 'h264'}, 'n_chunks': 10, 'final': {'output_uri': 's3://fake-bucket/encoded/final.mp4', 'chunks': [{'chunk_id': 0, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0000.mp4'}, {'chunk_id': 1, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0001.mp4'}, {'chunk_id': 2, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0002.mp4'}, {'chunk_id': 3, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0003.mp4'}, {'chunk_id': 4, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0004.mp4'}, {'chunk_id': 5, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0005.mp4'}, {'chunk_id': 6, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0006.mp4'}, {'chunk_id': 7, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0007.mp4'}, {'chunk_id': 8, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0008.mp4'}, {'chunk_id': 9, 'encoded_uri': 's3://fake-bucket/encoded/chunk-0009.mp4'}]}}
+
+JOB STATE: ASSEMBLED error= None
+CHUNK COUNTS: {'PENDING': 0, 'DONE': 10, 'FAILED': 0}
+STORE CLASS: <class 'video_baseline.store_memory.MemoryStore'>
+HAS STATS: True
+STATS OBJ: {'put_job': 1, 'get_job': 1, 'update_job': 4, 'put_chunks': 1, 'list_chunks': 4, 'get_chunk': 20, 'update_chunk': 20, 'chunk_status_counts': 2}
+PUT_JOB FN: <bound method MemoryStore.put_job of <video_baseline.store_memory.MemoryStore object at 0x105f96490>>
+STORE OPS: {'put_job': 1, 'get_job': 1, 'update_job': 4, 'put_chunks': 1, 'list_chunks': 4, 'get_chunk': 20, 'update_chunk': 20, 'chunk_status_counts': 2}
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % python -m pytest -q                                 
+
+
+no tests ran in 0.01s
+(base) juliosiguenaspacheco@Julios-MacBook-Pro src % 
+
+
+
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % python -m pytest -q
+
+..........                                                                                                                                                                                                                             [100%]
+10 passed in 1.17s
+(base) juliosiguenaspacheco@Julios-MacBook-Pro aws-durable-functions-research-GP-7012025 % 
+
+
+
+
+
+
+
+
+Estás ejecutando:
+
+pdflatex main-15.tex
+
+
+desde la raíz del repo, pero el archivo está en:
+
+paper/main-15.tex
+
+
+Por eso LaTeX dice:
+
+I can't find file 'main-15.tex'
+
+✅ Cómo hacerlo correctamente (paso a paso)
+
+Desde la raíz del repo ejecuta:
+
+cd paper
+
+
+Verifica que estás en el sitio correcto:
+
+ls
+
+
+Deberías ver:
+
+main-15.tex
+refs.bib
+sections/
+figures/
+
+
+Ahora sí, compila:
+
+pdflatex main-15.tex
+bibtex main-15
+pdflatex main-15.tex
+pdflatex main-15.tex
+
+✅ Resultado esperado
+
+Al final tendrás:
+
+paper/main-15.pdf
+
+
+Ese es el PDF final del paper listo para revisar o enviar.
+
+🧠 Tip rápido (para no volver a equivocarte)
+
+La regla es:
+
+Siempre compila LaTeX desde la carpeta donde está el .tex principal.
+
+🔜 Si algo falla
+
+Si aparece:
+
+error de BibTeX,
+
+warning de referencias,
+
+figura no encontrada,
+
+👉 copia el error tal cual aquí y lo arreglamos en minutos.
+
+Estás literalmente en la recta final 👏
+
+como me salgo de alli, con exit no sale
+
+Tranquilo 🙂, estás dentro del prompt interactivo de LaTeX, no en la shell normal.
+Por eso exit no funciona.
+
+✅ Cómo salir ahora mismo
+
+Usa una de estas opciones (en este orden):
+
+🔹 Opción 1 (la correcta aquí)
+
+Pulsa:
+
+Ctrl + D
+
+
+👉 Eso sale inmediatamente del prompt de pdflatex.
+
+🔹 Opción 2 (si no responde)
+
+Pulsa:
+
+Ctrl + C
+
+
+👉 Interrumpe el proceso y vuelve al terminal.
+
+🧠 Por qué pasó esto (para que no vuelva a ocurrir)
+
+LaTeX te mostró:
+
+Please type another input file name:
+
+
+Eso significa que:
+
+pdflatex no encontró el archivo
+
+Entró en modo interactivo
+
+Ya no estás en bash, estás en LaTeX
+
+En ese modo:
+
+❌ exit no existe
+
+✅ Ctrl+D = EOF → salir
+
+✅ Ctrl+C = abortar
+
+✅ Después de salir
+
+Haz esto paso a paso, sin copiar todo junto:
+
+cd paper
+ls
+
+
+Confirma que ves main-15.tex.
+
+Luego:
+
+pdflatex main-15.tex
+
+
+(Si eso funciona, seguimos con BibTeX).
+
+Si quieres, dime qué ves justo después de salir y te guío hasta el PDF final sin errores 💪
