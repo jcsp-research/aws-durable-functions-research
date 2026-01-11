@@ -9,7 +9,7 @@ and state-store operations.
 
 \subsection{Experimental Setup}
 
-All experiments were run on a single machine using Python 3.11 with identical
+All experiments were run on a single machine using Python~3.11 with identical
 workloads for both models. Each run processes the same logical workflow and
 records:
 \begin{itemize}
@@ -76,15 +76,31 @@ Durable execution        & 10 & 530 & 0.0  & 0.0 \\
 \caption{Phase~2 video pipeline results (mean values).}
 \label{tab:video}
 \end{table}
+
 The baseline implementation performs on average more than 60 external
 state-store operations per execution. These include job creation, chunk
 insertion, repeated polling, and chunk status updates. In contrast, the durable
 workflow performs zero explicit store operations: all intermediate state is
 persisted transparently through the durable execution log.
 
-Durable execution exhibits higher end-to-end latency due to checkpointing and
-replay overhead. However, it removes the need for complex coordination logic,
-polling loops, and manual failure recovery.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/phase2_store_vs_time.pdf}
+    \caption{Phase~2 video pipeline: coordination overhead vs.\ execution time.
+    Each point corresponds to one execution. Baseline runs incur dozens of
+    explicit state-store operations and show higher variance, while durable
+    runs remain clustered at zero store operations with stable runtime.}
+    \label{fig:phase2-store-vs-time}
+\end{figure}
+
+Figure~\ref{fig:phase2-store-vs-time} highlights a strong correlation between the
+number of state-store operations and execution time in the baseline
+implementation. Durable executions, by contrast, avoid this overhead entirely
+and exhibit a tight runtime distribution around a single operating point.
+
+Durable execution exhibits higher end-to-end latency in the local simulator due
+to checkpointing and replay overhead. However, it removes the need for complex
+coordination logic, polling loops, and manual failure recovery.
 
 \subsection{Discussion}
 
@@ -100,15 +116,21 @@ logic and external system interaction. Durable execution shifts this complexity
 into the runtime, providing a simpler and more reliable programming model for
 stateful serverless workflows.
 
-
 \subsection{Summary}
 
 The experiments across both workloads show that durable execution provides:
 
 \begin{itemize}
-    \item \textbf{Strictly consistent workflow semantics} equivalent to an actor-like execution model, as validated by identical final states in Phase~1 (counter) and Phase~2 (video pipeline).
-    \item \textbf{Elimination of explicit coordination storage}: the baseline implementations required on average 5 state-store operations per counter execution and over 60 operations per video pipeline run, whereas the durable implementations required none.
-    \item \textbf{Built-in fault handling}: durable workflows re-execute failed steps through checkpoint-and-replay without requiring explicit retry logic or polling loops.
+    \item \textbf{Strictly consistent workflow semantics} equivalent to an
+    actor-like execution model, as validated by identical final states in
+    Phase~1 (counter) and Phase~2 (video pipeline).
+    \item \textbf{Elimination of explicit coordination storage}: the baseline
+    implementations required on average 5 state-store operations per counter
+    execution and over 60 operations per video pipeline run, whereas the durable
+    implementations required none.
+    \item \textbf{Built-in fault handling}: durable workflows re-execute failed
+    steps through checkpoint-and-replay without requiring explicit retry logic
+    or polling loops.
 \end{itemize}
 
 While durable execution incurs higher end-to-end latency in the local simulator

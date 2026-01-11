@@ -1,0 +1,63 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main-15.aux
+The style file: ACM-Reference-Format.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: refs.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Warning--empty organization in aws-durable-2025
+Warning--empty publisher in excamera17
+Warning--empty address in excamera17
+Warning--page numbers missing in both pages and numpages fields in excamera17
+Warning--empty organization in azure-durable-entities
+Warning--no number and no volume in spenger2024survey
+Warning--page numbers missing in both pages and numpages fields in spenger2024survey
+You've used 4 entries,
+            6056 wiz_defined-function locations,
+            1503 strings with 18526 characters,
+and the built_in function-call counts, 3320 in all, are:
+= -- 330
+> -- 96
+< -- 0
++ -- 32
+- -- 42
+* -- 199
+:= -- 357
+add.period$ -- 19
+call.type$ -- 4
+change.case$ -- 20
+chr.to.int$ -- 4
+cite$ -- 11
+duplicate$ -- 316
+empty$ -- 225
+format.name$ -- 42
+if$ -- 718
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 9
+newline$ -- 72
+num.names$ -- 28
+pop$ -- 130
+preamble$ -- 1
+purify$ -- 52
+quote$ -- 0
+skip$ -- 130
+stack$ -- 0
+substring$ -- 209
+swap$ -- 21
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 106
+warning$ -- 7
+while$ -- 28
+width$ -- 0
+write$ -- 109
+(There were 7 warnings)

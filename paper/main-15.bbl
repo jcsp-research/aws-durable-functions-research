@@ -1,0 +1,81 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{4}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[{Amazon Web Services}(2025)]%
+        {aws-durable-2025}
+\bibfield{author}{\bibinfo{person}{{Amazon Web Services}}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{{AWS Lambda Durable Functions Preview}}}.
+\newblock
+\newblock
+\shownote{Accessed January 2026}.
+
+
+\bibitem[Fouladi et~al\mbox{.}(2017)]%
+        {excamera17}
+\bibfield{author}{\bibinfo{person}{Sam Fouladi} {et~al\mbox{.}}}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Encoding, Fast and Slow: Low-Latency Video
+  Processing Using Thousands of Tiny Threads}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 14th USENIX Symposium on
+  Networked Systems Design and Implementation (NSDI)}}.
+\newblock
+
+
+\bibitem[{Microsoft}(2023)]%
+        {azure-durable-entities}
+\bibfield{author}{\bibinfo{person}{{Microsoft}}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{{Durable Entities in Azure Durable
+  Functions}}}.
+\newblock
+\newblock
+\shownote{Accessed January 2026}.
+
+
+\bibitem[Spenger et~al\mbox{.}(2024)]%
+        {spenger2024survey}
+\bibfield{author}{\bibinfo{person}{Max Spenger} {et~al\mbox{.}}}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{A Survey of Actor-Like Programming Models for
+  Serverless Computing}.
+\newblock \bibinfo{journal}{\emph{Comput. Surveys}} (\bibinfo{year}{2024}).
+\newblock
+
+
+\end{thebibliography}
