@@ -21,6 +21,7 @@ paper/*.aux
 paper/*.out
 paper/*.log
 paper/*.pdf
+!paper/main-15.pdf
 
 # Jupyter
 notebooks/.ipynb_checkpoints/
