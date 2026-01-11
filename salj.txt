@@ -1,0 +1,14 @@
+ 1000  pdflatex main-15.tex\nbibtex main-15\npdflatex main-15.tex\npdflatex main-15.tex\n
+ 1001  cd urv_doctorado
+ 1002  cd aws-durable-functions-research-GP-7012025
+ 1003  ls -la
+ 1004  cd paper\n\npdflatex main-15.tex\nbibtex main-15\npdflatex main-15.tex\npdflatex main-15.tex\n
+ 1005  ls main-15.pdf\n
+ 1006  git check-ignore -v paper/main-15.pdf || echo "PDF OK"\n
+ 1007  git add paper/main-15.pdf\ngit add paper/sections\ngit add paper/refs.bib\ngit add docs\ngit add experiments\ngit add scripts\ngit add src\n
+ 1008  cd ..
+ 1009  git add paper/main-15.pdf\ngit add paper/sections\ngit add paper/refs.bib\ngit add docs\ngit add experiments\ngit add scripts\ngit add src\n
+ 1010  git add -A\n
+ 1011  git commit -m "Final paper + Phase 1 & 2 experimental results"\n
+ 1012  git push --force origin main\n
+ 1013  history 10000 > salj.txt
