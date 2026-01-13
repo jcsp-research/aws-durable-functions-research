@@ -32,3 +32,9 @@ texput.log
 # Jupyter
 notebooks/.ipynb_checkpoints/
 
+
+# Archivos personales/logs
+comandos_a_ejecutar.txt
+salj.txt
+texput.log
+.DS_Store
