@@ -22,7 +22,13 @@ paper/*.out
 paper/*.log
 paper/*.pdf
 !paper/main-15.pdf
-
+# Archivos y carpetas no necesarios para la entrega
+i# tests/
+comandos_a_ejecutar.txt
+pyproject.toml
+salj.txt
+texput.log
+.DS_Store
 # Jupyter
 notebooks/.ipynb_checkpoints/
 
