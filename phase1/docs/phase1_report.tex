@@ -1,0 +1,269 @@
+\section{Phase 1: Durable Workflow-Based Counter -- Design, Execution Semantics, and Experimental Evaluation}
+
+\subsection{Introduction}
+
+Serverless computing platforms have evolved to support increasingly complex workflows beyond stateless function execution. Durable execution frameworks enable the definition of long-running, fault-tolerant workflows by persisting execution state and enabling deterministic replay.
+
+This phase investigates the behavior of AWS Lambda Durable Execution through the implementation of a simple counter application. Despite its simplicity, the counter serves as a representative workload to study execution determinism, retry semantics, failure handling, and concurrency isolation.
+
+\subsection{Objectives}
+
+The main objectives of this phase are:
+
+\begin{itemize}
+    \item To implement a durable workflow composed of multiple steps.
+    \item To evaluate deterministic execution under normal conditions.
+    \item To analyze system behavior under controlled failures.
+    \item To observe retry semantics and atomicity guarantees.
+    \item To validate isolation properties under concurrent execution.
+\end{itemize}
+
+\subsection{System Model}
+
+The system is modeled as a sequence of durable steps executed within a workflow context:
+
+\begin{equation}
+W = \{ S_1, S_2, S_3 \}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $S_1$: Initialize state
+    \item $S_2$: Apply operation
+    \item $S_3$: Build response
+\end{itemize}
+
+Each step is executed through a durable execution runtime that ensures persistence and replay capability.
+
+\subsection{Execution Semantics}
+
+The execution model follows a deterministic workflow pattern:
+
+\begin{itemize}
+    \item Each step is executed sequentially.
+    \item The output of step $S_i$ is the input of step $S_{i+1}$.
+    \item State transitions are only committed upon successful step completion.
+    \item Failed steps are retried from the last consistent checkpoint.
+\end{itemize}
+
+This implies a state transition function:
+
+\begin{equation}
+state_{i+1} = f_i(state_i)
+\end{equation}
+
+where $f_i$ represents the transformation applied by step $i$.
+
+\subsection{Implementation}
+
+The durable workflow is implemented using AWS Lambda Durable Execution SDK in Python.
+
+\begin{verbatim}
+from aws_durable_execution_sdk_python.context import DurableContext, StepContext, durable_step
+from aws_durable_execution_sdk_python.execution import durable_execution
+
+
+@durable_step
+def initialize_counter(step_context: StepContext, initial_state: dict | None) -> dict:
+    if initial_state is None:
+        initial_state = {
+            "value": 0,
+            "version": 0
+        }
+    return initial_state
+
+
+@durable_step
+def apply_counter_operation(step_context: StepContext, payload: dict) -> dict:
+    state = payload["state"]
+    operation = payload.get("operation", "get_value")
+    amount = int(payload.get("amount", 1))
+    fail_mode = payload.get("fail_mode", "none")
+
+    if fail_mode == "always":
+        raise RuntimeError("Simulated transient failure in apply_counter_operation")
+
+    if operation == "increment":
+        state["value"] += amount
+        state["version"] += 1
+    elif operation == "decrement":
+        state["value"] -= amount
+        state["version"] += 1
+    elif operation == "get_value":
+        pass
+    else:
+        raise ValueError(f"Unsupported operation: {operation}")
+
+    return state
+
+
+@durable_step
+def build_response(step_context: StepContext, state: dict) -> dict:
+    return {
+        "message": "fase1-counter-durable executed successfully",
+        "counter_value": state["value"],
+        "version": state["version"]
+    }
+
+
+@durable_execution
+def lambda_handler(event, context: DurableContext) -> dict:
+    initial_state = event.get("state")
+    operation = event.get("operation", "get_value")
+    amount = int(event.get("amount", 1))
+    fail_mode = event.get("fail_mode", "none")
+
+    state = context.step(initialize_counter(initial_state))
+
+    state = context.step(apply_counter_operation({
+        "state": state,
+        "operation": operation,
+        "amount": amount,
+        "fail_mode": fail_mode
+    }))
+
+    result = context.step(build_response(state))
+
+    return {
+        "statusCode": 200,
+        "body": result
+    }
+\end{verbatim}
+
+\subsection{Experimental Design}
+
+Three categories of experiments were conducted.
+
+\subsubsection{Normal Execution}
+
+Evaluates correctness and determinism of the workflow under standard conditions.
+
+\subsubsection{Controlled Failure}
+
+Introduces deterministic failure using:
+
+\begin{verbatim}
+fail_mode = "always"
+\end{verbatim}
+
+This forces the system to trigger retry logic and exposes internal recovery mechanisms.
+
+\subsubsection{Concurrent Execution}
+
+Multiple invocations ($N=5$) are executed in rapid succession with identical input to evaluate isolation and concurrency behavior.
+
+\subsection{Results}
+
+\subsubsection{Deterministic Execution}
+
+All normal executions produced identical outputs and followed identical execution traces, confirming deterministic behavior.
+
+\subsubsection{Failure and Retry Behavior}
+
+Controlled failures triggered automatic retries. The system repeatedly executed the failing step until retry limits were reached.
+
+Observed properties:
+
+\begin{itemize}
+    \item No partial state updates were committed.
+    \item Each retry re-executed the step from the last stable checkpoint.
+    \item The workflow preserved consistency across retries.
+\end{itemize}
+
+\subsubsection{Atomicity Guarantees}
+
+The system enforces step-level atomicity:
+
+\begin{itemize}
+    \item A step either completes fully or has no effect.
+    \item State mutations inside failed steps are discarded.
+    \item Side effects are not externally visible unless the step succeeds.
+\end{itemize}
+
+This behavior is analogous to transactional execution in distributed systems.
+
+\subsubsection{Concurrency Analysis}
+
+Five concurrent executions were performed. Results show:
+
+\begin{itemize}
+    \item All executions completed successfully.
+    \item Each execution maintained an independent state.
+    \item No interference or race conditions were observed.
+\end{itemize}
+
+Each execution returned:
+
+\begin{equation}
+counter\_value = 1
+\end{equation}
+
+\subsubsection{Isolation Properties}
+
+The observed behavior confirms:
+
+\begin{itemize}
+    \item Strong isolation between workflow instances.
+    \item Absence of shared mutable state.
+    \item Independent execution histories.
+\end{itemize}
+
+\subsubsection{Performance Observations}
+
+Execution times exhibited two distinct regimes:
+
+\begin{itemize}
+    \item Cold start: approximately 3.5 seconds
+    \item Warm execution: approximately 0.8--0.9 seconds
+\end{itemize}
+
+This indicates container reuse and runtime optimization after initial invocation.
+
+\subsection{Discussion}
+
+The experimental results indicate that AWS Durable Execution provides:
+
+\begin{itemize}
+    \item Deterministic orchestration of workflows
+    \item Built-in fault tolerance via retry mechanisms
+    \item Strong consistency through step-level atomicity
+    \item High isolation across concurrent executions
+\end{itemize}
+
+However, the system does not implement shared state semantics. Each workflow instance operates independently, which limits its applicability for workloads requiring coordinated state updates.
+
+\subsection{Limitations}
+
+The current implementation has the following limitations:
+
+\begin{itemize}
+    \item No shared state across executions
+    \item No conflict resolution mechanisms
+    \item No support for distributed coordination between workflows
+\end{itemize}
+
+\subsection{Threats to Validity}
+
+\begin{itemize}
+    \item The workload is simplified (counter abstraction).
+    \item Results may vary under higher concurrency levels.
+    \item Observations are specific to AWS Lambda Durable Execution.
+\end{itemize}
+
+\subsection{Conclusion}
+
+This phase demonstrates that durable workflows provide a robust execution model for fault-tolerant serverless applications. The system ensures deterministic execution, strong atomicity, and isolation across concurrent invocations.
+
+The results highlight the suitability of this model for orchestration tasks, while also exposing limitations in scenarios requiring shared mutable state.
+
+\subsection{Future Work}
+
+Future work will explore:
+
+\begin{itemize}
+    \item Shared-state implementations using external storage (e.g., DynamoDB)
+    \item Comparison with actor-based models
+    \item Evaluation under high-concurrency workloads
+    \item Performance benchmarking across different orchestration frameworks
+\end{itemize}
