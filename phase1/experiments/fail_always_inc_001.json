@@ -4,6 +4,6 @@
     "version": 0
   },
   "operation": "increment",
-  "amount": 2,
+  "amount": 1,
   "fail_mode": "always"
 }

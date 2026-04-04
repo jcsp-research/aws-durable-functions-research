@@ -1,8 +1,9 @@
 {
   "state": {
-    "value": 1,
-    "version": 2
+    "value": 0,
+    "version": 0
   },
   "operation": "get_value",
+  "amount": 1,
   "fail_mode": "none"
 }

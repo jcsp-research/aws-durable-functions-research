@@ -1,0 +1,9 @@
+{
+  "state": {
+    "value": 10,
+    "version": 3
+  },
+  "operation": "decrement",
+  "amount": 3,
+  "fail_mode": "none"
+}
