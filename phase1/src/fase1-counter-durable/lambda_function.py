@@ -1,5 +1,5 @@
 import os
-
+import time
 import boto3
 from botocore.exceptions import ClientError
 
@@ -76,6 +76,9 @@ def apply_counter_operation(step_context: StepContext, payload: dict) -> dict:
     step_context.logger.info(
         f"Applying operation={operation}, amount={amount}, fail_mode={fail_mode}, current_state={state}, failure_key={failure_key}"
     )
+
+    if payload.get("debug_sleep_seconds", 0):
+        time.sleep(int(payload["debug_sleep_seconds"]))
 
     if fail_mode == "always":
         step_context.logger.error("Simulated permanent failure in apply_counter_operation")
@@ -165,7 +168,8 @@ def lambda_handler(event, context: DurableContext) -> dict:
         "operation": operation,
         "amount": amount,
         "fail_mode": fail_mode,
-        "failure_key": failure_key
+        "failure_key": failure_key,
+        "debug_sleep_seconds": event.get("debug_sleep_seconds", 0)
     }))
 
     result = context.step(build_response(state))
@@ -174,4 +178,3 @@ def lambda_handler(event, context: DurableContext) -> dict:
         "statusCode": 200,
         "body": result
     }
-    

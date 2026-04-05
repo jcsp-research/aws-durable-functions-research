@@ -1,0 +1,10 @@
+{
+  "state": {
+    "value": 0,
+    "version": 0
+  },
+  "operation": "increment",
+  "amount": 5,
+  "fail_mode": "none",
+  "debug_sleep_seconds": 15
+}

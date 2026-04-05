@@ -11,8 +11,10 @@ The objective of this phase was to validate, through controlled experiments, the
 3. **Terminal behavior** under persistent failures.
 4. **Behavior under concurrent independent invocations**.
 5. **Robustness of input validation and error reporting**.
+6. **Behavior under manual interruption and subsequent re-execution**.
+7. **Idempotency of retries within the same execution context**.
 
-A total of **17 experiments** were executed and analyzed.
+A total of **19 experiments** were executed and analyzed.
 
 ---
 
@@ -63,6 +65,8 @@ The experiments were grouped into five categories.
 | Persistent failures (`fail_always_*`) | 2 | Validate retry exhaustion and terminal failure |
 | Concurrent invocations (`concurrent_inc_*`) | 5 | Validate independence and isolation across simultaneous executions |
 | Input validation / edge cases | 2 | Validate explicit rejection of invalid requests |
+| Manual interruption and recovery | 1 | Validate external interruption semantics and subsequent re-execution behavior |
+| Idempotency within the same execution | 1 | Validate that retries do not duplicate logical effects |
 
 ### 3.2 Execution Method
 
@@ -103,6 +107,8 @@ The current concurrency experiments use **identical inputs but independent execu
 | `concurrent_inc_5` | same as above | `value=1`, `version=1` | `counter_value=1`, `version=1` | 0 | Succeeded | Independent execution succeeded |
 | `invalid_operation_001` | `operation=multiply` | explicit validation failure | Error: `Unsupported operation: multiply` | ~5 | Failed | Invalid business operation rejected, but retried unnecessarily |
 | `missing_failure_key_001` | `fail_mode=once` without `failure_key` | explicit validation failure | Error: `fail_mode='once' requires 'failure_key' in the event` | ~5 | Failed | Missing required parameter rejected, but retried unnecessarily |
+| `manual_termination_recovery_001` | `state={0,0}`, `increment`, `amount=5`, `debug_sleep_seconds=15` | stopped execution during `apply_counter_operation`; no final state committed; re-execution should succeed from scratch | First execution manually stopped with `initialize_counter` completed and `apply_counter_operation` left in `Started`; second execution succeeded with `counter_value=5`, `version=1` | 0 (stopped execution) / 0 (second execution) | Stopped / Succeeded | Manual interruption does not resume; workflow must be re-executed from the beginning, with no partial visible state |
+| `idempotency_same_execution_001` | `state={0,0}`, `increment`, `amount=3`, `fail_once`, `failure_key=phase1-idempotency-test-001` | first attempt fails; retry succeeds with `value=3`, `version=1` and no duplicated increment | Final response `counter_value=3`, `version=1` after one failed step and successful retry | 1 | Succeeded | Correct idempotent retry; logical effect applied exactly once |
 
 ---
 
@@ -267,6 +273,69 @@ This suggests a potential improvement area for later phases: introducing explici
 
 ---
 
+
+
+### 5.6 Manual Interruption and Recovery (`manual_termination_recovery_001`)
+
+#### Summary
+
+This experiment was designed to satisfy the Phase 1 requirement of manually interrupting a running durable execution and observing the subsequent behavior.
+
+To make manual interruption feasible from the AWS console, a temporary debug pause (`debug_sleep_seconds=15`) was injected into `apply_counter_operation`. During the first run, the execution was manually stopped while the business step was in progress. The execution status became `Stopped`.
+
+A second run of the same event was then executed without interruption and completed successfully, returning `counter_value=5` and `version=1`.
+
+### Table 7. Manual Interruption and Recovery Result
+
+| Run | Observed Behavior | Final Status | Interpretation |
+|---|---|---|---|
+| First execution | `initialize_counter` succeeded; `apply_counter_operation` remained started when the execution was manually stopped | Stopped | External interruption prevents completion and no final response is produced |
+| Second execution | Full workflow executed successfully and returned `value=5, version=1` | Succeeded | The workflow restarts cleanly from the beginning rather than resuming the stopped execution |
+
+#### Findings
+
+1. Manual interruption is externally observable and leaves the durable execution in `Stopped` state.
+2. The interrupted execution does not reach `build_response`.
+3. The platform does not resume the stopped execution from the interrupted step.
+4. Re-executing the same request produces a clean, correct result.
+
+#### Interpretation
+
+This experiment shows that, in the current Phase 1 design, recovery after manual interruption is **restart-based rather than resume-based**.
+
+No evidence of intermediate state recovery or continuation from the interrupted step was observed. Instead, the interrupted execution remains terminated, and correctness is preserved by launching a new execution from the beginning. This is consistent with the fact that the current Phase 1 workflow keeps state inside the execution context and does not persist partial progress externally.
+
+---
+
+### 5.7 Idempotency within the Same Execution (`idempotency_same_execution_001`)
+
+#### Summary
+
+This experiment validates that retries within the same execution do not produce duplicated state transitions.
+
+A controlled transient failure (`fail_mode="once"`) was injected into `apply_counter_operation` using a dedicated `failure_key`. The first step attempt failed; the runtime retried the same step once; the retry then succeeded.
+
+### Table 8. Idempotency Test Result
+
+| Test | First Attempt | Retry Outcome | Final Output | Retries | Status |
+|---|---|---|---|---:|---|
+| `idempotency_same_execution_001` | Failed | Succeeded | `value=3, version=1` | 1 | ✅ |
+
+#### Findings
+
+1. The first execution of `apply_counter_operation` failed as expected.
+2. The system retried the same step exactly once.
+3. The retry succeeded and produced the correct final state.
+4. No duplicated increment was observed.
+
+#### Interpretation
+
+This experiment demonstrates that the execution model enforces **idempotent behavior within a single execution context**.
+
+Although the business step was attempted twice due to retry, the final logical state transition was applied only once. This confirms the presence of **exactly-once logical effect under retry**, which is one of the key reliability properties established in Phase 1.
+
+---
+
 ## 6. Cross-Cutting Observations
 
 ### 6.1 Deterministic Step Structure
@@ -304,6 +373,14 @@ This is best described as **exactly-once logical effect under retry**, rather th
 
 The current concurrency experiments do not yet satisfy the stronger interpretation of “concurrent updates over a single stateful entity.” They demonstrate isolation, but not ordering over shared state. This should be addressed in later work if the research goal is to assess actor-like sequential processing semantics more directly.
 
+### 6.5 Manual Interruption Semantics
+
+The manual interruption experiment establishes that a stopped execution does not resume automatically. Instead, the workflow must be launched again as a new execution. This means that, in the current Phase 1 setup, resilience under interruption is achieved through **deterministic restart**, not through checkpoint continuation of the interrupted execution.
+
+### 6.6 Idempotency within the Same Execution Context
+
+The idempotency experiment complements the transient-failure experiments by showing that retries do not duplicate logical side effects within a single durable execution. This strengthens the interpretation that Phase 1 provides **exactly-once logical effect under retry**, even though the underlying step may be physically attempted more than once.
+
 ---
 
 ## 7. Threats to Validity / Limitations
@@ -322,7 +399,11 @@ The concurrency tests validate independent invocations, not conflict resolution 
 
 The current implementation raises generic exceptions for both transient and validation-related issues, which makes it difficult to distinguish operationally between retryable and non-retryable failures.
 
-### 7.4 Cost Analysis Not Yet Included
+### 7.4 Temporary Instrumentation for Manual Interruption
+
+The manual interruption experiment required the temporary introduction of an artificial delay (`debug_sleep_seconds`) so that the running execution could be stopped from the AWS console. This instrumentation was used exclusively for experimental observation and should not be interpreted as part of the normal business workflow.
+
+### 7.5 Cost Analysis Not Yet Included
 
 Although Phase 1 called for observing cost-related implications of durable execution, this document does not yet include a quantitative cost comparison. That remains a future enhancement.
 
@@ -339,11 +420,14 @@ The implementation and experiments jointly demonstrate the following:
 3. **Expected terminal failure behavior** under persistent faults.
 4. **Isolation across concurrent independent executions**.
 5. **Explicit rejection of invalid inputs** with informative error messages.
+6. **Restart-based behavior after manual interruption**, with no observed continuation of the stopped execution.
+7. **Idempotent retry behavior within the same execution context**.
 
 At the same time, the experiments reveal two important limitations:
 
 - the runtime retries deterministic validation failures, which introduces unnecessary overhead;
-- the current concurrency tests do not yet demonstrate serialized access to a single shared entity.
+- the current concurrency tests do not yet demonstrate serialized access to a single shared entity;
+- manual interruption recovery in Phase 1 is restart-based, not resume-based.
 
 From a doctoral research perspective, these are not weaknesses of the study; they are useful findings. They help define the next step of the work: moving from isolated durable workflows toward stronger state-sharing and ordering semantics in later phases.
 
@@ -359,7 +443,9 @@ Its main contribution is not only that the implementation works, but that it was
 - controlled transient faults,
 - controlled persistent faults,
 - concurrent independent invocations,
-- invalid-input scenarios.
+- invalid-input scenarios,
+- manual interruption and restart,
+- idempotent intra-execution retry scenarios.
 
 This makes the phase suitable as a baseline for:
 
