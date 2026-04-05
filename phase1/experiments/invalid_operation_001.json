@@ -1,7 +1,8 @@
 {
+  "test_case": "invalid_operation_001",
   "state": {
-    "value": 0,
-    "version": 0
+    "value": 5,
+    "version": 2
   },
   "operation": "multiply",
   "amount": 2,

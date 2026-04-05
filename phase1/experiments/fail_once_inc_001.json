@@ -1,4 +1,5 @@
 {
+  "test_case": "fail_once_inc_001",
   "state": {
     "value": 0,
     "version": 0
@@ -6,5 +7,5 @@
   "operation": "increment",
   "amount": 1,
   "fail_mode": "once",
-  "failure_key": "phase1-transient-001"
+  "failure_key": "phase1-fail-once-inc-001-run01"
 }

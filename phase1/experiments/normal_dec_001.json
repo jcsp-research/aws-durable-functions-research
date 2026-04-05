@@ -1,4 +1,5 @@
 {
+  "test_case": "normal_dec_001",
   "state": {
     "value": 10,
     "version": 3
@@ -6,4 +7,5 @@
   "operation": "decrement",
   "amount": 1,
   "fail_mode": "none"
+
 }
