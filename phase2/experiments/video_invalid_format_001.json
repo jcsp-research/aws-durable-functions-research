@@ -1,0 +1,21 @@
+{
+  "test_case": "video_invalid_format_001",
+  "video": {
+    "video_id": "video-004",
+    "input_uri": "s3://durable-video-artifacts/input/sample.avi",
+    "format": "avi",
+    "duration_seconds": 30,
+    "resolution": "1080p"
+  },
+  "encoding": {
+    "codec": "h264",
+    "bitrate_kbps": 1500,
+    "chunk_duration_seconds": 10
+  },
+  "failures": {
+    "validate_video": { "fail_mode": "none" },
+    "split_video": { "fail_mode": "none" },
+    "encode_chunk": { "fail_mode": "none" },
+    "merge_video": { "fail_mode": "none" }
+  }
+}

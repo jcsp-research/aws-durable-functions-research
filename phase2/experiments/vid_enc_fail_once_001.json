@@ -1,0 +1,24 @@
+{
+  "test_case": "video_encode_fail_once_001",
+  "video": {
+    "video_id": "video-002",
+    "input_uri": "s3://durable-video-artifacts/input/sample.mp4",
+    "format": "mp4",
+    "duration_seconds": 60,
+    "resolution": "1080p"
+  },
+  "encoding": {
+    "codec": "h264",
+    "bitrate_kbps": 1800,
+    "chunk_duration_seconds": 10
+  },
+  "failures": {
+    "validate_video": { "fail_mode": "none" },
+    "split_video": { "fail_mode": "none" },
+    "encode_chunk": {
+      "fail_mode": "once",
+      "failure_key": "phase2-encode-once-001"
+    },
+    "merge_video": { "fail_mode": "none" }
+  }
+}
