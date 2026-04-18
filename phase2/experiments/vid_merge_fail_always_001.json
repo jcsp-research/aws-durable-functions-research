@@ -1,5 +1,5 @@
 {
-  "test_case": "video_merge_fail_always_001",
+  "test_case": "vid_merge_fail_always_001",
   "video": {
     "video_id": "video-003",
     "input_uri": "s3://durable-video-artifacts/input/sample.mp4",

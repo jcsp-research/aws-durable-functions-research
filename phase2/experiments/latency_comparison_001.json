@@ -1,15 +1,17 @@
 {
-  "test_case": "video_happy_path_001",
+  "test_case": "latency_comparison_001",
+  "description": "Comparación de latencia end-to-end entre Durable y Traditional",
+  "iterations": 10,
   "video": {
-    "video_id": "video-001",
+    "video_id": "video-latency-test",
     "input_uri": "s3://durable-video-artifacts/input/sample.mp4",
     "format": "mp4",
-    "duration_seconds": 95,
+    "duration_seconds": 60,
     "resolution": "1080p"
   },
   "encoding": {
     "codec": "h264",
-    "bitrate_kbps": 2200,
+    "bitrate_kbps": 2000,
     "chunk_duration_seconds": 10
   },
   "failures": {
@@ -17,5 +19,14 @@
     "split_video": { "fail_mode": "none" },
     "encode_chunk": { "fail_mode": "none" },
     "merge_video": { "fail_mode": "none" }
-  }
+  },
+  "approaches": [
+    "durable",
+    "traditional"
+  ],
+  "metrics": [
+    "total_latency_ms",
+    "state_overhead_ms",
+    "state_size_kb"
+  ]
 }

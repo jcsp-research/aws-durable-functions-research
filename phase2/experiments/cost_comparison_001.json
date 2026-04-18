@@ -1,0 +1,47 @@
+{
+  "test_case": "cost_comparison_001",
+  "description": "Comparación de coste por minuto de video codificado entre Durable y Traditional",
+  "video_template": {
+    "input_uri": "s3://durable-video-artifacts/input/sample.mp4",
+    "format": "mp4",
+    "resolution": "1080p"
+  },
+  "video_durations": [30, 60, 120],
+  "encoding": {
+    "codec": "h264",
+    "bitrate_kbps": 2000,
+    "chunk_duration_seconds": 10
+  },
+  "failures": {
+    "validate_video": { "fail_mode": "none" },
+    "split_video": { "fail_mode": "none" },
+    "encode_chunk": { "fail_mode": "none" },
+    "merge_video": { "fail_mode": "none" }
+  },
+  "approaches": [
+    "durable",
+    "traditional"
+  ],
+  "cost_components": {
+    "durable": [
+      "compute_gb_seconds",
+      "requests",
+      "checkpoint_size_kb"
+    ],
+    "traditional": [
+      "compute_gb_seconds",
+      "dynamodb_reads",
+      "dynamodb_writes",
+      "failure_marker_writes",
+      "explicit_state_size_kb"
+    ]
+  },
+  "outputs": [
+    "estimated_cost_per_execution",
+    "estimated_cost_per_minute"
+  ],
+  "notes": [
+    "El coste final se calcula en el análisis usando las métricas recogidas por los logs y resultados.",
+    "La comparación debe usar exactamente el mismo codec, bitrate y chunk_duration_seconds para ambas variantes."
+  ]
+}

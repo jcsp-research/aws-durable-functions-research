@@ -1,46 +1,47 @@
-# Fase 2: Análisis - Retry Transitorio en Encoding
+# Análisis: Fail Once Encoding (vid_enc_fail_once_001)
+**Test:** Fallo transitorio en etapa de encoding | **Fecha:** 2026-04-18
 
-**Test ID:** vid_enc_fail_once_001  
-**Fecha:** 2026-04-06  
-**Tipo:** Fallo transitorio con recuperación automática  
-**Estado:** ✅ Succeeded  
-**Job ID:** 863e1fb9-d65a-4d52-a909-6900666080c7  
-**Execution ID:** (ver logs CloudWatch)  
+## Configuración
+- **Video:** 60s, 1080p, 6 chunks de 10s
+- **Fallo inyectado:** `encode_chunk` con `fail_mode: "once"`
+- **Objetivo:** Comparar mecanismos de recuperación automática vs manual
 
----
+## Resultados Durable Functions
+- **Latencia:** 6,751.339 ms (~6.8s)
+- **Checkpoint:** 3.305 KB (state_version: 3)
+- **Execution Model:** `durable_sequential_fallback`
+- **Recovery:** Automático (runtime SDK)
+- **Status:** 200 (success)
 
-## 1. Resumen Ejecutivo
+## Resultados Traditional
+- **Latencia:** 4,032.595 ms (~4.0s)
+- **Estado:** 3.988 KB (state_version: 9)
+- **DynamoDB:** 17 reads, 10 writes
+- **Failure Markers:** 0 ⚠️
+- **Recovery:** Manual (`execute_with_retries` con MAX_RETRIES=2)
+- **Status:** 200 (success)
 
-Validación exitosa del mecanismo de **retry automático** ante fallos temporales en la etapa de codificación de chunks. Todos los chunks (6/6) fallaron en su primera ejecución debido a un error simulado de infraestructura (timeout/red), pero fueron recuperados automáticamente por el SDK sin intervención manual.
+## Análisis Crítico
+### Anomalía Detectada
+El contador `failure_marker_writes: 0` indica que el marker `phase2-encode-once-001` **ya existía** en la tabla DynamoDB de una ejecución previa.
 
-**Hallazgo clave:** El sistema demuestra **tolerancia a fallos transitorios del 100%** con un overhead aceptable de +38 segundos (79% más lento que el happy path).
+**Impacto:**
+- ❌ No se activó el fallo transitorio real
+- ❌ No se pudo medir diferencia de MTTR (Mean Time To Recovery)
+- ✅ Ambos procesaron como happy path efectivo
 
----
+### Métricas Comparativas
+| Métrica | Durable | Traditional | Delta |
+|---------|---------|-------------|-------|
+| Latencia | 6,751 ms | 4,033 ms | -40% |
+| I/O Ops | ~5 (est.) | 27 (medido) | -81% |
+| Complejidad | 45 LOC | 340 LOC | -87% |
 
-## 2. Configuración del Test
+## Conclusión
+Aunque el Traditional es 40% más rápido y expone I/O medible, **no se validó la hipótesis de recuperación ante fallos** debido a contaminación de estado previa. Se requiere re-ejecución con tabla de markers limpia.
 
-```json
-{
-  "test_case": "vid_enc_fail_once_001",
-  "video": {
-    "video_id": "video-002",
-    "input_uri": "s3://durable-video-artifacts/input/sample.mp4",
-    "format": "mp4",
-    "duration_seconds": 60,
-    "resolution": "1080p"
-  },
-  "encoding": {
-    "codec": "h264",
-    "bitrate_kbps": 1800,
-    "chunk_duration_seconds": 10
-  },
-  "failures": {
-    "validate_video": { "fail_mode": "none" },
-    "split_video": { "fail_mode": "none" },
-    "encode_chunk": {
-      "fail_mode": "once",
-      "failure_key": "p2-enc-once-001"
-    },
-    "merge_video": { "fail_mode": "none" }
-  }
-}
+## Recomendación
+Para validar verdaderamente el mecanismo de retry:
+1. Limpiar tabla `durable-failure-markers` en DynamoDB
+2. Usar nuevo `failure_key` (ej: `phase2-encode-once-002`)
+3. Re-ejecutar y capturar logs de reintento en ambas arquitecturas

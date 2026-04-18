@@ -155,6 +155,8 @@ def initialize_job(step_context: StepContext, payload: dict) -> dict:
             "encoded_chunks": [],
             "merged_output_uri": None,
             "version": 0,
+            "model": "durable",
+            "test_case": test_case,
         }
 
         jobs_table.put_item(Item=to_dynamo_number_dict(job_state))
@@ -174,6 +176,7 @@ def initialize_job(step_context: StepContext, payload: dict) -> dict:
                 "step": "initialize_job",
                 "duration_ms": duration_ms,
                 "status": status,
+                "execution_model": "durable",
             },
         )
 
@@ -259,6 +262,7 @@ def validate_video(step_context: StepContext, payload: dict) -> dict:
                 "step": "validate_video",
                 "duration_ms": duration_ms,
                 "status": status,
+                "execution_model": "durable",
             },
         )
 
@@ -329,6 +333,7 @@ def split_video(step_context: StepContext, payload: dict) -> dict:
                 "step": "split_video",
                 "duration_ms": duration_ms,
                 "status": status,
+                "execution_model": "durable",
             },
         )
 
@@ -357,8 +362,6 @@ def encode_chunk(step_context: StepContext, payload: dict) -> dict:
             step_name=f"encode_chunk_{chunk['index']}",
         )
 
-        # Simulación determinista del coste de encoding:
-        # 50 ms por segundo de chunk + latencia base.
         simulated_ms = 100 + (50 * int(chunk["duration_seconds"]))
         time.sleep(simulated_ms / 1000.0)
 
@@ -393,6 +396,7 @@ def encode_chunk(step_context: StepContext, payload: dict) -> dict:
                 "chunk_index": chunk["index"],
                 "duration_ms": duration_ms,
                 "status": status,
+                "execution_model": "durable",
             },
         )
 
@@ -419,7 +423,7 @@ def merge_video(step_context: StepContext, payload: dict) -> dict:
             step_name="merge_video",
         )
 
-        time.sleep(0.2)  # pequeña latencia de merge
+        time.sleep(0.2)
 
         ordered_chunks = sorted(encoded_chunks, key=lambda c: c["index"])
         final_uri = f"s3://{S3_BUCKET_NAME}/final/{state['job_id']}/{state['video_id']}_encoded.mp4"
@@ -448,6 +452,7 @@ def merge_video(step_context: StepContext, payload: dict) -> dict:
                 "step": "merge_video",
                 "duration_ms": duration_ms,
                 "status": status,
+                "execution_model": "durable",
             },
         )
 
@@ -462,6 +467,7 @@ def build_response(step_context: StepContext, payload: dict) -> dict:
     test_case = payload.get("test_case", "unknown")
 
     state = payload["state"]
+    execution_mode = payload.get("execution_mode", "durable_unknown")
 
     try:
         result = {
@@ -473,6 +479,7 @@ def build_response(step_context: StepContext, payload: dict) -> dict:
             "encoded_chunk_count": len(state["encoded_chunks"]),
             "output_uri": state["merged_output_uri"],
             "version": state["version"],
+            "execution_model": execution_mode,
         }
 
         step_context.logger.info(f"Returning result={result}")
@@ -492,9 +499,90 @@ def build_response(step_context: StepContext, payload: dict) -> dict:
                 "step": "build_response",
                 "duration_ms": duration_ms,
                 "status": status,
+                "execution_model": execution_mode,
             },
         )
 
+
+# ============================================================
+# Helpers de paralelismo
+# ============================================================
+
+def run_parallel_chunk_encoding(context: DurableContext, state: dict, failures: dict, test_case: str):
+    """
+    Intenta usar paralelismo real del SDK durable.
+    Materializa resultados BatchResult a listas Python estándar.
+    """
+    chunk_payloads = [
+        {
+            "state": state,
+            "chunk": chunk,
+            "fail_mode": failures.get("encode_chunk", {}).get("fail_mode", "none"),
+            "failure_key": failures.get("encode_chunk", {}).get("failure_key"),
+            "test_case": test_case,
+        }
+        for chunk in state["chunks"]
+    ]
+
+    def materialize_batch_result(batch_result):
+        """Convierte cualquier iterable/SDK result a lista Python"""
+        if isinstance(batch_result, list):
+            return batch_result
+        
+        # Caso 1: Tiene método result() (Future-like)
+        if hasattr(batch_result, "result") and callable(getattr(batch_result, "result")):
+            try:
+                resolved = batch_result.result()
+                return list(resolved) if not isinstance(resolved, list) else resolved
+            except Exception:
+                pass
+        
+        # Caso 2: Tiene atributo results (list-like)
+        if hasattr(batch_result, "results"):
+            try:
+                resolved = batch_result.results
+                if callable(resolved):
+                    resolved = resolved()
+                return list(resolved) if not isinstance(resolved, list) else resolved
+            except Exception:
+                pass
+        
+        # Caso 3: Es iterable genérico (BatchResult, generator, etc)
+        try:
+            return list(batch_result)
+        except TypeError:
+            raise TypeError(
+                f"Cannot materialize parallel result of type {type(batch_result).__name__}. "
+                f"Attributes: {[a for a in dir(batch_result) if not a.startswith('_')]}"
+            )
+
+    # Intento 1: Parallel nativo
+    if hasattr(context, "parallel"):
+        try:
+            encode_tasks = [(lambda p=payload: encode_chunk(p)) for payload in chunk_payloads]
+            batch_result = context.parallel(encode_tasks)
+            
+            context.logger.info(f"Parallel execution returned: {type(batch_result).__name__}")
+            encoded_chunks = materialize_batch_result(batch_result)
+            
+            context.logger.info(f"Successfully materialized {len(encoded_chunks)} chunks in parallel")
+            return encoded_chunks, "durable_parallel"
+            
+        except Exception as e:
+            context.logger.warning(f"Parallel failed ({e}), trying map...")
+
+    # Intento 2: Map nativo
+    if hasattr(context, "map"):
+        try:
+            batch_result = context.map(lambda p: encode_chunk(p), chunk_payloads)
+            encoded_chunks = materialize_batch_result(batch_result)
+            return encoded_chunks, "durable_parallel"
+        except Exception as e:
+            context.logger.warning(f"Map failed ({e}), using sequential fallback...")
+
+    # Fallback secuencial (siempre retorna lista nativa)
+    encoded_chunks = [context.step(encode_chunk(payload)) for payload in chunk_payloads]
+    return encoded_chunks, "durable_sequential_fallback"
 
 # ============================================================
 # Orquestación principal
@@ -565,6 +653,7 @@ def lambda_handler(event, context: DurableContext) -> dict:
                     "test_case": test_case,
                     "error_type": validation_result["error_type"],
                     "error_message": validation_result["error_message"],
+                    "execution_model": "durable",
                 },
             )
 
@@ -577,6 +666,7 @@ def lambda_handler(event, context: DurableContext) -> dict:
                     "status": "validation_failed",
                     "error_type": validation_result["error_type"],
                     "error_message": validation_result["error_message"],
+                    "execution_model": "durable",
                 },
             }
 
@@ -593,23 +683,12 @@ def lambda_handler(event, context: DurableContext) -> dict:
             )
         )
 
-        # Codificación "paralela" lógica por chunk.
-        # Si tu SDK soporta context.parallel / context.map ya estable,
-        # esta parte puede migrarse después a paralelismo explícito.
-        encoded_chunks = []
-        for chunk in state["chunks"]:
-            encoded = context.step(
-                encode_chunk(
-                    {
-                        "state": state,
-                        "chunk": chunk,
-                        "fail_mode": failures.get("encode_chunk", {}).get("fail_mode", "none"),
-                        "failure_key": failures.get("encode_chunk", {}).get("failure_key"),
-                        "test_case": test_case,
-                    }
-                )
-            )
-            encoded_chunks.append(encoded)
+        encoded_chunks, execution_mode = run_parallel_chunk_encoding(
+            context=context,
+            state=state,
+            failures=failures,
+            test_case=test_case,
+        )
 
         emit_metric(
             context.logger,
@@ -618,6 +697,9 @@ def lambda_handler(event, context: DurableContext) -> dict:
                 "test_case": test_case,
                 "requested_parallel_chunks": len(state["chunks"]),
                 "executed_chunks": len(encoded_chunks),
+                "actual_parallel_chunks": len(encoded_chunks)
+                if execution_mode == "durable_parallel" else 1,
+                "execution_model": execution_mode,
             },
         )
 
@@ -633,7 +715,15 @@ def lambda_handler(event, context: DurableContext) -> dict:
             )
         )
 
-        result = context.step(build_response({"state": state, "test_case": test_case}))
+        result = context.step(
+            build_response(
+                {
+                    "state": state,
+                    "test_case": test_case,
+                    "execution_mode": execution_mode,
+                }
+            )
+        )
 
         checkpoint_size_kb = len(json.dumps(state, ensure_ascii=False)) / 1024.0
 
@@ -646,6 +736,7 @@ def lambda_handler(event, context: DurableContext) -> dict:
                 "state_version": state.get("version", 0),
                 "chunk_count": len(state.get("chunks", [])),
                 "encoded_chunk_count": len(state.get("encoded_chunks", [])),
+                "execution_model": execution_mode,
             },
         )
 
@@ -664,5 +755,6 @@ def lambda_handler(event, context: DurableContext) -> dict:
                 "test_case": test_case,
                 "duration_ms": duration_ms,
                 "status": status,
+                "execution_model": "durable",
             },
         )
