@@ -1,0 +1,201 @@
+# Evaluación Experimental de Arquitecturas Serverless Stateful: 
+## Pipeline de Codificación de Video con AWS Lambda Durable Functions vs. Gestión de Estado Explícita
+
+**Autor:** Julio Siguenaspacheco  
+**Programa:** Doctorado en Ciencias de la Computación – URV  
+**Fase Experimental:** 2 – Orquestación de Workflows de Larga Duración  
+**Fecha de ejecución:** 2026-04-18  
+**Entorno:** AWS Lambda (us-east-2), Python 3.13, SDK Durable Functions (preview)
+
+---
+
+## Resumen Estructurado
+
+**Contexto:** La ejecución durable promete simplificar flujos de trabajo serverless complejos mediante checkpoint-and-replay, pero sus implicaciones de rendimiento en procesamiento de video paralelo permanecen inexploradas en la literatura académica.
+
+**Objetivo:** Cuantificar empíricamente las diferencias de latencia, throughput y comportamiento ante fallos entre el modelo Durable (estado interno) y un baseline Traditional (Lambda + DynamoDB) en un pipeline de codificación de video multimodal.
+
+**Metodología:** Diseño experimental factorial 2×4 (2 arquitecturas × 4 escenarios de fallo). Se inyectaron fallos controlados (ninguno, transitorio, permanente, dominio) en un pipeline de 4 etapas (validación, chunking, encoding, merging). Métricas: latencia end-to-end, operaciones de E/S, versionado de estado, y recuperación ante errores.
+
+**Resultados Principales:**
+1. **Overhead sistemático:** Durable Functions exhibe 34–52% más latencia en happy path debido a fallback secuencial forzado (paralelismo no materializable en SDK actual).
+2. **Fallos permanentes:** Durable consume ~58s (timeout) vs. 2.7s (circuit-breaker) en Traditional, siendo **21.5× más lento** en fallos irrecuperables.
+3. **Validación de dominio:** Ambos modelos rechazan formatos inválidos eficientemente, pero Durable presenta 12× overhead en validación temprana (831ms vs. 70ms).
+4. **Contaminación experimental:** El escenario de fallo transitorio no pudo validarse debido a persistencia residual en DynamoDB, quedando como limitación metodológica explícita.
+
+**Conclusiones:** El modelo Durable prioriza consistencia y simplicidad de código (87% reducción en LOC) sobre latencia pura. Para pipelines con alta incidencia de fallos permanentes o requisitos de fail-fast estrictos, el baseline Traditional con circuit-breaker manual es arquitectónicamente superior. Estos hallazgos informan la selección de patrones de diseño en sistemas serverless de misión crítica.
+
+**Palabras clave:** AWS Lambda Durable Functions, checkpoint-and-replay, serverless video processing, fault tolerance comparison, empirical evaluation
+
+---
+
+## 1. Diseño Experimental
+
+### 1.1 Hipótesis de Investigación
+- **H1:** El modelo Durable reduce latencia en escenarios de recuperación ante fallos transitorios mediante checkpoint-and-replay.
+- **H2:** La abstracción del SDK oculta ineficiencias en el manejo de errores no recuperables (permanent failures).
+- **H3:** El paralelismo declarativo (`context.parallel()`) mejora throughput respecto a ejecución secuencial explícita.
+
+### 1.2 Variables y Métricas
+
+| Variable | Tipo | Descripción | Instrumentación |
+|----------|------|-------------|-----------------|
+| **Independiente** | Arquitectura | {Durable, Traditional} | Configuración de despliegue |
+| **Independiente** | Escenario Fallo | {None, Transient, Permanent, Domain} | Inyección via `fail_mode` |
+| **Dependiente** | Latencia E2E | Tiempo total de ejecución | `time.perf_counter()` Lambda |
+| **Dependiente** | Operaciones E/S | Lecturas/escrituras estado | DynamoDB metrics + logs |
+| **Dependiente** | Versionado Estado | Número de checkpoints/versiones | Campos `version` en salida JSON |
+| **Control** | Duración Video | 30s–95s (720p–1080p) | Metadata de test cases |
+
+### 1.3 Configuración de Test Cases
+
+| ID Test | Escenario | Video | Chunks | Fallo Inyectado | Objetivo de Validación |
+|---------|-----------|-------|--------|-----------------|----------------------|
+| `video_happy_path_001` | Happy Path | 95s, 1080p | 10 | Ninguno | Baseline de rendimiento |
+| `vid_enc_fail_once_001` | Transient Recovery | 60s, 1080p | 6 | `encode_chunk` (fail_once) | H1: Recuperación automática |
+| `vid_merge_fail_always_001` | Permanent Failure | 45s, 720p | 3 | `merge_video` (fail_always) | H2: Eficiencia fail-fast |
+| `video_invalid_format_001` | Domain Error | 30s, avi | 0 | Formato inválido | H3: Validación temprana |
+
+---
+
+## 2. Resultados Detallados por Escenario
+
+### 2.1 Escenario A: Happy Path (Baseline)
+**Configuración:** Video 95 segundos, codec H.264, 10 chunks de 10s.
+
+#### Arquitectura Durable
+- **Latencia E2E:** 9,496 ms (σ desconocida, n=1)
+- **Checkpoint size:** 5.164 KB (v3)
+- **Modelo ejecución:** `durable_sequential_fallback` (intento de paralelismo fallido)
+- **Observación crítica:** A pesar de invocar `context.parallel()`, el runtime no materializó concurrencia real, ejecutando chunks secuencialmente con overhead de orquestación.
+
+#### Arquitectura Traditional
+- **Latencia E2E:** 6,241 ms (34% más rápido)
+- **Estado explícito:** 6.302 KB (v13 – múltiples versiones por operación)
+- **I/O DynamoDB:** 39 operaciones (25 reads, 14 writes)
+- **Eficiencia:** Menor tiempo total a costa de mayor complejidad de código (340 LOC vs. 45 LOC).
+
+**Interpretación:** El overhead del SDK Durable (52% más lento) se atribuye a la gestión interna de checkpoints y la incapacidad de explotar paralelismo real, validando parcialmente H3 (negativamente).
+
+---
+
+### 2.2 Escenario B: Fallo Transitorio (Intento de Validación H1) ⚠️
+**Configuración:** Fallo único en `encode_chunk`, recuperación esperada mediante reintento.
+
+#### Resultados Observados
+- **Durable:** 6,751 ms, status 200, "recuperación automática"
+- **Traditional:** 4,033 ms, status 200, recovery manual (MAX_RETRIES=2)
+- **Anomalía detectada:** `failure_marker_writes: 0` en métricas de salida.
+
+#### Análisis de Contaminación
+El marker de fallo `phase2-encode-once-001` ya existía en la tabla DynamoDB de ejecuciones previas (Fase 1), por lo que **no se activó el fallo transitorio real**. Técnicamente, ambas arquitecturas procesaron un happy path efectivo.
+
+**Impacto metodológico:** H1 no pude validarse empíricamente. Los datos de este escenario representan el límite inferior de latencia (no incluyen penalización de reintento real).
+
+---
+
+### 2.3 Escenario C: Fallo Permanente (Validación H2) 🔴
+**Configuración:** Fallo irrecuperable en etapa `merge_video` (simulación de servicio externo caído).
+
+#### Resultados Críticos
+
+| Métrica | Durable | Traditional | Ratio |
+|---------|---------|-------------|-------|
+| **Latencia hasta fallo** | 58,000 ms | 2,701 ms | **21.5:1** |
+| **Intentos realizados** | ~10-20 (opacos) | 3 (circuit-breaker) | - |
+| **HTTP Status** | 500 (CallableRuntimeError) | 500 (controlled) | - |
+| **Costo computacional** | $0.00290 | $0.00015 | 19.3:1 |
+
+#### Análisis de Comportamiento
+**Durable SDK:** El runtime no distingue entre errores transitorios y permanentes, aplicando una política de retry agresiva hasta timeout global (~58s). No expone configuración `nonRetryableErrors` en la versión preview utilizada.
+
+**Traditional:** Implementación explícita de circuit-breaker (1 intento inicial + 2 reintentos = 3 totales) con fallo graceful inmediato tras agotar intentos.
+
+**Conclusión H2:** **Validada positivamente.** La abstracción del SDK Durable oculta una ineficiencia crítica en fallos irrecuperables, siendo 21.5× más lenta y 19.3× más costosa que el manejo explícito.
+
+---
+
+### 2.4 Escenario D: Error de Dominio (Validación H3)
+**Configuración:** Formato de entrada `avi` no soportado (validación semántica).
+
+#### Resultados
+- **Durable:** 831 ms (HTTP 400), overhead de inicialización SDK significativo.
+- **Traditional:** 70 ms (HTTP 400), validación temprana con mínimo I/O (3 ops).
+
+**Conclusión H3:** Validación de dominio eficiente en ambos modelos, pero el modelo Traditional es 11.9× más rápido en rechazar input inválido (fail-fast óptimo).
+
+---
+
+## 3. Discusión Crítica y Análisis de Trade-offs
+
+### 3.1 El Paradigma del "Paralelismo No Materializable"
+El hallazgo más significativo para la literatura de serverless es la imposibilidad de explotar paralelismo real en el SDK Durable actual. Aunque las primitivas `context.parallel()` y `context.map()` existen en la API, devuelven estructuras `BatchResult` no iterables, forzando un fallback secuencial (`durable_sequential_fallback`).
+
+**Implicación teórica:** Esto sugiere que el modelo de actores virtual subyacente (con orden estricto de mensajes) entra en tensión con el paralelismo agresivo tipo ExCamera. Las Durable Functions actuales parecen optimizadas para **orquestación** (coordination) más que para **computación paralela intensiva** (parallel processing).
+
+### 3.2 Gestión de Fallos: Automatización vs. Control
+La comparación de fallos permanentes revela un trade-off fundamental:
+- **Durable:** "Baterías incluidas" pero opacas. El desarrollador no puede inyectar lógica de circuit-breaker ni distinguir categorías de errores.
+- **Traditional:** Control total, pero con costo de complejidad (implementación manual de retries, idempotencia y state management).
+
+Para sistemas donde los fallos permanentes son frecuentes (ej: pipelines de video con fuentes de calidad heterogénea), la automatización del SDK resulta contraproducente económicamente (ver §2.3).
+
+---
+
+## 4. Limitaciones Metodológicas y Amenazas a la Validez
+
+1. **Contaminación de Estado (Escenario B):**  
+   La imposibilidad de aislar completamente el estado de DynamoDB entre ejecuciones de prueba invalidó la medición de MTTR (Mean Time To Recovery) en fallos transitorios. Esto se atribuye a la naturaleza stateful del servicio y la ausencia de API "reset" para testing.
+
+2. **Tamaño de Muestra (n=1):**  
+   Las mediciones son puntuales debido a costos de ejecución prolongada en AWS. No se calcularon intervalos de confianza ni desviaciones estándar.
+
+3. **Simulación vs. Realidad:**  
+   El encoding de video es simulado (`time.sleep()`) y no ejecuta ffmpeg real. Esto es deliberado para aislar overhead de orquestación, pero limita generalización a carga computacional real.
+
+4. **Versión SDK:**  
+   El SDK se encuentra en preview (diciembre 2025). Comportamientos documentados (como paralelismo) pueden cambiar en GA (General Availability).
+
+---
+
+## 5. Conclusiones y Contribuciones al Conocimiento
+
+### 5.1 Respuesta a los Objetivos de Aprendizaje de la Fase 2
+
+| Objetivo Tutores | Estado | Evidencia |
+|------------------|--------|-----------|
+| "Latencia extremo a extremo" | ✅ Cuantificado | Tabla §2.1: 9.5s vs 6.2s |
+| "Paralelismo logrado" | ✅ Documentado | Hallazgo de fallback secuencial |
+| "Coste por minuto de vídeo" | ✅ Calculado | $0.00034 vs $0.00023 (ver cost_analysis.md) |
+| "Sobrecarga de replay" | ⚠️ Parcial | No medible por contaminación de estado |
+
+### 5.2 Contribuciones para el Artículo WOSC 2026
+
+1. **Hallazgo empírico de latencia:** Primera cuantificación del overhead del SDK AWS Durable Functions en workloads de video (52% más lento que baseline Traditional).
+
+2. **Crítica al modelo de fallos:** Identificación de la ausencia de "circuit-breaker semantics" en el SDK preview, con impacto económico cuantificado (19.3× más costoso en errores permanentes).
+
+3. **Taxonomía de errores:** Demostración de que el SDK distingue correctamente errores de dominio (HTTP 400 sin retry) vs. errores de ejecución (HTTP 500 con retry), pero no distingue transitorios vs. permanentes dentro de los 500.
+
+### 5.3 Próximos Pasos Recomendados (Fase 3)
+
+1. **Re-ejecución controlada:** Limpiar tabla DynamoDB `durable-failure-markers` y re-ejecutar `vid_enc_fail_once_002` con nuevo `failure_key` para validar H1.
+2. **Investigación SDK:** Verificar si la configuración `nonRetryableErrors` existe en versiones más recientes del SDK o si está documentada como roadmap.
+3. **Conexión teórica:** Relacionar estos hallazgos con el modelo de actores (Sección 3.2 del documento de tutores): ¿Son las Durable Functions "actores" que sacrifican throughput por consistencia serializable?
+
+---
+
+## Referencias
+
+[1] Amazon Web Services. *AWS Lambda Durable Functions Developer Guide*. 2025.  
+[2] Fouladi et al. "ExCamera: Encoding, Fast and Slow". *NSDI 2017*.  
+[3] Spenger et al. "A Survey of Actor-Like Programming Models for Serverless Computing". 2024.  
+[4] Siguenaspacheco, J. *Cost Analysis: Durable vs Traditional*. Phase 2 Results, URV 2026.
+
+---
+
+**Anexos Técnicos Disponibles:**
+- Código fuente: `phase2/src/fase2-video-durable/lambda_function.py` (45 LOC)
+- Código baseline: `phase2/src/fase2-video-traditional/lambda_function.py` (340 LOC)
+- Logs CloudWatch: Request IDs `759aa5a3-ce0a-4fba-9e23-746f87dc3ec0` (Durable) y equivalentes.
+- JSON de test events: `phase2/test_events/`

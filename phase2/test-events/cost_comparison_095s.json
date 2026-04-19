@@ -1,0 +1,21 @@
+{
+  "test_case": "cost_comparison_095s",
+  "video": {
+    "video_id": "video-095s",
+    "input_uri": "s3://durable-video-artifacts/input/sample.mp4",
+    "format": "mp4",
+    "duration_seconds": 95,
+    "resolution": "1080p"
+  },
+  "encoding": {
+    "codec": "h264",
+    "bitrate_kbps": 2000,
+    "chunk_duration_seconds": 10
+  },
+  "failures": {
+    "validate_video": { "fail_mode": "none" },
+    "split_video": { "fail_mode": "none" },
+    "encode_chunk": { "fail_mode": "none" },
+    "merge_video": { "fail_mode": "none" }
+  }
+}

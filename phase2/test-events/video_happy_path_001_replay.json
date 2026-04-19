@@ -1,0 +1,22 @@
+{
+  "test_case": "video_happy_path_001_replay",
+  "job_id": "759aa5a3-ce0a-4fba-9e23-746f87dc3ec0",
+  "video": {
+    "video_id": "video-001",
+    "input_uri": "s3://durable-video-artifacts/input/sample.mp4",
+    "format": "mp4",
+    "duration_seconds": 95,
+    "resolution": "1080p"
+  },
+  "encoding": {
+    "codec": "h264",
+    "bitrate_kbps": 2200,
+    "chunk_duration_seconds": 10
+  },
+  "failures": {
+    "validate_video": { "fail_mode": "none" },
+    "split_video": { "fail_mode": "none" },
+    "encode_chunk": { "fail_mode": "none" },
+    "merge_video": { "fail_mode": "none" }
+  }
+}

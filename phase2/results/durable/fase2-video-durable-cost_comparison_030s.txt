@@ -1,0 +1,17 @@
+Status: Succeeded
+Test Event Name: cost_comparison_030s
+Response:
+{
+"statusCode": 200,
+"body": {
+"message": "fase2-video-durable executed successfully",
+"job_id": "c7504609-2ca2-4916-ab20-0ca11edca6c3",
+"video_id": "video-030s",
+"status": "merged",
+"chunk_count": 3,
+"encoded_chunk_count": 3,
+"output_uri": "s3://durable-video-artifacts/final/c7504609-2ca2-4916-ab20-0ca11edca6c3/video-030s_encoded.mp4",
+"version": 3,
+"execution_model": "durable_sequential_fallback"
+  }
+}
