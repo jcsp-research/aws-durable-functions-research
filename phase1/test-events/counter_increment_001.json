@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_increment_001",
+  "description": "1.1 Basic increment operation - verifies state is persisted and updated correctly",
+  "state": { "value": 0, "version": 0 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "none"
+}

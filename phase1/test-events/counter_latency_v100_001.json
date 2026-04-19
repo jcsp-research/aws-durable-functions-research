@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_latency_v100_001",
+  "description": "1.4 State size growth - execute with high version number to measure checkpoint size growth over time",
+  "state": { "value": 100, "version": 100 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "none"
+}

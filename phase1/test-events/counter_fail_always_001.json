@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_fail_always_001",
+  "description": "1.2 Permanent failure - operation always fails, durable runtime propagates error after exhausting retries",
+  "state": { "value": 0, "version": 0 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "always"
+}

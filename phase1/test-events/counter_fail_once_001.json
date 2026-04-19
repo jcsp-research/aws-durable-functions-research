@@ -1,0 +1,9 @@
+{
+  "test_case": "counter_fail_once_001",
+  "description": "1.2 Transient failure recovery - first invocation fails, durable runtime retries automatically and succeeds",
+  "state": { "value": 0, "version": 0 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "once",
+  "failure_key": "phase1-fail-once-counter-001"
+}

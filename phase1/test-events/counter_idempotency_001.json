@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_idempotency_001",
+  "description": "1.3 Idempotency test - re-invoke with the same execution name after a successful run; durable runtime must return cached result without re-executing steps",
+  "state": { "value": 0, "version": 0 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "none"
+}

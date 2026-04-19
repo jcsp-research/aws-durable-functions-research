@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_concurrent_001",
+  "description": "1.3 Concurrency test - invoke this event multiple times simultaneously with different execution names to observe sequential ordering; durable runtime processes operations one at a time",
+  "state": { "value": 0, "version": 0 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "none"
+}

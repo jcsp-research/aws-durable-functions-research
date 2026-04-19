@@ -1,0 +1,9 @@
+{
+  "test_case": "counter_replay_observation_001",
+  "description": "1.2 Replay observation - introduces a sleep to allow manual termination mid-execution; re-invoke with same execution name to observe checkpoint-and-replay",
+  "state": { "value": 0, "version": 0 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "none",
+  "debug_sleep_seconds": 30
+}

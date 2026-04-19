@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_latency_baseline_001",
+  "description": "1.4 Latency measurement - baseline execution to measure step latency and checkpoint size at version=1",
+  "state": { "value": 0, "version": 0 },
+  "operation": "increment",
+  "amount": 1,
+  "fail_mode": "none"
+}

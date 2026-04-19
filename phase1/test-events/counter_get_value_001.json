@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_get_value_001",
+  "description": "1.1 Get value operation - reads current state without modification",
+  "state": { "value": 5, "version": 3 },
+  "operation": "get_value",
+  "amount": 0,
+  "fail_mode": "none"
+}

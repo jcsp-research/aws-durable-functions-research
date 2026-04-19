@@ -1,0 +1,8 @@
+{
+  "test_case": "counter_decrement_001",
+  "description": "1.1 Basic decrement operation - verifies state is persisted and updated correctly",
+  "state": { "value": 10, "version": 0 },
+  "operation": "decrement",
+  "amount": 1,
+  "fail_mode": "none"
+}
