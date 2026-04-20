@@ -13,26 +13,27 @@ Artefact repository for the paper:
 ---
 
 ## Repository Structure
-.
-├── phase1/                     # Counter workload — SDK primitives characterization
-│   ├── code/lambda_function.py
-│   ├── test-events/            # 10 JSON test events
-│   ├── results/                # 8 TXT result logs
-│   ├── cloudwatch/             # 4 raw CloudWatch CSV exports
-│   └── report/phase1-observations-report.md
-│
-├── phase2/                     # Video encoding pipeline — durable vs. traditional
-│   ├── code/
-│   │   ├── fase2-lambda_function.py       # Durable pipeline (128 MB)
-│   │   └── fase2-video-traditional.py     # Traditional Lambda+DynamoDB (3008 MB)
-│   ├── test-events/            # 8 JSON test events
-│   ├── results/
-│   │   ├── durable/            # 8 TXT — durable approach
-│   │   └── traditional/        # 8 TXT — traditional approach
-│   └── report/fase2-evaluation-report.md
-│
-└── phase3/                     # Actor model analysis
-└── phase3-actor-model-analysis.md
+
+    phase1/                          Counter workload — SDK primitives
+    ├── code/lambda_function.py      Durable counter (128 MB, SDK v12)
+    ├── test-events/                 10 JSON test events
+    ├── results/                     8 TXT result logs from CloudWatch
+    ├── cloudwatch/                  4 raw CloudWatch CSV exports
+    └── report/                      Observations report
+
+    phase2/                          Video encoding — durable vs. traditional
+    ├── code/
+    │   ├── fase2-lambda_function.py      Durable pipeline (128 MB)
+    │   └── fase2-video-traditional.py    Traditional Lambda+DynamoDB (3008 MB)
+    ├── test-events/                 8 JSON test events
+    ├── results/
+    │   ├── durable/                 8 TXT — durable approach
+    │   └── traditional/             8 TXT — traditional approach
+    └── report/                      Evaluation report + cost analysis
+
+    phase3/                          Actor model analysis
+    └── phase3-actor-model-analysis.md
+
 ---
 
 ## Key Findings
