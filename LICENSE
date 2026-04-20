@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) 2026 Julio Siguenas Pacheco
+Copyright (c) 2026 Julio César Siguenas Pacheco, Marc Sánchez-Artigas
+Universitat Rovira i Virgili, Tarragona, Spain
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Experimental data and documentation in this repository (files in
+phase1/results/, phase1/cloudwatch/, phase2/results/, and all .md files)
+are licensed under the Creative Commons Attribution 4.0 International License
+(CC BY 4.0). You may share and adapt the material for any purpose, provided
+appropriate credit is given.
+
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/

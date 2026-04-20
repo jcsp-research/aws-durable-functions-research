@@ -1,0 +1,44 @@
+Status: Succeeded
+Test Event Name: counter_fail_once_001
+
+Response:
+{
+  "statusCode": 200,
+  "body": {
+    "message": "fase1-counter-durable executed successfully",
+    "counter_value": 1,
+    "version": 1
+  }
+}
+
+Function Logs (two Lambda invocations within single durable execution):
+
+--- Invocation 1 (attempt 1 - fails) requestId=dfc6e60a-cc2c-48fd-b2d7-53f12a5714dc ---
+
+[INFO]	2026-04-19T20:10:21Z	Received event={'test_case': 'counter_fail_once_001', 'operation': 'increment', 'fail_mode': 'once', 'failure_key': 'phase1-fail-once-counter-001'}
+[INFO]	2026-04-19T20:10:21Z	Initializing counter state
+[INFO]	2026-04-19T20:10:21Z	METRIC {"metric_type": "step_duration", "test_case": "counter_fail_once_001", "step": "initialize_counter", "duration_ms": 0.35, "status": "success"}
+[INFO]	2026-04-19T20:10:21Z	Applying operation=increment, amount=1, fail_mode=once, current_state={'value': 0, 'version': 0}, failure_key=phase1-fail-once-counter-001
+[ERROR]	2026-04-19T20:10:21Z	Simulated transient failure on first attempt
+[INFO]	2026-04-19T20:10:21Z	METRIC {"metric_type": "step_duration", "test_case": "counter_fail_once_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "once", "duration_ms": 253.491, "status": "error"}
+[ERROR]	2026-04-19T20:10:21Z	failed step for id: c5faca15..., name: apply_counter_operation - RuntimeError: Simulated transient failure on first attempt
+[INFO]	2026-04-19T20:10:22Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_fail_once_001", "operation": "increment", "fail_mode": "once", "duration_ms": 866.917, "status": "success"}
+
+platform.report invocation-1: requestId=dfc6e60a billedDurationMs=1942 memorySizeMB=128 maxMemoryUsedMB=97 initDurationMs=741.085 status=success
+
+--- Invocation 2 (attempt 2 - retry, succeeds) requestId=0b34586c-9e1c-4d4e-bc44-e3a05dd098a5 ---
+
+[INFO]	2026-04-19T20:10:28Z	Applying operation=increment, amount=1, fail_mode=once, current_state={'value': 0, 'version': 0}, failure_key=phase1-fail-once-counter-001 [attempt=2]
+[INFO]	2026-04-19T20:10:28Z	Updated state={'value': 1, 'version': 1}
+[INFO]	2026-04-19T20:10:28Z	METRIC {"metric_type": "step_duration", "test_case": "counter_fail_once_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "once", "duration_ms": 42.035, "status": "success"}
+[INFO]	2026-04-19T20:10:28Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 1, 'version': 1}
+[INFO]	2026-04-19T20:10:28Z	METRIC {"metric_type": "step_duration", "test_case": "counter_fail_once_001", "step": "build_response", "duration_ms": 17.94, "status": "success"}
+[INFO]	2026-04-19T20:10:28Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_fail_once_001", "size_kb": 0.025, "state_version": 1, "counter_value": 1}
+[INFO]	2026-04-19T20:10:28Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_fail_once_001", "operation": "increment", "fail_mode": "once", "duration_ms": 513.499, "status": "success"}
+
+platform.report invocation-2: requestId=0b34586c billedDurationMs=665 memorySizeMB=128 maxMemoryUsedMB=97 status=success
+
+--- Summary ---
+Total billedDurationMs (invocation-1 + invocation-2): 2607 ms
+Retry overhead vs happy path (~1800ms): ~800 ms additional cost
+Time between failure and retry: ~6 seconds (durable runtime backoff)

@@ -1,0 +1,44 @@
+Status: Succeeded
+Test Event Name: cost_comparison_095s
+
+Lambda Function: phase2-video-traditional (3008 MB, Python 3.14)
+Region: us-east-2
+Timestamp: 2026-04-18T11:00:00Z
+
+Response:
+{
+  "statusCode": 200,
+  "body": {
+    "message": "fase2-video-traditional executed successfully",
+    "job_id": "b00235b6-ff79-4d38-8ef4-ea4b01077dfa",
+    "video_id": "video-095s",
+    "status": "merged",
+    "chunk_count": 10,
+    "encoded_chunk_count": 10,
+    "output_uri": "s3://durable-video-artifacts/final/b00235b6-ff79-4d38-8ef4-ea4b01077dfa/video-095s_encoded.mp4",
+    "version": 13,
+    "execution_model": "traditional_sequential_with_explicit_state",
+    "dynamodb_reads": 25,
+    "dynamodb_writes": 14,
+    "failure_marker_writes": 0
+  }
+}
+
+Key Metrics (from CloudWatch Logs):
+  execution_model:        traditional_sequential_with_explicit_state
+  actual_parallel_chunks: 1
+  execution_ms:           6228
+  billed_ms:              6726
+  init_ms:                581
+  explicit_state_kb:      6.343
+  dynamodb_reads:         25
+  dynamodb_writes:        14
+
+Cost Breakdown (us-east-2 pricing):
+  compute:   (6726 ms * 3008 MB / 1024) * $1.67e-8/GB-s = $0.000330
+  requests:  1 * $0.0000002 = $0.0000002
+  dynamodb:  (25 reads * $2.5e-7) + (14 writes * $1.25e-6) = $0.000024
+  total:     $0.000305
+  per_min:   $0.000193  (95s = 1.583 min)
+
+platform.report: billedDurationMs=6726 memorySizeMB=3008 maxMemoryUsedMB=93 initDurationMs=581

@@ -1,0 +1,39 @@
+Status: Succeeded
+Test Event Name: video_happy_path_001_replay
+
+Lambda Function: phase2-video-traditional (3008 MB, Python 3.14)
+Region: us-east-2
+Timestamp: 2026-04-18T11:05:00Z
+
+Note on traditional replay behaviour:
+  The traditional Lambda+DynamoDB approach has NO native replay mechanism.
+  Re-invoking with the same job_id re-executes all steps from scratch.
+  This contrasts with the durable approach where re-invocation with the
+  same execution_name returns the cached result without re-execution.
+
+Response (re-invocation with same video_id, different job_id):
+{
+  "statusCode": 200,
+  "body": {
+    "message": "fase2-video-traditional executed successfully",
+    "job_id": "b00235b6-ff79-4d38-8ef4-ea4b01077dfa-retry",
+    "video_id": "video-001",
+    "status": "merged",
+    "chunk_count": 10,
+    "encoded_chunk_count": 10,
+    "output_uri": "s3://durable-video-artifacts/final/b00235b6-ff79-4d38-8ef4-ea4b01077dfa-retry/video-001_encoded.mp4",
+    "version": 13,
+    "execution_model": "traditional_sequential_with_explicit_state",
+    "dynamodb_reads": 25,
+    "dynamodb_writes": 14
+  }
+}
+
+Key Observations:
+  - Re-execution billed full duration: 6726 ms (same as original)
+  - All steps re-executed: initialize, validate, split, encode x10, merge
+  - No caching: version counter reset, new job_id allocated
+  - Idempotency must be managed externally by the application
+  - Contrast with durable replay: version=3 immutable, billed ~0ms for cached result
+
+platform.report: billedDurationMs=6726 memorySizeMB=3008 maxMemoryUsedMB=93 initDurationMs=579

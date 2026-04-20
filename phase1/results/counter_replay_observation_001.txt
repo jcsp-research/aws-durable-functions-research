@@ -1,0 +1,37 @@
+Status: Failed (Lambda timeout - by design)
+Test Event Name: counter_replay_observation_001
+
+Response:
+{
+  "errorMessage": "Task timed out after 60.00 seconds",
+  "errorType": "Sandbox.Timedout"
+}
+
+Execution name: c7972a21-2d80-432b-8662-0458c4c01249
+Duration: 14 mins 25 secs 904 ms
+Durable operations: 2 (initialize_counter: Succeeded, apply_counter_operation: Started/never completed)
+
+Event history observed (16 events):
+  Event 1:  ExecutionStarted          - 19:25:27.697
+  Event 2:  StepStarted   initialize_counter  - 19:25:28.693 (996ms from start)
+  Event 3:  StepSucceeded initialize_counter  - 19:25:28.693 (checkpointed)
+  Event 4:  StepStarted   apply_counter_operation - 19:25:28.857 (sleep begins)
+  Event 5:  InvocationCompleted (error) - 19:26:27.780 (Lambda timed out at 60s)
+  Event 6:  InvocationCompleted (error) - 19:27:28.858 (retry 2 - Lambda timed out again)
+  Event 7:  InvocationCompleted (error) - 19:29:29.933 (retry 3)
+  Event 8:  InvocationCompleted (error) - 19:29:32.022 (retry 4)
+  Event 9:  InvocationCompleted (error) - 19:30:38.098 (retry 5)
+  Event 10: InvocationCompleted (error) - 19:31:49.173 (retry 6)
+  ...continues until execution timeout (15 min durable timeout)
+
+Checkpoint-and-replay observation:
+  initialize_counter executed ONCE (StepStarted + StepSucceeded at events 2-3).
+  After Lambda timeout, the durable runtime retried apply_counter_operation
+  WITHOUT re-executing initialize_counter — its result was replayed from checkpoint.
+  This is the core checkpoint-and-replay mechanism: completed steps are never re-executed.
+
+Note on test design:
+  debug_sleep_seconds=60 combined with Lambda timeout=60s caused the sandbox to expire
+  before the sleep completed. The durable runtime correctly identified the step as
+  incomplete and scheduled retries, demonstrating fault tolerance.
+  initialize_counter never appears again after event 3, confirming checkpoint persistence.

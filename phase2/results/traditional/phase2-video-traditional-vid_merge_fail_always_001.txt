@@ -1,0 +1,67 @@
+Status: Succeeded
+Test Event Name: vid_merge_fail_always_001
+
+Response:
+{
+  "statusCode": 500,
+  "body": {
+    "message": "fase2-video-traditional execution failed",
+    "test_case": "vid_merge_fail_always_001",
+    "error_type": "RuntimeError",
+    "error_message": "Simulated permanent failure in merge_video",
+    "execution_model": "traditional_sequential_with_explicit_state",
+    "dynamodb_reads": 12,
+    "dynamodb_writes": 6,
+    "failure_marker_writes": 0
+  }
+}
+
+The area below shows the last 4 KB of the execution log.
+
+Function Logs:
+ep_duration", "test_case": "vid_merge_fail_always_001", "step": "encode_chunk_1", "attempt": 1, "duration_ms": 860.238, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:16:15.545Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Encoded chunk index=2 for job=a6165bc8-77bf-4009-a1ca-b16bda51198c output=s3://durable-video-artifacts/encoded/a6165bc8-77bf-4009-a1ca-b16bda51198c/video-003_chunk_0002.mp4
+[INFO]	2026-04-18T11:16:15.546Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "encode_chunk_2", "attempt": 1, "duration_ms": 860.262, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:16:15.546Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "parallelism_summary", "test_case": "vid_merge_fail_always_001", "requested_parallel_chunks": 3, "executed_chunks": 3, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR]	2026-04-18T11:16:15.552Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Simulated permanent failure in merge_video
+[WARNING]	2026-04-18T11:16:15.552Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Retrying step=merge_video attempt=1/2
+[INFO]	2026-04-18T11:16:15.552Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 1, "duration_ms": 3.164, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR]	2026-04-18T11:16:15.555Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Simulated permanent failure in merge_video
+[WARNING]	2026-04-18T11:16:15.555Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Retrying step=merge_video attempt=2/2
+[INFO]	2026-04-18T11:16:15.556Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 2, "duration_ms": 3.301, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR]	2026-04-18T11:16:15.559Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Simulated permanent failure in merge_video
+[INFO]	2026-04-18T11:16:15.559Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 3, "duration_ms": 3.111, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR]	2026-04-18T11:16:15.559Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Unhandled error in traditional pipeline
+Traceback (most recent call last):
+  File "/var/task/lambda_function.py", line 544, in lambda_handler
+    state = merge_video(
+        job_id=job_id,
+    ...<2 lines>...
+        logger=logger,
+    )
+  File "/var/task/lambda_function.py", line 395, in merge_video
+    return execute_with_retries(
+        step_name="merge_video",
+    ...<2 lines>...
+        test_case=load_job_state(job_id).get("test_case", "unknown"),
+    )
+  File "/var/task/lambda_function.py", line 170, in execute_with_retries
+    result = fn()
+  File "/var/task/lambda_function.py", line 374, in _run
+    maybe_fail(
+    ~~~~~~~~~~^
+        fail_mode=fail_mode,
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        logger=logger,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "/var/task/lambda_function.py", line 128, in maybe_fail
+    raise RuntimeError(f"Simulated permanent failure in {step_name}")
+RuntimeError: Simulated permanent failure in merge_video
+[INFO]	2026-04-18T11:16:15.560Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "execution_duration", "test_case": "vid_merge_fail_always_001", "duration_ms": 2686.307, "status": "error", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 12, "dynamodb_writes": 6, "failure_marker_writes": 0}
+END RequestId: 05542900-6a97-401c-a8ce-4f8da82c9de7
+REPORT RequestId: 05542900-6a97-401c-a8ce-4f8da82c9de7	Duration: 2688.44 ms	Billed Duration: 3168 ms	Memory Size: 3008 MB	Max Memory Used: 92 MB	Init Duration: 479.16 ms
+
+Request ID: 05542900-6a97-401c-a8ce-4f8da82c9de7

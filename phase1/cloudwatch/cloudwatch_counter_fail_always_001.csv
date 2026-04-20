@@ -1,0 +1,154 @@
+timestamp,message
+1776629876729,"{""time"":""2026-04-19T20:17:56.729Z"",""type"":""platform.initStart"",""record"":{""initializationType"":""on-demand"",""phase"":""init"",""runtimeVersion"":""python:3.14.DurableFunction.v12"",""runtimeVersionArn"":""arn:aws:lambda:us-east-2::runtime:4701d8d3b7c4bfef1b350764e0c3004591dee86d631c9993ab2217127e368c50"",""functionName"":""fase1-counter-durable"",""functionVersion"":""$LATEST"",""instanceId"":""2026/04/19/[$LATEST]02a48e534c8c45c99ea2e2e4e216fdcc"",""instanceMaxMemory"":134217728}}"
+1776629877300,"{""timestamp"": ""2026-04-19T20:17:57Z"", ""level"": ""INFO"", ""message"": ""Found credentials in environment variables."", ""logger"": ""botocore.credentials"", ""requestId"": """"}
+"
+1776629877404,"{""time"":""2026-04-19T20:17:57.404Z"",""type"":""platform.start"",""record"":{""requestId"":""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"",""functionArn"":""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST"",""version"":""$LATEST""}}"
+1776629877614,"{""timestamp"": ""2026-04-19T20:17:57Z"", ""level"": ""INFO"", ""message"": ""Received event={'test_case': 'counter_fail_always_001', 'description': '1.2 Permanent failure - operation always fails, durable runtime propagates error after exhausting retries', 'state': {'value': 0, 'version': 0}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'always'}"", ""logger"": ""root"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f""}
+"
+1776629877634,"{""timestamp"": ""2026-04-19T20:17:57Z"", ""level"": ""INFO"", ""message"": ""Initializing counter state"", ""logger"": ""root"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""initialize_counter"", ""attempt"": 1, ""operationId"": ""1ced8f5be2db23a6513eba4d819c73806424748a7bc6fa0d792cc1c7d1775a97""}
+"
+1776629877634,"{""timestamp"": ""2026-04-19T20:17:57Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""step_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""step\"": \""initialize_counter\"", \""duration_ms\"": 0.296, \""status\"": \""success\""}"", ""logger"": ""root"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""initialize_counter"", ""attempt"": 1, ""operationId"": ""1ced8f5be2db23a6513eba4d819c73806424748a7bc6fa0d792cc1c7d1775a97""}
+"
+1776629878041,"{""timestamp"": ""2026-04-19T20:17:58Z"", ""level"": ""INFO"", ""message"": ""Applying operation=increment, amount=1, fail_mode=always, current_state={'value': 0, 'version': 0}, failure_key=None"", ""logger"": ""root"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 1, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629878041,"{""timestamp"": ""2026-04-19T20:17:58Z"", ""level"": ""ERROR"", ""message"": ""Simulated permanent failure in apply_counter_operation"", ""logger"": ""root"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 1, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629878041,"{""timestamp"": ""2026-04-19T20:17:58Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""step_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""step\"": \""apply_counter_operation\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 0.378, \""status\"": \""error\""}"", ""logger"": ""root"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 1, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629878055,"{""timestamp"": ""2026-04-19T20:17:58Z"", ""level"": ""ERROR"", ""message"": ""❌ failed step for id: c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6, name: apply_counter_operation"", ""logger"": ""aws_durable_execution_sdk_python.operation.step"", ""stackTrace"": [""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 139, in step_handler
+    raw_result: T = func(step_context)
+                    ~~~~^^^^^^^^^^^^^^
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/context.py\"", line 84, in function_with_arguments
+    return func(context, *args, **kwargs)
+"", ""  File \""/var/task/lambda_function.py\"", line 128, in apply_counter_operation
+    raise RuntimeError(\""Simulated permanent failure in apply_counter_operation\"")
+""], ""errorType"": ""RuntimeError"", ""errorMessage"": ""Simulated permanent failure in apply_counter_operation"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""location"": ""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py:step_handler:174""}
+"
+1776629878203,"{""timestamp"": ""2026-04-19T20:17:58Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""execution_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 588.434, \""status\"": \""success\""}"", ""logger"": ""root"", ""requestId"": ""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f""}
+"
+1776629878305,"{""time"":""2026-04-19T20:17:58.305Z"",""type"":""platform.report"",""record"":{""requestId"":""3cedd0f2-cab7-4c2c-9dc9-dfc387da2843"",""metrics"":{""durationMs"":900.325,""billedDurationMs"":1572,""memorySizeMB"":128,""maxMemoryUsedMB"":96,""initDurationMs"":671.65},""status"":""success""}}"
+1776629888254,"{""time"":""2026-04-19T20:18:08.254Z"",""type"":""platform.start"",""record"":{""requestId"":""e7d4e68b-5217-4ccb-87f3-463453b1e072"",""functionArn"":""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST"",""version"":""$LATEST""}}"
+1776629888314,"{""timestamp"": ""2026-04-19T20:18:08Z"", ""level"": ""INFO"", ""message"": ""Applying operation=increment, amount=1, fail_mode=always, current_state={'value': 0, 'version': 0}, failure_key=None"", ""logger"": ""root"", ""requestId"": ""e7d4e68b-5217-4ccb-87f3-463453b1e072"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 2, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629888334,"{""timestamp"": ""2026-04-19T20:18:08Z"", ""level"": ""ERROR"", ""message"": ""Simulated permanent failure in apply_counter_operation"", ""logger"": ""root"", ""requestId"": ""e7d4e68b-5217-4ccb-87f3-463453b1e072"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 2, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629888334,"{""timestamp"": ""2026-04-19T20:18:08Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""step_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""step\"": \""apply_counter_operation\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 19.638, \""status\"": \""error\""}"", ""logger"": ""root"", ""requestId"": ""e7d4e68b-5217-4ccb-87f3-463453b1e072"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 2, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629888335,"{""timestamp"": ""2026-04-19T20:18:08Z"", ""level"": ""ERROR"", ""message"": ""❌ failed step for id: c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6, name: apply_counter_operation"", ""logger"": ""aws_durable_execution_sdk_python.operation.step"", ""stackTrace"": [""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 139, in step_handler
+    raw_result: T = func(step_context)
+                    ~~~~^^^^^^^^^^^^^^
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/context.py\"", line 84, in function_with_arguments
+    return func(context, *args, **kwargs)
+"", ""  File \""/var/task/lambda_function.py\"", line 128, in apply_counter_operation
+    raise RuntimeError(\""Simulated permanent failure in apply_counter_operation\"")
+""], ""errorType"": ""RuntimeError"", ""errorMessage"": ""Simulated permanent failure in apply_counter_operation"", ""requestId"": ""e7d4e68b-5217-4ccb-87f3-463453b1e072"", ""location"": ""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py:step_handler:174""}
+"
+1776629888668,"{""timestamp"": ""2026-04-19T20:18:08Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""execution_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 353.57, \""status\"": \""success\""}"", ""logger"": ""root"", ""requestId"": ""e7d4e68b-5217-4ccb-87f3-463453b1e072"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f""}
+"
+1776629888770,"{""time"":""2026-04-19T20:18:08.770Z"",""type"":""platform.report"",""record"":{""requestId"":""e7d4e68b-5217-4ccb-87f3-463453b1e072"",""metrics"":{""durationMs"":515.617,""billedDurationMs"":516,""memorySizeMB"":128,""maxMemoryUsedMB"":96},""status"":""success""}}"
+1776629899710,"{""time"":""2026-04-19T20:18:19.710Z"",""type"":""platform.start"",""record"":{""requestId"":""5a37e158-5de1-4725-a4ec-57befaf0d797"",""functionArn"":""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST"",""version"":""$LATEST""}}"
+1776629899755,"{""timestamp"": ""2026-04-19T20:18:19Z"", ""level"": ""INFO"", ""message"": ""Applying operation=increment, amount=1, fail_mode=always, current_state={'value': 0, 'version': 0}, failure_key=None"", ""logger"": ""root"", ""requestId"": ""5a37e158-5de1-4725-a4ec-57befaf0d797"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 3, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629899774,"{""timestamp"": ""2026-04-19T20:18:19Z"", ""level"": ""ERROR"", ""message"": ""Simulated permanent failure in apply_counter_operation"", ""logger"": ""root"", ""requestId"": ""5a37e158-5de1-4725-a4ec-57befaf0d797"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 3, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629899774,"{""timestamp"": ""2026-04-19T20:18:19Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""step_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""step\"": \""apply_counter_operation\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 19.411, \""status\"": \""error\""}"", ""logger"": ""root"", ""requestId"": ""5a37e158-5de1-4725-a4ec-57befaf0d797"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 3, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629899775,"{""timestamp"": ""2026-04-19T20:18:19Z"", ""level"": ""ERROR"", ""message"": ""❌ failed step for id: c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6, name: apply_counter_operation"", ""logger"": ""aws_durable_execution_sdk_python.operation.step"", ""stackTrace"": [""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 139, in step_handler
+    raw_result: T = func(step_context)
+                    ~~~~^^^^^^^^^^^^^^
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/context.py\"", line 84, in function_with_arguments
+    return func(context, *args, **kwargs)
+"", ""  File \""/var/task/lambda_function.py\"", line 128, in apply_counter_operation
+    raise RuntimeError(\""Simulated permanent failure in apply_counter_operation\"")
+""], ""errorType"": ""RuntimeError"", ""errorMessage"": ""Simulated permanent failure in apply_counter_operation"", ""requestId"": ""5a37e158-5de1-4725-a4ec-57befaf0d797"", ""location"": ""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py:step_handler:174""}
+"
+1776629900082,"{""timestamp"": ""2026-04-19T20:18:20Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""execution_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 328.09, \""status\"": \""success\""}"", ""logger"": ""root"", ""requestId"": ""5a37e158-5de1-4725-a4ec-57befaf0d797"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f""}
+"
+1776629900184,"{""time"":""2026-04-19T20:18:20.184Z"",""type"":""platform.report"",""record"":{""requestId"":""5a37e158-5de1-4725-a4ec-57befaf0d797"",""metrics"":{""durationMs"":473.715,""billedDurationMs"":474,""memorySizeMB"":128,""maxMemoryUsedMB"":96},""status"":""success""}}"
+1776629923134,"{""time"":""2026-04-19T20:18:43.134Z"",""type"":""platform.start"",""record"":{""requestId"":""ec11a081-341b-4cba-9505-41ba7c6274b3"",""functionArn"":""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST"",""version"":""$LATEST""}}"
+1776629923194,"{""timestamp"": ""2026-04-19T20:18:43Z"", ""level"": ""INFO"", ""message"": ""Applying operation=increment, amount=1, fail_mode=always, current_state={'value': 0, 'version': 0}, failure_key=None"", ""logger"": ""root"", ""requestId"": ""ec11a081-341b-4cba-9505-41ba7c6274b3"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 4, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629923195,"{""timestamp"": ""2026-04-19T20:18:43Z"", ""level"": ""ERROR"", ""message"": ""Simulated permanent failure in apply_counter_operation"", ""logger"": ""root"", ""requestId"": ""ec11a081-341b-4cba-9505-41ba7c6274b3"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 4, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629923195,"{""timestamp"": ""2026-04-19T20:18:43Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""step_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""step\"": \""apply_counter_operation\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 0.379, \""status\"": \""error\""}"", ""logger"": ""root"", ""requestId"": ""ec11a081-341b-4cba-9505-41ba7c6274b3"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 4, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629923195,"{""timestamp"": ""2026-04-19T20:18:43Z"", ""level"": ""ERROR"", ""message"": ""❌ failed step for id: c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6, name: apply_counter_operation"", ""logger"": ""aws_durable_execution_sdk_python.operation.step"", ""stackTrace"": [""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 139, in step_handler
+    raw_result: T = func(step_context)
+                    ~~~~^^^^^^^^^^^^^^
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/context.py\"", line 84, in function_with_arguments
+    return func(context, *args, **kwargs)
+"", ""  File \""/var/task/lambda_function.py\"", line 128, in apply_counter_operation
+    raise RuntimeError(\""Simulated permanent failure in apply_counter_operation\"")
+""], ""errorType"": ""RuntimeError"", ""errorMessage"": ""Simulated permanent failure in apply_counter_operation"", ""requestId"": ""ec11a081-341b-4cba-9505-41ba7c6274b3"", ""location"": ""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py:step_handler:174""}
+"
+1776629923505,"{""timestamp"": ""2026-04-19T20:18:43Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""execution_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 310.56, \""status\"": \""success\""}"", ""logger"": ""root"", ""requestId"": ""ec11a081-341b-4cba-9505-41ba7c6274b3"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f""}
+"
+1776629923607,"{""time"":""2026-04-19T20:18:43.607Z"",""type"":""platform.report"",""record"":{""requestId"":""ec11a081-341b-4cba-9505-41ba7c6274b3"",""metrics"":{""durationMs"":472.657,""billedDurationMs"":473,""memorySizeMB"":128,""maxMemoryUsedMB"":96},""status"":""success""}}"
+1776629983553,"{""time"":""2026-04-19T20:19:43.553Z"",""type"":""platform.start"",""record"":{""requestId"":""8790528a-a151-4e90-b2c6-020d15b10d1b"",""functionArn"":""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST"",""version"":""$LATEST""}}"
+1776629983615,"{""timestamp"": ""2026-04-19T20:19:43Z"", ""level"": ""INFO"", ""message"": ""Applying operation=increment, amount=1, fail_mode=always, current_state={'value': 0, 'version': 0}, failure_key=None"", ""logger"": ""root"", ""requestId"": ""8790528a-a151-4e90-b2c6-020d15b10d1b"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 5, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629983634,"{""timestamp"": ""2026-04-19T20:19:43Z"", ""level"": ""ERROR"", ""message"": ""Simulated permanent failure in apply_counter_operation"", ""logger"": ""root"", ""requestId"": ""8790528a-a151-4e90-b2c6-020d15b10d1b"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 5, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629983634,"{""timestamp"": ""2026-04-19T20:19:43Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""step_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""step\"": \""apply_counter_operation\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 18.885, \""status\"": \""error\""}"", ""logger"": ""root"", ""requestId"": ""8790528a-a151-4e90-b2c6-020d15b10d1b"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 5, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776629983635,"{""timestamp"": ""2026-04-19T20:19:43Z"", ""level"": ""ERROR"", ""message"": ""❌ failed step for id: c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6, name: apply_counter_operation"", ""logger"": ""aws_durable_execution_sdk_python.operation.step"", ""stackTrace"": [""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 139, in step_handler
+    raw_result: T = func(step_context)
+                    ~~~~^^^^^^^^^^^^^^
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/context.py\"", line 84, in function_with_arguments
+    return func(context, *args, **kwargs)
+"", ""  File \""/var/task/lambda_function.py\"", line 128, in apply_counter_operation
+    raise RuntimeError(\""Simulated permanent failure in apply_counter_operation\"")
+""], ""errorType"": ""RuntimeError"", ""errorMessage"": ""Simulated permanent failure in apply_counter_operation"", ""requestId"": ""8790528a-a151-4e90-b2c6-020d15b10d1b"", ""location"": ""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py:step_handler:174""}
+"
+1776629983943,"{""timestamp"": ""2026-04-19T20:19:43Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""execution_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 328.427, \""status\"": \""success\""}"", ""logger"": ""root"", ""requestId"": ""8790528a-a151-4e90-b2c6-020d15b10d1b"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f""}
+"
+1776629984045,"{""time"":""2026-04-19T20:19:44.045Z"",""type"":""platform.report"",""record"":{""requestId"":""8790528a-a151-4e90-b2c6-020d15b10d1b"",""metrics"":{""durationMs"":492.2,""billedDurationMs"":493,""memorySizeMB"":128,""maxMemoryUsedMB"":96},""status"":""success""}}"
+1776630069989,"{""time"":""2026-04-19T20:21:09.989Z"",""type"":""platform.start"",""record"":{""requestId"":""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"",""functionArn"":""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST"",""version"":""$LATEST""}}"
+1776630070094,"{""timestamp"": ""2026-04-19T20:21:10Z"", ""level"": ""INFO"", ""message"": ""Applying operation=increment, amount=1, fail_mode=always, current_state={'value': 0, 'version': 0}, failure_key=None"", ""logger"": ""root"", ""requestId"": ""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 6, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776630070095,"{""timestamp"": ""2026-04-19T20:21:10Z"", ""level"": ""ERROR"", ""message"": ""Simulated permanent failure in apply_counter_operation"", ""logger"": ""root"", ""requestId"": ""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 6, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776630070114,"{""timestamp"": ""2026-04-19T20:21:10Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""step_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""step\"": \""apply_counter_operation\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 0.435, \""status\"": \""error\""}"", ""logger"": ""root"", ""requestId"": ""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f"", ""operationName"": ""apply_counter_operation"", ""attempt"": 6, ""operationId"": ""c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6""}
+"
+1776630070114,"{""timestamp"": ""2026-04-19T20:21:10Z"", ""level"": ""ERROR"", ""message"": ""❌ failed step for id: c5faca15ac2f93578b39ef4b6bbb871bdedce4ddd584fd31f0bb66fade3947e6, name: apply_counter_operation"", ""logger"": ""aws_durable_execution_sdk_python.operation.step"", ""stackTrace"": [""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 139, in step_handler
+    raw_result: T = func(step_context)
+                    ~~~~^^^^^^^^^^^^^^
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/context.py\"", line 84, in function_with_arguments
+    return func(context, *args, **kwargs)
+"", ""  File \""/var/task/lambda_function.py\"", line 128, in apply_counter_operation
+    raise RuntimeError(\""Simulated permanent failure in apply_counter_operation\"")
+""], ""errorType"": ""RuntimeError"", ""errorMessage"": ""Simulated permanent failure in apply_counter_operation"", ""requestId"": ""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"", ""location"": ""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py:step_handler:174""}
+"
+1776630070415,"{""timestamp"": ""2026-04-19T20:21:10Z"", ""level"": ""INFO"", ""message"": ""METRIC {\""metric_type\"": \""execution_duration\"", \""test_case\"": \""counter_fail_always_001\"", \""operation\"": \""increment\"", \""fail_mode\"": \""always\"", \""duration_ms\"": 321.099, \""status\"": \""error\""}"", ""logger"": ""root"", ""requestId"": ""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"", ""executionArn"": ""arn:aws:lambda:us-east-2:851725525148:function:fase1-counter-durable:$LATEST/durable-execution/51b34274-a92d-42a7-a67a-0be3eae383cb/25baf04b-ec44-3c94-a0b8-4aea951fa16f""}
+"
+1776630070455,"{""timestamp"": ""2026-04-19T20:21:10Z"", ""level"": ""ERROR"", ""message"": ""Execution failed"", ""logger"": ""aws_durable_execution_sdk_python.execution"", ""stackTrace"": [""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/execution.py\"", line 311, in wrapper
+    result = user_future.result()
+"", ""  File \""/var/lang/lib/python3.14/concurrent/futures/_base.py\"", line 450, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+"", ""  File \""/var/lang/lib/python3.14/concurrent/futures/_base.py\"", line 395, in __get_result
+    raise self._exception
+"", ""  File \""/var/lang/lib/python3.14/concurrent/futures/thread.py\"", line 86, in run
+    result = ctx.run(self.task)
+"", ""  File \""/var/lang/lib/python3.14/concurrent/futures/thread.py\"", line 73, in run
+    return fn(*args, **kwargs)
+"", ""  File \""/var/task/lambda_function.py\"", line 262, in lambda_handler
+    state = context.step(apply_counter_operation({
+        \""state\"": state,
+    ...<5 lines>...
+        \""test_case\"": test_case
+    }))
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/context.py\"", line 456, in step
+    return step_handler(
+        func=func,
+    ...<7 lines>...
+        context_logger=self.logger,
+    )
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 180, in step_handler
+    retry_handler(e, state, operation_identifier, config, checkpointed_result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"", ""  File \""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/operation/step.py\"", line 269, in retry_handler
+    raise error_object.to_callable_runtime_error()
+""], ""errorType"": ""CallableRuntimeError"", ""errorMessage"": ""Simulated permanent failure in apply_counter_operation"", ""requestId"": ""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"", ""location"": ""/var/lang/lib/python3.14/site-packages/aws_durable_execution_sdk_python/execution.py:wrapper:392""}
+"
+1776630070517,"{""time"":""2026-04-19T20:21:10.517Z"",""type"":""platform.report"",""record"":{""requestId"":""ba4605df-e2a5-4721-9e5d-59d0bfa0eacf"",""metrics"":{""durationMs"":527.663,""billedDurationMs"":528,""memorySizeMB"":128,""maxMemoryUsedMB"":96},""status"":""success""}}"

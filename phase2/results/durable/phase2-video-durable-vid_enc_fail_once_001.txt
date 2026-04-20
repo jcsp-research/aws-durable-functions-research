@@ -1,0 +1,18 @@
+Status: Succeeded
+Test Event Name: vid_enc_fail_once_001
+
+Response:
+{
+  "statusCode": 200,
+  "body": {
+    "message": "fase2-video-durable executed successfully",
+    "job_id": "5a2ca1b2-8692-47ef-a7b8-288224eac8ae",
+    "video_id": "video-002",
+    "status": "merged",
+    "chunk_count": 6,
+    "encoded_chunk_count": 6,
+    "output_uri": "s3://durable-video-artifacts/final/5a2ca1b2-8692-47ef-a7b8-288224eac8ae/video-002_encoded.mp4",
+    "version": 3,
+    "execution_model": "durable_sequential_fallback"
+  }
+} 

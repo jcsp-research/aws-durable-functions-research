@@ -1,0 +1,42 @@
+Status: Succeeded
+Test Event Name: video_happy_path_001
+
+Response:
+{
+  "statusCode": 200,
+  "body": {
+    "message": "fase2-video-traditional executed successfully",
+    "job_id": "b00235b6-ff79-4d38-8ef4-ea4b01077dfa",
+    "video_id": "video-001",
+    "status": "merged",
+    "chunk_count": 10,
+    "encoded_chunk_count": 10,
+    "output_uri": "s3://durable-video-artifacts/final/b00235b6-ff79-4d38-8ef4-ea4b01077dfa/video-001_encoded.mp4",
+    "version": 13,
+    "execution_model": "traditional_sequential_with_explicit_state",
+    "dynamodb_reads": 25,
+    "dynamodb_writes": 14,
+    "failure_marker_writes": 0
+  }
+}
+
+The area below shows the last 4 KB of the execution log.
+
+Function Logs:
+test_case": "video_happy_path_001", "step": "encode_chunk_6", "attempt": 1, "duration_ms": 613.279, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:00:25.089Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	Encoded chunk index=7 for job=b00235b6-ff79-4d38-8ef4-ea4b01077dfa output=s3://durable-video-artifacts/encoded/b00235b6-ff79-4d38-8ef4-ea4b01077dfa/video-001_chunk_0007.mp4
+[INFO]	2026-04-18T11:00:25.089Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001", "step": "encode_chunk_7", "attempt": 1, "duration_ms": 612.115, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:00:25.707Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	Encoded chunk index=8 for job=b00235b6-ff79-4d38-8ef4-ea4b01077dfa output=s3://durable-video-artifacts/encoded/b00235b6-ff79-4d38-8ef4-ea4b01077dfa/video-001_chunk_0008.mp4
+[INFO]	2026-04-18T11:00:25.707Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001", "step": "encode_chunk_8", "attempt": 1, "duration_ms": 613.127, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:00:26.076Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	Encoded chunk index=9 for job=b00235b6-ff79-4d38-8ef4-ea4b01077dfa output=s3://durable-video-artifacts/encoded/b00235b6-ff79-4d38-8ef4-ea4b01077dfa/video-001_chunk_0009.mp4
+[INFO]	2026-04-18T11:00:26.076Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001", "step": "encode_chunk_9", "attempt": 1, "duration_ms": 363.291, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:00:26.076Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	METRIC {"metric_type": "parallelism_summary", "test_case": "video_happy_path_001", "requested_parallel_chunks": 10, "executed_chunks": 10, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:00:26.293Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	Merged job=b00235b6-ff79-4d38-8ef4-ea4b01077dfa into s3://durable-video-artifacts/final/b00235b6-ff79-4d38-8ef4-ea4b01077dfa/video-001_encoded.mp4
+[INFO]	2026-04-18T11:00:26.293Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001", "step": "merge_video", "attempt": 1, "duration_ms": 212.368, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:00:26.298Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	Returning result={'message': 'fase2-video-traditional executed successfully', 'job_id': 'b00235b6-ff79-4d38-8ef4-ea4b01077dfa', 'video_id': 'video-001', 'status': 'merged', 'chunk_count': 10, 'encoded_chunk_count': 10, 'output_uri': 's3://durable-video-artifacts/final/b00235b6-ff79-4d38-8ef4-ea4b01077dfa/video-001_encoded.mp4', 'version': 13, 'execution_model': 'traditional_sequential_with_explicit_state', 'dynamodb_reads': 25, 'dynamodb_writes': 14, 'failure_marker_writes': 0}
+[INFO]	2026-04-18T11:00:26.298Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	METRIC {"metric_type": "explicit_state_size", "test_case": "video_happy_path_001", "size_kb": 6.302, "state_version": 13, "chunk_count": 10, "encoded_chunk_count": 10, "dynamodb_reads": 25, "dynamodb_writes": 14, "failure_marker_writes": 0, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]	2026-04-18T11:00:26.298Z	7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	METRIC {"metric_type": "execution_duration", "test_case": "video_happy_path_001", "duration_ms": 6225.575, "status": "success", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 25, "dynamodb_writes": 14, "failure_marker_writes": 0}
+END RequestId: 7cd0620b-7f6f-4dd0-a66b-d8ba88d97277
+REPORT RequestId: 7cd0620b-7f6f-4dd0-a66b-d8ba88d97277	Duration: 6228.56 ms	Billed Duration: 6810 ms	Memory Size: 3008 MB	Max Memory Used: 93 MB	Init Duration: 581.05 ms
+
+Request ID: 7cd0620b-7f6f-4dd0-a66b-d8ba88d97277

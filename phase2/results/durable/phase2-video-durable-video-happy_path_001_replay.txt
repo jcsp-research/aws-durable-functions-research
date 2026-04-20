@@ -1,17 +1,17 @@
 Status: Succeeded
-Test Event Name: cost_comparison_095s
+Test Event Name: vid_happy_path_001_replay
 
 Response:
 {
   "statusCode": 200,
   "body": {
     "message": "fase2-video-durable executed successfully",
-    "job_id": "2fde76ff-b69a-44d2-bc12-1327d7b250e7",
-    "video_id": "video-095s",
+    "job_id": "759aa5a3-ce0a-4fba-9e23-746f87dc3ec0",
+    "video_id": "video-001",
     "status": "merged",
     "chunk_count": 10,
     "encoded_chunk_count": 10,
-    "output_uri": "s3://durable-video-artifacts/final/2fde76ff-b69a-44d2-bc12-1327d7b250e7/video-095s_encoded.mp4",
+    "output_uri": "s3://durable-video-artifacts/final/759aa5a3-ce0a-4fba-9e23-746f87dc3ec0/video-001_encoded.mp4",
     "version": 3,
     "execution_model": "durable_sequential_fallback"
   }

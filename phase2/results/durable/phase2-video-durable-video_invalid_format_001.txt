@@ -1,0 +1,16 @@
+Status: Succeeded
+Test Event Name: video_invalid_format_001
+
+Response:
+{
+  "statusCode": 400,
+  "body": {
+    "message": "fase2-video-durable validation failed",
+    "job_id": "46eb7ea4-82f7-4bb3-8cee-ff213e7d406f",
+    "video_id": "video-004",
+    "status": "validation_failed",
+    "error_type": "domain_validation",
+    "error_message": "Unsupported input format: avi",
+    "execution_model": "durable"
+  }
+}  

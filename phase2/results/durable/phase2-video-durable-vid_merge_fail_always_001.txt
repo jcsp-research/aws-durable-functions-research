@@ -1,0 +1,8 @@
+Status: Failed
+Test Event Name: vid_merge_fail_always_001
+
+Response:
+Calling the invoke API action failed with this message: {
+  "errorMessage": "Simulated permanent failure in merge_video",
+  "errorType": "CallableRuntimeError"
+} 
