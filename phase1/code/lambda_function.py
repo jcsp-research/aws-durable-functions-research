@@ -14,6 +14,15 @@ dynamodb = boto3.resource("dynamodb")
 failure_table = dynamodb.Table(FAILURE_TABLE_NAME)
 
 
+# ── Detección de replay a nivel módulo ────────────────────────────────────
+# Estas variables se inicializan en el cold start del contenedor Lambda y
+# se preservan entre invocaciones calientes del mismo contenedor. Permiten
+# distinguir la primera invocación en un contenedor (cold) de re-entradas
+# (posible replay si el SDK re-invoca tras timeout/error).
+_module_load_time = time.time()
+_handler_invocation_count = 0
+
+
 def emit_metric(logger, metric_name: str, data: dict) -> None:
     """
     Emite una métrica estructurada en formato JSON para CloudWatch Logs Insights.
@@ -68,6 +77,18 @@ def initialize_counter(step_context: StepContext, payload: dict) -> dict:
     try:
         step_context.logger.info("Initializing counter state")
 
+        # Replay detection: si este step se ejecuta, NO está cacheado.
+        # Cada llamada aquí es una ejecución real, no un replay de checkpoint.
+        emit_metric(
+            step_context.logger,
+            "step_invocation",
+            {
+                "test_case": test_case,
+                "step": "initialize_counter",
+                "wall_time": time.time()
+            }
+        )
+
         if initial_state is None:
             initial_state = {
                 "value": 0,
@@ -118,6 +139,19 @@ def apply_counter_operation(step_context: StepContext, payload: dict) -> dict:
     try:
         step_context.logger.info(
             f"Applying operation={operation}, amount={amount}, fail_mode={fail_mode}, current_state={state}, failure_key={failure_key}"
+        )
+
+        # Replay detection: si este step se ejecuta, NO está cacheado.
+        emit_metric(
+            step_context.logger,
+            "step_invocation",
+            {
+                "test_case": test_case,
+                "step": "apply_counter_operation",
+                "operation": operation,
+                "fail_mode": fail_mode,
+                "wall_time": time.time()
+            }
         )
 
         if payload.get("debug_sleep_seconds", 0):
@@ -192,6 +226,17 @@ def build_response(step_context: StepContext, payload: dict) -> dict:
     state = payload["state"]
 
     try:
+        # Replay detection: si este step se ejecuta, NO está cacheado.
+        emit_metric(
+            step_context.logger,
+            "step_invocation",
+            {
+                "test_case": test_case,
+                "step": "build_response",
+                "wall_time": time.time()
+            }
+        )
+
         result = {
             "message": "fase1-counter-durable executed successfully",
             "counter_value": state["value"],
@@ -244,8 +289,27 @@ def lambda_handler(event, context: DurableContext) -> dict:
     start = time.perf_counter()
     status = "success"
 
+    # ── Detección de re-invocación (posible replay) ──────────────────────
+    # Esta variable global se preserva entre invocaciones calientes del
+    # mismo contenedor Lambda. Si invocation_count > 1, este contenedor ha
+    # procesado invocaciones previas — posible replay si el SDK re-invoca.
+    global _handler_invocation_count
+    _handler_invocation_count += 1
+    seconds_since_load = round(time.time() - _module_load_time, 3)
+
     test_case = event.get("test_case", "unknown")
     context.logger.info(f"Received event={event}")
+
+    emit_metric(
+        context.logger,
+        "invocation_attempt",
+        {
+            "test_case": test_case,
+            "invocation_count": _handler_invocation_count,
+            "seconds_since_module_load": seconds_since_load,
+            "is_likely_replay": _handler_invocation_count > 1
+        }
+    )
 
     try:
         initial_state = event.get("state")
@@ -311,4 +375,5 @@ def lambda_handler(event, context: DurableContext) -> dict:
                 "status": status
             }
         )
+    
     
