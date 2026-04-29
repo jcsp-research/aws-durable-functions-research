@@ -28,7 +28,7 @@ Artefact repository for the paper:
     ├── test-events/                 8 JSON test events
     ├── results/
     │   ├── durable/                 8 TXT — durable approach
-    │   └── traditional/             8 TXT — traditional approach (re-run at 128 MB)
+    │   └── traditional/             8 TXT — traditional approach
     └── report/                      Evaluation report + cost analysis
 
     phase3/                          Actor model analysis
@@ -39,9 +39,7 @@ Artefact repository for the paper:
 ## Key Findings
 
 > Both functions are configured with **128 MB memory** to ensure an
-> isomemory cost comparison. Earlier results with the traditional
-> baseline at 3008 MB were superseded on 2026-04-29 after methodology
-> homologation.
+> isomemory cost comparison.
 
 | Metric | Value |
 |--------|-------|
