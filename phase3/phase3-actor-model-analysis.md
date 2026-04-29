@@ -2,13 +2,17 @@
 
 *Síntesis teórica para el artículo de taller WOSC 2026*
 
-**Julio César Siguenas Pacheco · Universitat Rovira i Virgili · Grupo Cloud and Distributed Systems Lab · Supervisado por: Marc Sánchez-Artigas · Abril 2026**
+**Julio César Siguenas Pacheco · Universitat Rovira i Virgili · Grupo Cloud and Distributed Systems Lab · Supervisado por: Pedro García-López · Abril 2026**
+
+> **Nota sobre el alcance del documento.** Este documento integra los dos entregables solicitados para la Fase 3 según la Tarea Inicial: (i) un resumen de literatura (Sección 1) que sintetiza las tres fuentes de referencia indicadas — Azure Durable Entities, Spenger et al. (2024), y ExCamera (Fouladi et al., 2017) — y (ii) un ensayo de análisis conceptual (Secciones 2 a 4) que responde a las cuatro preguntas planteadas: alineación con el modelo de actores, comparación con sistemas relacionados, garantías de tolerancia a fallos, e implicaciones para el diseño de sistemas distribuidos. La Sección 3 conecta explícitamente la teoría con las implementaciones de las Fases 1 y 2.
+
+> **Pendientes de validación con el director (reunión del 30 de abril de 2026).** (a) Confirmar la atribución del supervisor (línea 5): el director oficial de la tesis es Pedro Castillo; verificar si la mención a Pedro García-López como supervisor es correcta o debe modificarse. (b) Confirmar la atribución del grupo en la Sección 1.3 sobre Crucial. (c) Confirmar la interpretación de los nuevos ratios de coste obtenidos tras la homologación de memoria del 29 de abril (ver Argumento 3 en Sección 4).
 
 ---
 
 ## 1. Revisión de Literatura
 
-Esta sección sintetiza los tres pilares teóricos que fundamentan el análisis: el modelo de actores clásico, los actores virtuales de Orleans, y las abstracciones tipo actor en serverless según Spenger et al. (2024).
+Esta sección sintetiza los pilares teóricos que fundamentan el análisis: el modelo de actores clásico, los actores virtuales de Orleans, las abstracciones tipo actor en serverless según Spenger et al. (2024), Azure Durable Entities como precedente directo, y el sistema ExCamera como referencia en orquestación serverless con paralelismo masivo.
 
 ### 1.1 El modelo de actores clásico: Hewitt, 1973
 
@@ -24,11 +28,17 @@ Orleans proporciona tres garantías clave que lo diferencian de los actores clá
 
 ### 1.3 Abstracciones tipo actor en serverless: Spenger et al., 2024
 
-Spenger, Carbone y Haller (2024) presentan la primera revisión sistemática de los modelos de programación tipo actor para computación serverless. El paper, publicado en *Active Object Languages: Current Research Trends* (Lecture Notes in Computer Science, vol. 14360), caracteriza un conjunto de sistemas según cinco dimensiones: (1) gestión de estado, (2) paso de mensajes, (3) composición, (4) tolerancia a fallos, y (5) garantías de ordenamiento.
+Spenger, Carbone y Haller (2024) presentan la primera revisión sistemática de los modelos de programación tipo actor para computación serverless. El paper, publicado en *Active Object Languages: Current Research Trends* (Lecture Notes in Computer Science, vol. 14360), caracteriza un conjunto de sistemas según cinco dimensiones que adoptamos como marco analítico para todo este trabajo:
+
+1. **Gestión de estado**: cómo se persiste el estado del actor (en memoria, en almacenamiento durable, mediante caché distribuida) y quién es responsable de su mantenimiento (la aplicación o el runtime).
+2. **Paso de mensajes**: si los actores se comunican mediante mensajes asíncronos directos, mediante señales externas, o si la comunicación requiere intermediarios (colas, almacenes compartidos).
+3. **Composición**: cómo se combinan actores para construir flujos de trabajo complejos — secuencialidad, paralelismo, fork/join, jerarquías de supervisión.
+4. **Tolerancia a fallos**: el modelo de recuperación ante fallos — at-most-once, at-least-once, exactly-once — y los mecanismos que lo soportan (reintentos, replay, snapshots, event sourcing).
+5. **Garantías de ordenamiento**: si los mensajes se procesan en orden estricto FIFO, en orden causal, o sin garantías de orden.
 
 Un hallazgo central del survey es que los sistemas serverless existentes — incluyendo AWS Lambda, Azure Functions y Google Cloud Functions en su forma estándar — soportan *pobremente* el modelo de actores. Las funciones Lambda clásicas son sin estado por diseño; el estado debe externalizarse a DynamoDB, S3 u otros almacenes. Esto introduce acoplamiento explícito entre la lógica de negocio y la infraestructura de persistencia, contradice la encapsulación de actores, y exige que el programador gestione manualmente la serialización, los reintentos y la idempotencia.
 
-El survey identifica varias iniciativas que intentan cerrar esta brecha. **Cloudburst** (Sreekanti et al., 2020) ofrece funciones serverless con estado mediante un sistema de caché distribuida (Anna KVS) y un protocolo de causalidad. **Crucial** (Pons et al., 2022, del grupo de Marc Sánchez-Artigas en URV) expone objetos Java de alto nivel sobre almacenamiento distribuido, permitiendo programar en serverless con abstracciones de memoria compartida. **Portals** (Spenger et al., 2022) unifica el modelo de dataflow con actores para flujos de trabajo serverless con estado. Ninguno de estos sistemas, sin embargo, está integrado nativamente en el runtime de un proveedor cloud de primer nivel.
+El survey identifica varias iniciativas que intentan cerrar esta brecha. **Cloudburst** (Sreekanti et al., 2020) ofrece funciones serverless con estado mediante un sistema de caché distribuida (Anna KVS) y un protocolo de causalidad. **Crucial** (Pons et al., 2022, del Cloud and Distributed Systems Lab de la URV) expone objetos Java de alto nivel sobre almacenamiento distribuido, permitiendo programar en serverless con abstracciones de memoria compartida. **Portals** (Spenger et al., 2022) unifica el modelo de dataflow con actores para flujos de trabajo serverless con estado. Ninguno de estos sistemas, sin embargo, está integrado nativamente en el runtime de un proveedor cloud de primer nivel.
 
 ### 1.4 Azure Durable Entities: el precedente de Microsoft
 
@@ -36,7 +46,25 @@ Azure Durable Entities, introducidas en Azure Durable Functions v2 (2019), const
 
 > "Durable entities are similar to virtual actors, also called grains, from the Orleans project. You address durable entities by using an entity ID. Durable entity operations run serially to prevent race conditions." — Microsoft Learn, Azure Durable Functions: Durable Entities (2026)
 
-Sin embargo, existen diferencias importantes respecto a Orleans. Azure Durable Entities priorizan **durabilidad sobre latencia**: el estado se persiste en Azure Storage Tables tras cada operación, lo que introduce una latencia de round-trip a almacenamiento externo que Orleans (con estado en memoria dentro del silo) evita. A cambio, Durable Entities ofrecen garantías de entrega de mensajes ordenada y confiable — algo que Orleans no garantiza para todos los mensajes entre grains. Adicionalmente, Azure Durable Entities soportan **bloqueo distribuido** mediante orquestaciones, lo que permite coordinar múltiples entidades en transacciones, una capacidad ausente en el modelo de actores clásico.
+Las primitivas que ofrece el modelo son tres y conviene caracterizarlas porque influyen directamente en lo que AWS Lambda Durable Functions puede o no puede hacer en su versión actual:
+
+- **Operaciones sobre entidades**: cada entidad responde a un conjunto de operaciones definidas como funciones. Una operación puede leer y modificar el estado interno de la entidad, y puede devolver un resultado al llamador.
+- **Señalización entre entidades** (`signal`): una entidad puede enviar un mensaje asíncrono a otra entidad, sin esperar respuesta. Es la primitiva que aporta verdadera mensajería actor-a-actor.
+- **Bloqueos y orquestaciones críticas** (`lock`): permite coordinar operaciones sobre múltiples entidades en una transacción atómica, evitando deadlocks mediante un protocolo de adquisición ordenada de bloqueos. Esta capacidad es ausente en el modelo de actores clásico y es propia del enfoque "durable" de Microsoft.
+
+Existen diferencias importantes respecto a Orleans. Azure Durable Entities priorizan **durabilidad sobre latencia**: el estado se persiste en Azure Storage Tables tras cada operación, lo que introduce una latencia de round-trip a almacenamiento externo que Orleans (con estado en memoria dentro del silo) evita. A cambio, Durable Entities ofrecen garantías de entrega de mensajes ordenada y confiable — algo que Orleans no garantiza para todos los mensajes entre grains. Adicionalmente, Azure Durable Entities soportan **bloqueo distribuido** mediante orquestaciones, lo que permite coordinar múltiples entidades en transacciones, una capacidad ausente en el modelo de actores clásico.
+
+### 1.5 ExCamera: orquestación serverless con paralelismo masivo
+
+El sistema ExCamera (Fouladi et al., 2017, NSDI) es una referencia académica clave para entender el límite del paralelismo en serverless con estado. ExCamera implementa un sistema de codificación de vídeo H.264 que ejecuta miles de funciones Lambda concurrentes — hasta 4.000 simultáneamente — para procesar vídeo en tiempo casi real. Su contribución central no es el dominio del vídeo en sí, sino el mecanismo de coordinación que permite a tantas funciones efímeras compartir información sobre estado intermedio del trabajo.
+
+Tres aspectos de ExCamera son directamente relevantes para nuestro análisis de las durable functions:
+
+- **Coordinación mediante un registro de estado en S3**: cada función Lambda escribe sus resultados intermedios y su estado de progreso en un objeto S3 estructurado. Otras funciones pueden leer este registro para conocer qué partes del trabajo ya están terminadas, qué chunks aún están en proceso, y qué dependencias deben esperarse. Este mecanismo es funcionalmente equivalente al checkpoint de las durable functions, pero gestionado explícitamente por la aplicación en vez de internalizado en el SDK.
+- **Comunicación entre Lambdas mediante "rendezvous server"**: para casos donde el modelo basado en S3 introduce demasiada latencia, ExCamera utiliza un servidor intermediario en EC2 que coordina la comunicación bidireccional entre Lambdas. Esta solución es exactamente lo que las durable functions evitan al integrar la coordinación nativamente en el runtime de Lambda — pero también es exactamente lo que las durable functions todavía no soportan en su versión actual, porque carecen de mensajería entre ejecuciones.
+- **Demostración empírica del trade-off paralelismo vs estado**: ExCamera demuestra que es posible coordinar miles de funciones Lambda sin estado para una tarea con dependencias complejas, pero al precio de una infraestructura externa de coordinación significativa. Las durable functions ofrecen el extremo opuesto: coordinación sencilla y nativa, pero solo dentro de una única ejecución secuencial.
+
+La conexión con nuestro trabajo es directa. La Fase 2 implementa un pipeline de codificación de vídeo conceptualmente similar al de ExCamera, pero usando durable functions en vez del enfoque ExCamera. Nuestros resultados muestran que la primitiva `context.parallel()` no es funcional en el SDK Python v12-v13, lo que reduce el pipeline a ejecución secuencial. Esto significa que las durable functions, en su versión actual, no pueden replicar el modelo ExCamera de paralelismo masivo: ofrecen las garantías de durabilidad y replay automático, pero pierden el paralelismo que ExCamera demostró posible.
 
 ## 2. Análisis Conceptual: AWS Lambda Durable Functions y el Modelo de Actores
 
@@ -153,7 +181,7 @@ Argumento 1 — Nuevas primitivas, viejo paradigma. AWS Lambda Durable Functions
 
 Argumento 2 — La restricción del paralelismo es sistémica. La no funcionalidad de `context.parallel()` no es solo un bug del SDK Python: refleja el desafío fundamental de implementar actores hijo en un modelo de ejecución donde cada invocación Lambda es independiente y efímera. Para que el paralelismo funcione, el runtime necesita un mecanismo de dirección dinámica entre ejecuciones y un protocolo de coordinación padre-hijo. Este es el problema que sistemas como Sprocket y ExCamera resuelven con diseños arquitectónicos específicos — y que el SDK durable de AWS aún no resuelve.
 
-Argumento 3 — El coste de la durabilidad. El sobrecoste de 1.28–1.79× que observamos respecto al enfoque tradicional refleja el precio de las garantías actoriales: serialización de estado, persistencia de checkpoint, y múltiples invocaciones Lambda internas. Azure Durable Entities incurre en costes similares. Orleans, al mantener el estado en memoria, evita este coste — pero requiere silos dedicados con costo de infraestructura fijo. Para la comunidad de investigación serverless, este trade-off es una contribución de medición original.
+Argumento 3 — El coste de la durabilidad. El sobrecoste de **16–19×** que observamos respecto al enfoque tradicional (a igualdad de configuración de memoria, ambas funciones a 128 MB) refleja el precio de las garantías actoriales: serialización de estado, persistencia de checkpoint, y múltiples invocaciones Lambda internas. El coste tradicional, dominado por las operaciones DynamoDB del envoltorio manual de estado, es desproporcionadamente bajo en compute, lo que amplifica el ratio. Azure Durable Entities incurre en costes similares. Orleans, al mantener el estado en memoria, evita este coste — pero requiere silos dedicados con costo de infraestructura fijo. Para la comunidad de investigación serverless, este trade-off es una contribución de medición original. *(Nota: estos ratios provienen de la re-ejecución del 29 de abril de 2026 con memoria homologada a 128 MB en ambas funciones. La interpretación de los nuevos ratios queda pendiente de validación con el director.)*
 
 Argumento 4 — Posición en la taxonomía de Spenger et al. Usando el marco de Spenger et al. (2024), AWS Lambda Durable Functions se clasifican como un sistema de *reliable actor orchestration* con cobertura parcial de las dimensiones: gestión de estado (✅ automática), paso de mensajes (❌ ausente), composición (⚠️ secuencial, no paralela), tolerancia a fallos (✅ retry+replay), y ordenamiento (✅ secuencial estricto). Esta clasificación formal da rigor académico al posicionamiento del paper.
 
@@ -179,6 +207,6 @@ Argumento 4 — Posición en la taxonomía de Spenger et al. Usando el marco de 
 
 [Fo17] Fouladi, S., Wahby, R. S., Shacklett, B., Balasubramaniam, K., Zeng, W., Bhalerao, R., Sivaraman, A., Barrett, G., y Winstein, K. (2017). Encoding, Fast and Slow: Low-Latency Video Processing Using Thousands of Tiny Threads. En *NSDI '17*. USENIX Association.
 
-[Zh21] Zhu, H., Cardoza, A., Chen, P. B., Angel, S., y Liu, V. (2021). Fault-Tolerant and Transactional Stateful Serverless Workflows. En *OSDI '21*. USENIX Association.
+[Zh21] Zhang, H., Cardoza, A., Chen, P. B., Angel, S., y Liu, V. (2021). Fault-Tolerant and Transactional Stateful Serverless Workflows. En *OSDI '21*. USENIX Association.
 
 [AWS25] Amazon Web Services (2025). Build multi-step applications and AI workflows with AWS Lambda Durable Functions. AWS Blog, diciembre 2025. https://aws.amazon.com/blogs/aws/build-multi-step-applications-and-ai-workflows-with-aws-lambda-durable-functions/
