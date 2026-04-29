@@ -1,39 +1,42 @@
 Status: Succeeded
 Test Event Name: video_happy_path_001_replay
 
-Lambda Function: phase2-video-traditional (3008 MB, Python 3.14)
-Region: us-east-2
-Timestamp: 2026-04-18T11:05:00Z
-
-Note on traditional replay behaviour:
-  The traditional Lambda+DynamoDB approach has NO native replay mechanism.
-  Re-invoking with the same job_id re-executes all steps from scratch.
-  This contrasts with the durable approach where re-invocation with the
-  same execution_name returns the cached result without re-execution.
-
-Response (re-invocation with same video_id, different job_id):
+Response:
 {
   "statusCode": 200,
   "body": {
     "message": "fase2-video-traditional executed successfully",
-    "job_id": "b00235b6-ff79-4d38-8ef4-ea4b01077dfa-retry",
+    "job_id": "759aa5a3-ce0a-4fba-9e23-746f87dc3ec0",
     "video_id": "video-001",
     "status": "merged",
     "chunk_count": 10,
     "encoded_chunk_count": 10,
-    "output_uri": "s3://durable-video-artifacts/final/b00235b6-ff79-4d38-8ef4-ea4b01077dfa-retry/video-001_encoded.mp4",
+    "output_uri": "s3://durable-video-artifacts/final/759aa5a3-ce0a-4fba-9e23-746f87dc3ec0/video-001_encoded.mp4",
     "version": 13,
     "execution_model": "traditional_sequential_with_explicit_state",
     "dynamodb_reads": 25,
-    "dynamodb_writes": 14
+    "dynamodb_writes": 14,
+    "failure_marker_writes": 0
   }
 }
 
-Key Observations:
-  - Re-execution billed full duration: 6726 ms (same as original)
-  - All steps re-executed: initialize, validate, split, encode x10, merge
-  - No caching: version counter reset, new job_id allocated
-  - Idempotency must be managed externally by the application
-  - Contrast with durable replay: version=3 immutable, billed ~0ms for cached result
+The area below shows the last 4 KB of the execution log.
 
-platform.report: billedDurationMs=6726 memorySizeMB=3008 maxMemoryUsedMB=93 initDurationMs=579
+Function Logs:
+code_chunk_6", "attempt": 1, "duration_ms": 679.147, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:45:49.289Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  Encoded chunk index=7 for job=759aa5a3-ce0a-4fba-9e23-746f87dc3ec0 output=s3://durable-video-artifacts/encoded/759aa5a3-ce0a-4fba-9e23-746f87dc3ec0/video-001_chunk_0007.mp4
+[INFO]  2026-04-29T16:45:49.289Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001_replay", "step": "encode_chunk_7", "attempt": 1, "duration_ms": 678.755, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:45:50.029Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  Encoded chunk index=8 for job=759aa5a3-ce0a-4fba-9e23-746f87dc3ec0 output=s3://durable-video-artifacts/encoded/759aa5a3-ce0a-4fba-9e23-746f87dc3ec0/video-001_chunk_0008.mp4
+[INFO]  2026-04-29T16:45:50.029Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001_replay", "step": "encode_chunk_8", "attempt": 1, "duration_ms": 699.08, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:45:50.509Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  Encoded chunk index=9 for job=759aa5a3-ce0a-4fba-9e23-746f87dc3ec0 output=s3://durable-video-artifacts/encoded/759aa5a3-ce0a-4fba-9e23-746f87dc3ec0/video-001_chunk_0009.mp4
+[INFO]  2026-04-29T16:45:50.509Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001_replay", "step": "encode_chunk_9", "attempt": 1, "duration_ms": 438.928, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:45:50.509Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  METRIC {"metric_type": "parallelism_summary", "test_case": "video_happy_path_001_replay", "requested_parallel_chunks": 10, "executed_chunks": 10, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:45:50.849Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  Merged job=759aa5a3-ce0a-4fba-9e23-746f87dc3ec0 into s3://durable-video-artifacts/final/759aa5a3-ce0a-4fba-9e23-746f87dc3ec0/video-001_encoded.mp4
+[INFO]  2026-04-29T16:45:50.849Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  METRIC {"metric_type": "step_duration", "test_case": "video_happy_path_001_replay", "step": "merge_video", "attempt": 1, "duration_ms": 298.837, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:45:50.890Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  Returning result={'message': 'fase2-video-traditional executed successfully', 'job_id': '759aa5a3-ce0a-4fba-9e23-746f87dc3ec0', 'video_id': 'video-001', 'status': 'merged', 'chunk_count': 10, 'encoded_chunk_count': 10, 'output_uri': 's3://durable-video-artifacts/final/759aa5a3-ce0a-4fba-9e23-746f87dc3ec0/video-001_encoded.mp4', 'version': 13, 'execution_model': 'traditional_sequential_with_explicit_state', 'dynamodb_reads': 25, 'dynamodb_writes': 14, 'failure_marker_writes': 0}
+[INFO]  2026-04-29T16:45:50.891Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  METRIC {"metric_type": "explicit_state_size", "test_case": "video_happy_path_001_replay", "size_kb": 6.309, "state_version": 13, "chunk_count": 10, "encoded_chunk_count": 10, "dynamodb_reads": 25, "dynamodb_writes": 14, "failure_marker_writes": 0, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:45:50.891Z  1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  METRIC {"metric_type": "execution_duration", "test_case": "video_happy_path_001_replay", "duration_ms": 7933.674, "status": "success", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 25, "dynamodb_writes": 14, "failure_marker_writes": 0}
+END RequestId: 1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f
+REPORT RequestId: 1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f  Duration: 7973.25 ms  Billed Duration: 8518 ms  Memory Size: 128 MB Max Memory Used: 92 MB  Init Duration: 544.65 ms
+
+Request ID: 1ed2f21c-6ab8-4ce5-9f45-bb5c470aa59f

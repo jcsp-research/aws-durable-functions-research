@@ -6,7 +6,7 @@ Response:
   "statusCode": 400,
   "body": {
     "message": "fase2-video-traditional validation failed",
-    "job_id": "c624c6cc-1076-4c24-87c4-da9cf0c11680",
+    "job_id": "1d0d2ef6-31e2-4529-a217-f5fe3c7ca937",
     "video_id": "video-004",
     "status": "validation_failed",
     "error_type": "domain_validation",
@@ -18,14 +18,14 @@ Response:
 The area below shows the last 4 KB of the execution log.
 
 Function Logs:
-START RequestId: c6e17889-d2bc-48cc-a1e0-6dad6a795d05 Version: $LATEST
-[INFO]	2026-04-18T11:20:40.469Z	c6e17889-d2bc-48cc-a1e0-6dad6a795d05	Received event={'test_case': 'video_invalid_format_001', 'video': {'video_id': 'video-004', 'input_uri': 's3://durable-video-artifacts/input/sample.avi', 'format': 'avi', 'duration_seconds': 30, 'resolution': '1080p'}, 'encoding': {'codec': 'h264', 'bitrate_kbps': 1500, 'chunk_duration_seconds': 10}, 'failures': {'validate_video': {'fail_mode': 'none'}, 'split_video': {'fail_mode': 'none'}, 'encode_chunk': {'fail_mode': 'none'}, 'merge_video': {'fail_mode': 'none'}}}
-[INFO]	2026-04-18T11:20:40.505Z	c6e17889-d2bc-48cc-a1e0-6dad6a795d05	Initialized traditional video job state job_id=c624c6cc-1076-4c24-87c4-da9cf0c11680
-[INFO]	2026-04-18T11:20:40.505Z	c6e17889-d2bc-48cc-a1e0-6dad6a795d05	METRIC {"metric_type": "step_duration", "test_case": "video_invalid_format_001", "step": "initialize_job", "attempt": 1, "duration_ms": 36.471, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:20:40.528Z	c6e17889-d2bc-48cc-a1e0-6dad6a795d05	METRIC {"metric_type": "step_duration", "test_case": "video_invalid_format_001", "step": "validate_video", "attempt": 1, "duration_ms": 22.643, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:20:40.528Z	c6e17889-d2bc-48cc-a1e0-6dad6a795d05	METRIC {"metric_type": "validation_failure", "test_case": "video_invalid_format_001", "error_type": "domain_validation", "error_message": "Unsupported input format: avi", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:20:40.533Z	c6e17889-d2bc-48cc-a1e0-6dad6a795d05	METRIC {"metric_type": "execution_duration", "test_case": "video_invalid_format_001", "duration_ms": 64.58, "status": "success", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 1, "dynamodb_writes": 2, "failure_marker_writes": 0}
-END RequestId: c6e17889-d2bc-48cc-a1e0-6dad6a795d05
-REPORT RequestId: c6e17889-d2bc-48cc-a1e0-6dad6a795d05	Duration: 66.75 ms	Billed Duration: 67 ms	Memory Size: 3008 MB	Max Memory Used: 93 MB
+START RequestId: 3cc1552f-bae6-4ce9-823b-43ee9d20943b Version: $LATEST
+[INFO]  2026-04-29T17:24:49.290Z  3cc1552f-bae6-4ce9-823b-43ee9d20943b  Received event={'test_case': 'video_invalid_format_001', 'video': {'video_id': 'video-004', 'input_uri': 's3://durable-video-artifacts/input/sample.avi', 'format': 'avi', 'duration_seconds': 30, 'resolution': '1080p'}, 'encoding': {'codec': 'h264', 'bitrate_kbps': 1500, 'chunk_duration_seconds': 10}, 'failures': {'validate_video': {'fail_mode': 'none'}, 'split_video': {'fail_mode': 'none'}, 'encode_chunk': {'fail_mode': 'none'}, 'merge_video': {'fail_mode': 'none'}}}
+[INFO]  2026-04-29T17:24:49.690Z  3cc1552f-bae6-4ce9-823b-43ee9d20943b  Initialized traditional video job state job_id=1d0d2ef6-31e2-4529-a217-f5fe3c7ca937
+[INFO]  2026-04-29T17:24:49.691Z  3cc1552f-bae6-4ce9-823b-43ee9d20943b  METRIC {"metric_type": "step_duration", "test_case": "video_invalid_format_001", "step": "initialize_job", "attempt": 1, "duration_ms": 400.618, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T17:24:49.748Z  3cc1552f-bae6-4ce9-823b-43ee9d20943b  METRIC {"metric_type": "step_duration", "test_case": "video_invalid_format_001", "step": "validate_video", "attempt": 1, "duration_ms": 41.454, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T17:24:49.749Z  3cc1552f-bae6-4ce9-823b-43ee9d20943b  METRIC {"metric_type": "validation_failure", "test_case": "video_invalid_format_001", "error_type": "domain_validation", "error_message": "Unsupported input format: avi", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T17:24:49.807Z  3cc1552f-bae6-4ce9-823b-43ee9d20943b  METRIC {"metric_type": "execution_duration", "test_case": "video_invalid_format_001", "duration_ms": 517.746, "status": "success", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 1, "dynamodb_writes": 2, "failure_marker_writes": 0}
+END RequestId: 3cc1552f-bae6-4ce9-823b-43ee9d20943b
+REPORT RequestId: 3cc1552f-bae6-4ce9-823b-43ee9d20943b  Duration: 539.01 ms Billed Duration: 1097 ms  Memory Size: 128 MB Max Memory Used: 93 MB  Init Duration: 557.96 ms
 
-Request ID: c6e17889-d2bc-48cc-a1e0-6dad6a795d05
+Request ID: 3cc1552f-bae6-4ce9-823b-43ee9d20943b

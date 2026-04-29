@@ -19,19 +19,19 @@ Response:
 The area below shows the last 4 KB of the execution log.
 
 Function Logs:
-ep_duration", "test_case": "vid_merge_fail_always_001", "step": "encode_chunk_1", "attempt": 1, "duration_ms": 860.238, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:16:15.545Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Encoded chunk index=2 for job=a6165bc8-77bf-4009-a1ca-b16bda51198c output=s3://durable-video-artifacts/encoded/a6165bc8-77bf-4009-a1ca-b16bda51198c/video-003_chunk_0002.mp4
-[INFO]	2026-04-18T11:16:15.546Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "encode_chunk_2", "attempt": 1, "duration_ms": 860.262, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:16:15.546Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "parallelism_summary", "test_case": "vid_merge_fail_always_001", "requested_parallel_chunks": 3, "executed_chunks": 3, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
-[ERROR]	2026-04-18T11:16:15.552Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Simulated permanent failure in merge_video
-[WARNING]	2026-04-18T11:16:15.552Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Retrying step=merge_video attempt=1/2
-[INFO]	2026-04-18T11:16:15.552Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 1, "duration_ms": 3.164, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
-[ERROR]	2026-04-18T11:16:15.555Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Simulated permanent failure in merge_video
-[WARNING]	2026-04-18T11:16:15.555Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Retrying step=merge_video attempt=2/2
-[INFO]	2026-04-18T11:16:15.556Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 2, "duration_ms": 3.301, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
-[ERROR]	2026-04-18T11:16:15.559Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Simulated permanent failure in merge_video
-[INFO]	2026-04-18T11:16:15.559Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 3, "duration_ms": 3.111, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
-[ERROR]	2026-04-18T11:16:15.559Z	05542900-6a97-401c-a8ce-4f8da82c9de7	Unhandled error in traditional pipeline
+p_duration", "test_case": "vid_merge_fail_always_001", "step": "encode_chunk_1", "attempt": 1, "duration_ms": 899.699, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:59:21.257Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  Encoded chunk index=2 for job=9b0d03c6-5943-4818-9ae3-e0cfd0830591 output=s3://durable-video-artifacts/encoded/9b0d03c6-5943-4818-9ae3-e0cfd0830591/video-003_chunk_0002.mp4
+[INFO]  2026-04-29T16:59:21.258Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "encode_chunk_2", "attempt": 1, "duration_ms": 919.547, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T16:59:21.258Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  METRIC {"metric_type": "parallelism_summary", "test_case": "vid_merge_fail_always_001", "requested_parallel_chunks": 3, "executed_chunks": 3, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR] 2026-04-29T16:59:21.318Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  Simulated permanent failure in merge_video
+[WARNING] 2026-04-29T16:59:21.318Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  Retrying step=merge_video attempt=1/2
+[INFO]  2026-04-29T16:59:21.318Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 1, "duration_ms": 40.277, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR] 2026-04-29T16:59:21.358Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  Simulated permanent failure in merge_video
+[WARNING] 2026-04-29T16:59:21.358Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  Retrying step=merge_video attempt=2/2
+[INFO]  2026-04-29T16:59:21.358Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 2, "duration_ms": 39.945, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR] 2026-04-29T16:59:21.418Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  Simulated permanent failure in merge_video
+[INFO]  2026-04-29T16:59:21.418Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  METRIC {"metric_type": "step_duration", "test_case": "vid_merge_fail_always_001", "step": "merge_video", "attempt": 3, "duration_ms": 59.957, "status": "error", "execution_model": "traditional_sequential_with_explicit_state"}
+[ERROR] 2026-04-29T16:59:21.437Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  Unhandled error in traditional pipeline
 Traceback (most recent call last):
   File "/var/task/lambda_function.py", line 544, in lambda_handler
     state = merge_video(
@@ -60,8 +60,8 @@ Traceback (most recent call last):
   File "/var/task/lambda_function.py", line 128, in maybe_fail
     raise RuntimeError(f"Simulated permanent failure in {step_name}")
 RuntimeError: Simulated permanent failure in merge_video
-[INFO]	2026-04-18T11:16:15.560Z	05542900-6a97-401c-a8ce-4f8da82c9de7	METRIC {"metric_type": "execution_duration", "test_case": "vid_merge_fail_always_001", "duration_ms": 2686.307, "status": "error", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 12, "dynamodb_writes": 6, "failure_marker_writes": 0}
-END RequestId: 05542900-6a97-401c-a8ce-4f8da82c9de7
-REPORT RequestId: 05542900-6a97-401c-a8ce-4f8da82c9de7	Duration: 2688.44 ms	Billed Duration: 3168 ms	Memory Size: 3008 MB	Max Memory Used: 92 MB	Init Duration: 479.16 ms
+[INFO]  2026-04-29T16:59:21.457Z  d0e4bd31-c7b6-407e-96c8-9771a6424584  METRIC {"metric_type": "execution_duration", "test_case": "vid_merge_fail_always_001", "duration_ms": 3566.37, "status": "error", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 12, "dynamodb_writes": 6, "failure_marker_writes": 0}
+END RequestId: d0e4bd31-c7b6-407e-96c8-9771a6424584
+REPORT RequestId: d0e4bd31-c7b6-407e-96c8-9771a6424584  Duration: 3605.83 ms  Billed Duration: 4123 ms  Memory Size: 128 MB Max Memory Used: 92 MB  Init Duration: 516.78 ms
 
-Request ID: 05542900-6a97-401c-a8ce-4f8da82c9de7
+Request ID: d0e4bd31-c7b6-407e-96c8-9771a6424584
