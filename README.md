@@ -6,7 +6,7 @@
 Artefact repository for the paper:
 
 > **Stateful Serverless in Practice: A First Look at AWS Lambda Durable Functions**  
-> Julio César Siguenas Pacheco, Marc Sánchez-Artigas  
+> Julio César Siguenas Pacheco, Pedro García-López  
 > Universitat Rovira i Virgili, Tarragona, Spain  
 > *12th International Workshop on Serverless Computing (WOSC '26)*
 
@@ -24,11 +24,11 @@ Artefact repository for the paper:
     phase2/                          Video encoding — durable vs. traditional
     ├── code/
     │   ├── fase2-lambda_function.py      Durable pipeline (128 MB)
-    │   └── fase2-video-traditional.py    Traditional Lambda+DynamoDB (3008 MB)
+    │   └── fase2-video-traditional.py    Traditional Lambda+DynamoDB (128 MB)
     ├── test-events/                 8 JSON test events
     ├── results/
     │   ├── durable/                 8 TXT — durable approach
-    │   └── traditional/             8 TXT — traditional approach
+    │   └── traditional/             8 TXT — traditional approach (re-run at 128 MB)
     └── report/                      Evaluation report + cost analysis
 
     phase3/                          Actor model analysis
@@ -38,13 +38,20 @@ Artefact repository for the paper:
 
 ## Key Findings
 
+> Both functions are configured with **128 MB memory** to ensure an
+> isomemory cost comparison. Earlier results with the traditional
+> baseline at 3008 MB were superseded on 2026-04-29 after methodology
+> homologation.
+
 | Metric | Value |
 |--------|-------|
 | Checkpoint size (v1 → v101) | 0.025 → 0.029 KB (effectively constant) |
-| Cold start overhead | 570–1384 ms |
-| Warm start billed | 831 ms |
-| Cost overhead vs traditional (30 s video) | 1.79× |
-| Cost overhead vs traditional (95 s video) | 1.28× (converges with load) |
+| Cold start overhead | 746–1,474 ms |
+| Warm start billed | 823 ms |
+| Cost overhead vs traditional (30 s video) | 19.1× |
+| Cost overhead vs traditional (60 s video) | 19.3× |
+| Cost overhead vs traditional (95 s video) | 16.4× |
+| Latency overhead vs traditional | 1.1×–1.5× (converges with load) |
 | `context.parallel()` status | ❌ Non-functional — SerDesError (SDK v12–v13) |
 
 ---
@@ -75,7 +82,8 @@ Compare output with `phase1/results/counter_increment_001.txt`.
 
 ### Phase 2 — Video Pipeline
 
-Deploy both functions, then run test events against each:
+Deploy both functions with **128 MB memory** for isomemory comparison,
+then run test events against each:
 
 ```bash
 # Durable
@@ -100,7 +108,7 @@ aws lambda invoke \
   title     = {Stateful Serverless in Practice: A First Look at
                {AWS Lambda Durable Functions}},
   author    = {Siguenas Pacheco, Julio C{\'{e}}sar and
-               S{\'{a}}nchez-Artigas, Marc},
+               Garc{\'{i}}a-L{\'{o}}pez, Pedro},
   booktitle = {12th International Workshop on Serverless Computing (WOSC '26)},
   year      = {2026},
   publisher = {ACM}
