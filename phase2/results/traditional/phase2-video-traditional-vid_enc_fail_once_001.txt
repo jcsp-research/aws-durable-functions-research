@@ -6,12 +6,12 @@ Response:
   "statusCode": 200,
   "body": {
     "message": "fase2-video-traditional executed successfully",
-    "job_id": "95ad457f-0408-4ccf-950a-76eaf64fb8b2",
+    "job_id": "7675fb58-16f3-491a-a611-989268853868",
     "video_id": "video-002",
     "status": "merged",
     "chunk_count": 6,
     "encoded_chunk_count": 6,
-    "output_uri": "s3://durable-video-artifacts/final/95ad457f-0408-4ccf-950a-76eaf64fb8b2/video-002_encoded.mp4",
+    "output_uri": "s3://durable-video-artifacts/final/7675fb58-16f3-491a-a611-989268853868/video-002_encoded.mp4",
     "version": 9,
     "execution_model": "traditional_sequential_with_explicit_state",
     "dynamodb_reads": 17,
@@ -23,20 +23,20 @@ Response:
 The area below shows the last 4 KB of the execution log.
 
 Function Logs:
-", "step": "encode_chunk_2", "attempt": 1, "duration_ms": 622.446, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:07:03.134Z	54db040d-c23c-4b8f-b28f-6a55001735ce	Encoded chunk index=3 for job=95ad457f-0408-4ccf-950a-76eaf64fb8b2 output=s3://durable-video-artifacts/encoded/95ad457f-0408-4ccf-950a-76eaf64fb8b2/video-002_chunk_0003.mp4
-[INFO]	2026-04-18T11:07:03.134Z	54db040d-c23c-4b8f-b28f-6a55001735ce	METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "encode_chunk_3", "attempt": 1, "duration_ms": 616.25, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:07:03.752Z	54db040d-c23c-4b8f-b28f-6a55001735ce	Encoded chunk index=4 for job=95ad457f-0408-4ccf-950a-76eaf64fb8b2 output=s3://durable-video-artifacts/encoded/95ad457f-0408-4ccf-950a-76eaf64fb8b2/video-002_chunk_0004.mp4
-[INFO]	2026-04-18T11:07:03.752Z	54db040d-c23c-4b8f-b28f-6a55001735ce	METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "encode_chunk_4", "attempt": 1, "duration_ms": 614.549, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:07:04.374Z	54db040d-c23c-4b8f-b28f-6a55001735ce	Encoded chunk index=5 for job=95ad457f-0408-4ccf-950a-76eaf64fb8b2 output=s3://durable-video-artifacts/encoded/95ad457f-0408-4ccf-950a-76eaf64fb8b2/video-002_chunk_0005.mp4
-[INFO]	2026-04-18T11:07:04.374Z	54db040d-c23c-4b8f-b28f-6a55001735ce	METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "encode_chunk_5", "attempt": 1, "duration_ms": 615.929, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:07:04.374Z	54db040d-c23c-4b8f-b28f-6a55001735ce	METRIC {"metric_type": "parallelism_summary", "test_case": "video_encode_fail_once_001", "requested_parallel_chunks": 6, "executed_chunks": 6, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:07:04.591Z	54db040d-c23c-4b8f-b28f-6a55001735ce	Merged job=95ad457f-0408-4ccf-950a-76eaf64fb8b2 into s3://durable-video-artifacts/final/95ad457f-0408-4ccf-950a-76eaf64fb8b2/video-002_encoded.mp4
-[INFO]	2026-04-18T11:07:04.591Z	54db040d-c23c-4b8f-b28f-6a55001735ce	METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "merge_video", "attempt": 1, "duration_ms": 212.716, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:07:04.596Z	54db040d-c23c-4b8f-b28f-6a55001735ce	Returning result={'message': 'fase2-video-traditional executed successfully', 'job_id': '95ad457f-0408-4ccf-950a-76eaf64fb8b2', 'video_id': 'video-002', 'status': 'merged', 'chunk_count': 6, 'encoded_chunk_count': 6, 'output_uri': 's3://durable-video-artifacts/final/95ad457f-0408-4ccf-950a-76eaf64fb8b2/video-002_encoded.mp4', 'version': 9, 'execution_model': 'traditional_sequential_with_explicit_state', 'dynamodb_reads': 17, 'dynamodb_writes': 10, 'failure_marker_writes': 0}
-[INFO]	2026-04-18T11:07:04.596Z	54db040d-c23c-4b8f-b28f-6a55001735ce	METRIC {"metric_type": "explicit_state_size", "test_case": "video_encode_fail_once_001", "size_kb": 3.988, "state_version": 9, "chunk_count": 6, "encoded_chunk_count": 6, "dynamodb_reads": 17, "dynamodb_writes": 10, "failure_marker_writes": 0, "execution_model": "traditional_sequential_with_explicit_state"}
-[INFO]	2026-04-18T11:07:04.596Z	54db040d-c23c-4b8f-b28f-6a55001735ce	METRIC {"metric_type": "execution_duration", "test_case": "video_encode_fail_once_001", "duration_ms": 4038.333, "status": "success", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 17, "dynamodb_writes": 10, "failure_marker_writes": 0}
-END RequestId: 54db040d-c23c-4b8f-b28f-6a55001735ce
-REPORT RequestId: 54db040d-c23c-4b8f-b28f-6a55001735ce	Duration: 4040.84 ms	Billed Duration: 4547 ms	Memory Size: 3008 MB	Max Memory Used: 93 MB	Init Duration: 505.97 ms
+", "step": "encode_chunk_2", "attempt": 1, "duration_ms": 699.527, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T09:38:03.275Z  d4026ed2-fb48-4cfe-8179-16dafd743199  Encoded chunk index=3 for job=7675fb58-16f3-491a-a611-989268853868 output=s3://durable-video-artifacts/encoded/7675fb58-16f3-491a-a611-989268853868/video-002_chunk_0003.mp4
+[INFO]  2026-04-29T09:38:03.275Z  d4026ed2-fb48-4cfe-8179-16dafd743199  METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "encode_chunk_3", "attempt": 1, "duration_ms": 719.467, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T09:38:04.015Z  d4026ed2-fb48-4cfe-8179-16dafd743199  Encoded chunk index=4 for job=7675fb58-16f3-491a-a611-989268853868 output=s3://durable-video-artifacts/encoded/7675fb58-16f3-491a-a611-989268853868/video-002_chunk_0004.mp4
+[INFO]  2026-04-29T09:38:04.015Z  d4026ed2-fb48-4cfe-8179-16dafd743199  METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "encode_chunk_4", "attempt": 1, "duration_ms": 719.422, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T09:38:04.754Z  d4026ed2-fb48-4cfe-8179-16dafd743199  Encoded chunk index=5 for job=7675fb58-16f3-491a-a611-989268853868 output=s3://durable-video-artifacts/encoded/7675fb58-16f3-491a-a611-989268853868/video-002_chunk_0005.mp4
+[INFO]  2026-04-29T09:38:04.755Z  d4026ed2-fb48-4cfe-8179-16dafd743199  METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "encode_chunk_5", "attempt": 1, "duration_ms": 719.302, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T09:38:04.755Z  d4026ed2-fb48-4cfe-8179-16dafd743199  METRIC {"metric_type": "parallelism_summary", "test_case": "video_encode_fail_once_001", "requested_parallel_chunks": 6, "executed_chunks": 6, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T09:38:05.075Z  d4026ed2-fb48-4cfe-8179-16dafd743199  Merged job=7675fb58-16f3-491a-a611-989268853868 into s3://durable-video-artifacts/final/7675fb58-16f3-491a-a611-989268853868/video-002_encoded.mp4
+[INFO]  2026-04-29T09:38:05.075Z  d4026ed2-fb48-4cfe-8179-16dafd743199  METRIC {"metric_type": "step_duration", "test_case": "video_encode_fail_once_001", "step": "merge_video", "attempt": 1, "duration_ms": 279.305, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T09:38:05.115Z  d4026ed2-fb48-4cfe-8179-16dafd743199  Returning result={'message': 'fase2-video-traditional executed successfully', 'job_id': '7675fb58-16f3-491a-a611-989268853868', 'video_id': 'video-002', 'status': 'merged', 'chunk_count': 6, 'encoded_chunk_count': 6, 'output_uri': 's3://durable-video-artifacts/final/7675fb58-16f3-491a-a611-989268853868/video-002_encoded.mp4', 'version': 9, 'execution_model': 'traditional_sequential_with_explicit_state', 'dynamodb_reads': 17, 'dynamodb_writes': 10, 'failure_marker_writes': 0}
+[INFO]  2026-04-29T09:38:05.116Z  d4026ed2-fb48-4cfe-8179-16dafd743199  METRIC {"metric_type": "explicit_state_size", "test_case": "video_encode_fail_once_001", "size_kb": 3.988, "state_version": 9, "chunk_count": 6, "encoded_chunk_count": 6, "dynamodb_reads": 17, "dynamodb_writes": 10, "failure_marker_writes": 0, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T09:38:05.116Z  d4026ed2-fb48-4cfe-8179-16dafd743199  METRIC {"metric_type": "execution_duration", "test_case": "video_encode_fail_once_001", "duration_ms": 5346.188, "status": "success", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 17, "dynamodb_writes": 10, "failure_marker_writes": 0}
+END RequestId: d4026ed2-fb48-4cfe-8179-16dafd743199
+REPORT RequestId: d4026ed2-fb48-4cfe-8179-16dafd743199  Duration: 5366.06 ms  Billed Duration: 5842 ms  Memory Size: 128 MB Max Memory Used: 92 MB  Init Duration: 475.15 ms
 
-Request ID: 54db040d-c23c-4b8f-b28f-6a55001735ce
+Request ID: d4026ed2-fb48-4cfe-8179-16dafd743199

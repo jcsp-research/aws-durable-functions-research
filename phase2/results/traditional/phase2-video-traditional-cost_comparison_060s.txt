@@ -1,21 +1,19 @@
-Status: Succeeded
-Test Event Name: cost_comparison_060s
+cost_comparison_060s
 
-Lambda Function: phase2-video-traditional (3008 MB, Python 3.14)
-Region: us-east-2
-Timestamp: 2026-04-18T10:45:00Z
+ Status: Succeeded
+Test Event Name: cost_comparison_060s
 
 Response:
 {
   "statusCode": 200,
   "body": {
     "message": "fase2-video-traditional executed successfully",
-    "job_id": "a1b2c3d4-0002-4060-b000-000000000060",
+    "job_id": "c9e7bccb-c5de-4d8f-8f93-19d52bab62a9",
     "video_id": "video-060s",
     "status": "merged",
     "chunk_count": 6,
     "encoded_chunk_count": 6,
-    "output_uri": "s3://durable-video-artifacts/final/a1b2c3d4-0002-4060-b000-000000000060/video-060s_encoded.mp4",
+    "output_uri": "s3://durable-video-artifacts/final/c9e7bccb-c5de-4d8f-8f93-19d52bab62a9/video-060s_encoded.mp4",
     "version": 9,
     "execution_model": "traditional_sequential_with_explicit_state",
     "dynamodb_reads": 17,
@@ -24,21 +22,27 @@ Response:
   }
 }
 
-Key Metrics (from CloudWatch Logs):
-  execution_model:        traditional_sequential_with_explicit_state
-  actual_parallel_chunks: 1
-  execution_ms:           3991
-  billed_ms:              4486
-  init_ms:                495
-  explicit_state_kb:      4.008
-  dynamodb_reads:         17
-  dynamodb_writes:        10
+The area below shows the last 4 KB of the execution log.
 
-Cost Breakdown (us-east-2 pricing):
-  compute:   (4486 ms * 3008 MB / 1024) * $1.67e-8/GB-s = $0.000220
-  requests:  1 * $0.0000002 = $0.0000002
-  dynamodb:  (17 reads * $2.5e-7) + (10 writes * $1.25e-6) = $0.000017
-  total:     $0.000204
-  per_min:   $0.000204  (60s = 1.0 min)
+Function Logs:
+, "test_case": "cost_comparison_060s", "step": "encode_chunk_2", "attempt": 1, "duration_ms": 679.578, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T08:27:50.901Z  5c870334-dbe9-4561-91e8-5efd384746c1  Encoded chunk index=3 for job=c9e7bccb-c5de-4d8f-8f93-19d52bab62a9 output=s3://durable-video-artifacts/encoded/c9e7bccb-c5de-4d8f-8f93-19d52bab62a9/video-060s_chunk_0003.mp4
+[INFO]  2026-04-29T08:27:50.901Z  5c870334-dbe9-4561-91e8-5efd384746c1  METRIC {"metric_type": "step_duration", "test_case": "cost_comparison_060s", "step": "encode_chunk_3", "attempt": 1, "duration_ms": 679.496, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T08:27:51.601Z  5c870334-dbe9-4561-91e8-5efd384746c1  Encoded chunk index=4 for job=c9e7bccb-c5de-4d8f-8f93-19d52bab62a9 output=s3://durable-video-artifacts/encoded/c9e7bccb-c5de-4d8f-8f93-19d52bab62a9/video-060s_chunk_0004.mp4
+[INFO]  2026-04-29T08:27:51.601Z  5c870334-dbe9-4561-91e8-5efd384746c1  METRIC {"metric_type": "step_duration", "test_case": "cost_comparison_060s", "step": "encode_chunk_4", "attempt": 1, "duration_ms": 679.511, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T08:27:52.321Z  5c870334-dbe9-4561-91e8-5efd384746c1  Encoded chunk index=5 for job=c9e7bccb-c5de-4d8f-8f93-19d52bab62a9 output=s3://durable-video-artifacts/encoded/c9e7bccb-c5de-4d8f-8f93-19d52bab62a9/video-060s_chunk_0005.mp4
+[INFO]  2026-04-29T08:27:52.321Z  5c870334-dbe9-4561-91e8-5efd384746c1  METRIC {"metric_type": "step_duration", "test_case": "cost_comparison_060s", "step": "encode_chunk_5", "attempt": 1, "duration_ms": 699.258, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T08:27:52.321Z  5c870334-dbe9-4561-91e8-5efd384746c1  METRIC {"metric_type": "parallelism_summary", "test_case": "cost_comparison_060s", "requested_parallel_chunks": 6, "executed_chunks": 6, "actual_parallel_chunks": 1, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T08:27:52.641Z  5c870334-dbe9-4561-91e8-5efd384746c1  Merged job=c9e7bccb-c5de-4d8f-8f93-19d52bab62a9 into s3://durable-video-artifacts/final/c9e7bccb-c5de-4d8f-8f93-19d52bab62a9/video-060s_encoded.mp4
+[INFO]  2026-04-29T08:27:52.641Z  5c870334-dbe9-4561-91e8-5efd384746c1  METRIC {"metric_type": "step_duration", "test_case": "cost_comparison_060s", "step": "merge_video", "attempt": 1, "duration_ms": 279.208, "status": "success", "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T08:27:52.662Z  5c870334-dbe9-4561-91e8-5efd384746c1  Returning result={'message': 'fase2-video-traditional executed successfully', 'job_id': 'c9e7bccb-c5de-4d8f-8f93-19d52bab62a9', 'video_id': 'video-060s', 'status': 'merged', 'chunk_count': 6, 'encoded_chunk_count': 6, 'output_uri': 's3://durable-video-artifacts/final/c9e7bccb-c5de-4d8f-8f93-19d52bab62a9/video-060s_encoded.mp4', 'version': 9, 'execution_model': 'traditional_sequential_with_explicit_state', 'dynamodb_reads': 17, 'dynamodb_writes': 10, 'failure_marker_writes': 0}
+[INFO]  2026-04-29T08:27:52.662Z  5c870334-dbe9-4561-91e8-5efd384746c1  METRIC {"metric_type": "explicit_state_size", "test_case": "cost_comparison_060s", "size_kb": 4.008, "state_version": 9, "chunk_count": 6, "encoded_chunk_count": 6, "dynamodb_reads": 17, "dynamodb_writes": 10, "failure_marker_writes": 0, "execution_model": "traditional_sequential_with_explicit_state"}
+[INFO]  2026-04-29T08:27:52.662Z  5c870334-dbe9-4561-91e8-5efd384746c1  METRIC {"metric_type": "execution_duration", "test_case": "cost_comparison_060s", "duration_ms": 5100.437, "status": "success", "execution_model": "traditional_sequential_with_explicit_state", "dynamodb_reads": 17, "dynamodb_writes": 10, "failure_marker_writes": 0}
+END RequestId: 5c870334-dbe9-4561-91e8-5efd384746c1
+REPORT RequestId: 5c870334-dbe9-4561-91e8-5efd384746c1  Duration: 5140.33 ms  Billed Duration: 5631 ms  Memory Size: 128 MB Max Memory Used: 93 MB  Init Duration: 490.50 ms
 
-platform.report: billedDurationMs=4486 memorySizeMB=3008 maxMemoryUsedMB=93 initDurationMs=495
+Request ID: 5c870334-dbe9-4561-91e8-5efd384746c1
+
+
+
+
