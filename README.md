@@ -15,10 +15,10 @@ Artefact repository for the paper:
 ## Repository Structure
 
     phase1/                          Counter workload — SDK primitives
-    ├── code/lambda_function.py      Durable counter (128 MB, SDK v12)
+    ├── code/lambda_function.py      Durable counter (128 MB)
     ├── test-events/                 10 JSON test events
-    ├── results/                     8 TXT result logs from CloudWatch
-    ├── cloudwatch/                  4 raw CloudWatch CSV exports
+    ├── results/                     9 TXT result logs (re-homologated 2026-04-30)
+    ├── cloudwatch/                  Raw CloudWatch CSV exports
     └── report/                      Observations report
 
     phase2/                          Video encoding — durable vs. traditional
@@ -40,12 +40,17 @@ Artefact repository for the paper:
 
 > Both functions are configured with **128 MB memory** to ensure an
 > isomemory cost comparison.
+>
+> Phase 1 metrics below correspond to the homologated re-execution
+> on **2026-04-30** with runtime `python:3.14.DurableFunction.v13`.
+> See `phase1/results/RERUN_NOTES.md` for configuration details.
 
 | Metric | Value |
 |--------|-------|
 | Checkpoint size (v1 → v101) | 0.025 → 0.029 KB (effectively constant) |
-| Cold start overhead | 746–1,474 ms |
-| Warm start billed | 823 ms |
+| Cold start overhead | 575–808 ms (n=5) |
+| Warm start billed | 445–544 ms |
+| Failure backoff (fail_always, 6 attempts) | 2→9→17→27→33 s (non-deterministic) |
 | Cost overhead vs traditional (30 s video) | 19.1× |
 | Cost overhead vs traditional (60 s video) | 19.3× |
 | Cost overhead vs traditional (95 s video) | 16.4× |
@@ -59,7 +64,8 @@ Artefact repository for the paper:
 ### Prerequisites
 
 - AWS account with Lambda Durable Functions enabled (us-east-2)
-- SDK: `aws_durable_execution_sdk_python` v12+
+- SDK: `aws_durable_execution_sdk_python`
+- Runtime: `python:3.14.DurableFunction.v13`
 - DynamoDB table: `durable-failure-markers` (fault injection)
 - S3 bucket: `durable-video-artifacts`
 
