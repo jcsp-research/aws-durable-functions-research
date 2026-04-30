@@ -1,37 +1,43 @@
-Status: Failed (Lambda timeout - by design)
+Status: Succeeded
 Test Event Name: counter_replay_observation_001
 
 Response:
 {
-  "errorMessage": "Task timed out after 60.00 seconds",
-  "errorType": "Sandbox.Timedout"
+  "statusCode": 200,
+  "body": {
+    "message": "fase1-counter-durable executed successfully",
+    "counter_value": 1,
+    "version": 1
+  }
 }
 
-Execution name: c7972a21-2d80-432b-8662-0458c4c01249
-Duration: 14 mins 25 secs 904 ms
-Durable operations: 2 (initialize_counter: Succeeded, apply_counter_operation: Started/never completed)
+Function Logs (CloudWatch requestId=2b408d56-a338-466b-b599-3ad6604fff8e):
 
-Event history observed (16 events):
-  Event 1:  ExecutionStarted          - 19:25:27.697
-  Event 2:  StepStarted   initialize_counter  - 19:25:28.693 (996ms from start)
-  Event 3:  StepSucceeded initialize_counter  - 19:25:28.693 (checkpointed)
-  Event 4:  StepStarted   apply_counter_operation - 19:25:28.857 (sleep begins)
-  Event 5:  InvocationCompleted (error) - 19:26:27.780 (Lambda timed out at 60s)
-  Event 6:  InvocationCompleted (error) - 19:27:28.858 (retry 2 - Lambda timed out again)
-  Event 7:  InvocationCompleted (error) - 19:29:29.933 (retry 3)
-  Event 8:  InvocationCompleted (error) - 19:29:32.022 (retry 4)
-  Event 9:  InvocationCompleted (error) - 19:30:38.098 (retry 5)
-  Event 10: InvocationCompleted (error) - 19:31:49.173 (retry 6)
-  ...continues until execution timeout (15 min durable timeout)
+[INFO]	2026-04-30T09:00:56Z	Received event={'test_case': 'counter_replay_observation_001', 'state': {'value': 0, 'version': 0}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'none', 'debug_sleep_seconds': 30}
+[INFO]	2026-04-30T09:00:56Z	Initializing counter state
+[INFO]	2026-04-30T09:00:56Z	METRIC {"metric_type": "step_duration", "test_case": "counter_replay_observation_001", "step": "initialize_counter", "duration_ms": 0.423, "status": "success"}
+[INFO]	2026-04-30T09:00:56Z	Applying operation=increment, amount=1, fail_mode=none, current_state={'value': 0, 'version': 0} (sleep_seconds=30)
+[INFO]	2026-04-30T09:01:26Z	Updated state={'value': 1, 'version': 1}
+[INFO]	2026-04-30T09:01:26Z	METRIC {"metric_type": "step_duration", "test_case": "counter_replay_observation_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "none", "duration_ms": 30013.632, "status": "success"}
+[INFO]	2026-04-30T09:01:26Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 1, 'version': 1}
+[INFO]	2026-04-30T09:01:26Z	METRIC {"metric_type": "step_duration", "test_case": "counter_replay_observation_001", "step": "build_response", "duration_ms": 15.385, "status": "success"}
+[INFO]	2026-04-30T09:01:26Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_replay_observation_001", "size_kb": 0.025, "state_version": 1, "counter_value": 1}
+[INFO]	2026-04-30T09:01:26Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_replay_observation_001", "operation": "increment", "fail_mode": "none", "duration_ms": 30730.67, "status": "success"}
 
-Checkpoint-and-replay observation:
-  initialize_counter executed ONCE (StepStarted + StepSucceeded at events 2-3).
-  After Lambda timeout, the durable runtime retried apply_counter_operation
-  WITHOUT re-executing initialize_counter — its result was replayed from checkpoint.
-  This is the core checkpoint-and-replay mechanism: completed steps are never re-executed.
+platform.report: requestId=2b408d56-a338-466b-b599-3ad6604fff8e durationMs=31070.003 billedDurationMs=31781 memorySizeMB=128 maxMemoryUsedMB=101 initDurationMs=710.155 status=success
+runtime: python:3.14.DurableFunction.v13
 
-Note on test design:
-  debug_sleep_seconds=60 combined with Lambda timeout=60s caused the sandbox to expire
-  before the sleep completed. The durable runtime correctly identified the step as
-  incomplete and scheduled retries, demonstrating fault tolerance.
-  initialize_counter never appears again after event 3, confirming checkpoint persistence.
+executionArn: c6f1fc0a-d9ac-4175-a954-34f860f77d30
+
+Note on test design (30-Apr-2026 run with debug_sleep_seconds=30):
+With sleep=30s and Lambda timeout=60s, the sandbox did NOT expire. The durable
+runtime waited the full 30 seconds within a single invocation. apply_counter_operation
+completed normally (status=success, duration_ms=30013).
+
+The replay-by-timeout scenario (sleep > timeout) was previously documented with
+sleep=70s — see logs from 22-Apr-2026: counter_replay_observation_001_sleep70_9retries.csv,
+where the runtime exhausted 9 retries before propagating Task timed out.
+
+This 30-Apr run complements the 22-Apr scenario by demonstrating that the durable
+runtime correctly handles long-running operations within the Lambda timeout window
+without degradation, with checkpoint size constant at 0.025 KB.

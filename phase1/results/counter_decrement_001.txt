@@ -1,0 +1,28 @@
+Status: Succeeded
+Test Event Name: counter_decrement_001
+
+Response:
+{
+  "statusCode": 200,
+  "body": {
+    "message": "fase1-counter-durable executed successfully",
+    "counter_value": 9,
+    "version": 1
+  }
+}
+
+Function Logs (CloudWatch requestId=aa575a62-76b5-4742-930e-409279e6b206):
+
+[INFO]	2026-04-30T07:17:26Z	Received event={'test_case': 'counter_decrement_001', 'state': {'value': 10, 'version': 0}, 'operation': 'decrement', 'amount': 1, 'fail_mode': 'none'}
+[INFO]	2026-04-30T07:17:26Z	Initializing counter state
+[INFO]	2026-04-30T07:17:26Z	METRIC {"metric_type": "step_duration", "test_case": "counter_decrement_001", "step": "initialize_counter", "duration_ms": 0.357, "status": "success"}
+[INFO]	2026-04-30T07:17:26Z	Applying operation=decrement, amount=1, fail_mode=none, current_state={'value': 10, 'version': 0}
+[INFO]	2026-04-30T07:17:26Z	Updated state={'value': 9, 'version': 1}
+[INFO]	2026-04-30T07:17:26Z	METRIC {"metric_type": "step_duration", "test_case": "counter_decrement_001", "step": "apply_counter_operation", "operation": "decrement", "fail_mode": "none", "duration_ms": 19.928, "status": "success"}
+[INFO]	2026-04-30T07:17:27Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 9, 'version': 1}
+[INFO]	2026-04-30T07:17:27Z	METRIC {"metric_type": "step_duration", "test_case": "counter_decrement_001", "step": "build_response", "duration_ms": 0.477, "status": "success"}
+[INFO]	2026-04-30T07:17:27Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_decrement_001", "size_kb": 0.025, "state_version": 1, "counter_value": 9}
+[INFO]	2026-04-30T07:17:27Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_decrement_001", "operation": "decrement", "fail_mode": "none", "duration_ms": 770.118, "status": "success"}
+
+platform.report: requestId=aa575a62-76b5-4742-930e-409279e6b206 durationMs=1106.791 billedDurationMs=1829 memorySizeMB=128 maxMemoryUsedMB=100 initDurationMs=721.779 status=success
+runtime: python:3.14.DurableFunction.v13

@@ -11,21 +11,25 @@ Response:
   }
 }
 
-Function Logs (CloudWatch requestId=f41a0e2c-ac58-4a82-8b9b-816326614099):
+Function Logs (CloudWatch requestId=caa44753-e2f1-488c-916c-22a0205fbb5c):
 
-[INFO]	2026-04-19T23:53:11Z	Received event={'test_case': 'counter_concurrent_001', 'state': {'value': 0, 'version': 0}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'none'}
-[INFO]	2026-04-19T23:53:11Z	Initializing counter state
-[INFO]	2026-04-19T23:53:11Z	METRIC {"metric_type": "step_duration", "test_case": "counter_concurrent_001", "step": "initialize_counter", "duration_ms": 0.204, "status": "success"}
-[INFO]	2026-04-19T23:53:11Z	Applying operation=increment, amount=1, fail_mode=none, current_state={'value': 0, 'version': 0}
-[INFO]	2026-04-19T23:53:11Z	Updated state={'value': 1, 'version': 1}
-[INFO]	2026-04-19T23:53:11Z	METRIC {"metric_type": "step_duration", "test_case": "counter_concurrent_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "none", "duration_ms": 18.609, "status": "success"}
-[INFO]	2026-04-19T23:53:11Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 1, 'version': 1}
-[INFO]	2026-04-19T23:53:11Z	METRIC {"metric_type": "step_duration", "test_case": "counter_concurrent_001", "step": "build_response", "duration_ms": 0.174, "status": "success"}
-[INFO]	2026-04-19T23:53:12Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_concurrent_001", "size_kb": 0.025, "state_version": 1, "counter_value": 1}
-[INFO]	2026-04-19T23:53:12Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_concurrent_001", "operation": "increment", "fail_mode": "none", "duration_ms": 799.731, "status": "success"}
+[INFO]	2026-04-30T08:57:07Z	Received event={'test_case': 'counter_concurrent_001', 'state': {'value': 0, 'version': 0}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'none'}
+[INFO]	2026-04-30T08:57:07Z	Initializing counter state
+[INFO]	2026-04-30T08:57:07Z	METRIC {"metric_type": "step_duration", "test_case": "counter_concurrent_001", "step": "initialize_counter", "duration_ms": 19.165, "status": "success"}
+[INFO]	2026-04-30T08:57:07Z	Applying operation=increment, amount=1, fail_mode=none, current_state={'value': 0, 'version': 0}
+[INFO]	2026-04-30T08:57:07Z	Updated state={'value': 1, 'version': 1}
+[INFO]	2026-04-30T08:57:07Z	METRIC {"metric_type": "step_duration", "test_case": "counter_concurrent_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "none", "duration_ms": 0.441, "status": "success"}
+[INFO]	2026-04-30T08:57:07Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 1, 'version': 1}
+[INFO]	2026-04-30T08:57:07Z	METRIC {"metric_type": "step_duration", "test_case": "counter_concurrent_001", "step": "build_response", "duration_ms": 18.902, "status": "success"}
+[INFO]	2026-04-30T08:57:07Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_concurrent_001", "size_kb": 0.025, "state_version": 1, "counter_value": 1}
+[INFO]	2026-04-30T08:57:07Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_concurrent_001", "operation": "increment", "fail_mode": "none", "duration_ms": 736.556, "status": "success"}
 
-platform.report: requestId=f41a0e2c billedDurationMs=1673 memorySizeMB=128 maxMemoryUsedMB=96 initDurationMs=572.905 status=success
+platform.report: requestId=caa44753-e2f1-488c-916c-22a0205fbb5c durationMs=1070.121 billedDurationMs=1773 memorySizeMB=128 maxMemoryUsedMB=100 initDurationMs=702.704 status=success
+runtime: python:3.14.DurableFunction.v13
 
-Note: Each concurrent invocation generates an independent execution name (durable execution).
-Observed: execution name fa8d96a0-f0f8-4f5b-b10b-86f01402bfb5 — each call creates its own isolated durable execution context.
-Concurrent calls do not share state — each starts from value=0 independently.
+executionArn: a3b16d32-be70-45d7-8bd6-2e382324ebf7 — single isolated durable execution context.
+
+Note: For full concurrency validation (3+ simultaneous invocations producing
+distinct execution_names with isolated state), see logs from 22-Apr-2026:
+counter_concurrent_001_parallel_3x.csv. This 30-Apr run is a single invocation
+that captures cold start metrics for the homologated runtime v13.

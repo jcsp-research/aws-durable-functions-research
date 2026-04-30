@@ -11,18 +11,18 @@ Response:
   }
 }
 
-Function Logs (CloudWatch requestId=8d695813-283e-4c04-98f5-45eca8123504):
+Function Logs (CloudWatch requestId=67c3fecc-707d-45b6-ac61-34a3f6cccaa5):
 
-[INFO]	2026-04-19T23:32:28Z	Received event={'test_case': 'counter_latency_baseline_001', 'state': {'value': 0, 'version': 0}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'none'}
-[INFO]	2026-04-19T23:32:28Z	Initializing counter state
-[INFO]	2026-04-19T23:32:28Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_baseline_001", "step": "initialize_counter", "duration_ms": 0.188, "status": "success"}
-[INFO]	2026-04-19T23:32:28Z	Applying operation=increment, amount=1, fail_mode=none, current_state={'value': 0, 'version': 0}
-[INFO]	2026-04-19T23:32:28Z	Updated state={'value': 1, 'version': 1}
-[INFO]	2026-04-19T23:32:28Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_baseline_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "none", "duration_ms": 13.639, "status": "success"}
-[INFO]	2026-04-19T23:32:28Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 1, 'version': 1}
-[INFO]	2026-04-19T23:32:28Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_baseline_001", "step": "build_response", "duration_ms": 0.179, "status": "success"}
-[INFO]	2026-04-19T23:32:28Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_latency_baseline_001", "size_kb": 0.025, "state_version": 1, "counter_value": 1}
-[INFO]	2026-04-19T23:32:28Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_latency_baseline_001", "operation": "increment", "fail_mode": "none", "duration_ms": 639.477, "status": "success"}
+[INFO]	2026-04-30T07:35:33Z	Received event={'test_case': 'counter_latency_baseline_001', 'state': {'value': 0, 'version': 0}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'none'}
+[INFO]	2026-04-30T07:35:33Z	Initializing counter state
+[INFO]	2026-04-30T07:35:33Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_baseline_001", "step": "initialize_counter", "duration_ms": 19.12, "status": "success"}
+[INFO]	2026-04-30T07:35:33Z	Applying operation=increment, amount=1, fail_mode=none, current_state={'value': 0, 'version': 0}
+[INFO]	2026-04-30T07:35:33Z	Updated state={'value': 1, 'version': 1}
+[INFO]	2026-04-30T07:35:33Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_baseline_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "none", "duration_ms": 7.517, "status": "success"}
+[INFO]	2026-04-30T07:35:33Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 1, 'version': 1}
+[INFO]	2026-04-30T07:35:33Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_baseline_001", "step": "build_response", "duration_ms": 0.603, "status": "success"}
+[INFO]	2026-04-30T07:35:33Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_latency_baseline_001", "size_kb": 0.025, "state_version": 1, "counter_value": 1}
+[INFO]	2026-04-30T07:35:33Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_latency_baseline_001", "operation": "increment", "fail_mode": "none", "duration_ms": 753.735, "status": "success"}
 
-platform.report: requestId=8d695813 durationMs=830.175 billedDurationMs=831 memorySizeMB=128 maxMemoryUsedMB=96 status=success
-Note: warm start - no initDurationMs
+platform.report: requestId=67c3fecc-707d-45b6-ac61-34a3f6cccaa5 durationMs=1087.433 billedDurationMs=1663 memorySizeMB=128 maxMemoryUsedMB=101 initDurationMs=575.45 status=success
+runtime: python:3.14.DurableFunction.v13

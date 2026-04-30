@@ -9,54 +9,64 @@ Response:
 
 Function Logs (6 Lambda invocations - durable runtime exhausted retries):
 
+executionArn: f3e59f22-9397-4e3f-bac3-21706854dd2a
+
 --- Summary ---
 Total attempts: 6 (attempts 1-6)
-Total duration: 3 mins 13 secs 976 ms
+Total duration: ~1 min 28 secs
 Error propagated as: CallableRuntimeError
-Retry backoff pattern: ~10s, ~20s, ~40s, ~60s, ~86s (exponential)
+Retry backoff pattern observed: 2s, 9s, 17s, 27s, 33s (non-deterministic)
 
---- Invocation 1 (attempt 1) requestId=3cedd0f2 ---
-[INFO]	2026-04-19T20:17:57Z	Received event - fail_mode=always
-[INFO]	2026-04-19T20:17:57Z	Initializing counter state
-[INFO]	2026-04-19T20:17:57Z	METRIC {"metric_type": "step_duration", "step": "initialize_counter", "duration_ms": 0.296, "status": "success"}
-[INFO]	2026-04-19T20:17:58Z	Applying operation=increment, fail_mode=always, attempt=1
-[ERROR]	2026-04-19T20:17:58Z	Simulated permanent failure in apply_counter_operation
-[INFO]	2026-04-19T20:17:58Z	METRIC {"metric_type": "step_duration", "step": "apply_counter_operation", "duration_ms": 0.378, "status": "error"}
-platform.report invocation-1: billedDurationMs=1942 initDurationMs=741 status=success
+--- Invocation 1 (attempt 1) ---
+[INFO]	2026-04-30T08:47:16Z	Applying operation=increment, fail_mode=always, attempt=1
+[ERROR]	2026-04-30T08:47:16Z	Simulated permanent failure in apply_counter_operation
+[INFO]	2026-04-30T08:47:16Z	METRIC execution_duration=629.745ms status=success
 
 --- Invocation 2 (attempt 2) ---
-[INFO]	2026-04-19T20:18:08Z	Applying operation=increment, fail_mode=always, attempt=2
-[ERROR]	2026-04-19T20:18:08Z	Simulated permanent failure in apply_counter_operation
-platform.report invocation-2: billedDurationMs=493 status=success
+[INFO]	2026-04-30T08:47:18Z	Applying operation=increment, fail_mode=always, attempt=2
+[ERROR]	2026-04-30T08:47:18Z	Simulated permanent failure in apply_counter_operation
+[INFO]	2026-04-30T08:47:18Z	METRIC step_duration=0.388ms status=error
+[INFO]	2026-04-30T08:47:18Z	METRIC execution_duration=132.224ms status=success
 
 --- Invocation 3 (attempt 3) ---
-[INFO]	2026-04-19T20:18:20Z	Applying operation=increment, fail_mode=always, attempt=3
-[ERROR]	2026-04-19T20:18:20Z	Simulated permanent failure in apply_counter_operation
-platform.report invocation-3: billedDurationMs=493 status=success
+[INFO]	2026-04-30T08:47:27Z	Applying operation=increment, fail_mode=always, attempt=3
+[ERROR]	2026-04-30T08:47:27Z	Simulated permanent failure in apply_counter_operation
+[INFO]	2026-04-30T08:47:28Z	METRIC step_duration=0.355ms status=error
+[INFO]	2026-04-30T08:47:28Z	METRIC execution_duration=163.294ms status=success
 
 --- Invocation 4 (attempt 4) ---
-[INFO]	2026-04-19T20:18:43Z	Applying operation=increment, fail_mode=always, attempt=4
-[ERROR]	2026-04-19T20:18:43Z	Simulated permanent failure in apply_counter_operation
-platform.report invocation-4: billedDurationMs=493 status=success
+[INFO]	2026-04-30T08:47:44Z	Applying operation=increment, fail_mode=always, attempt=4
+[ERROR]	2026-04-30T08:47:44Z	Simulated permanent failure in apply_counter_operation
+[INFO]	2026-04-30T08:47:44Z	METRIC step_duration=0.373ms status=error
+[INFO]	2026-04-30T08:47:44Z	METRIC execution_duration=153.479ms status=success
 
---- Invocation 5 (attempt 5) ---
-[INFO]	2026-04-19T20:19:43Z	Applying operation=increment, fail_mode=always, attempt=5
-[ERROR]	2026-04-19T20:19:43Z	Simulated permanent failure in apply_counter_operation
-[INFO]	2026-04-19T20:19:43Z	METRIC {"metric_type": "execution_duration", "duration_ms": 328.427, "status": "success"}
-platform.report invocation-5: billedDurationMs=493 status=success
+--- Invocation 5 (attempt 5) requestId=81086bd4-8957-475e-a3f5-23f898168f70 ---
+[INFO]	2026-04-30T08:48:11Z	Applying operation=increment, fail_mode=always, attempt=5
+[ERROR]	2026-04-30T08:48:11Z	Simulated permanent failure in apply_counter_operation
+[INFO]	2026-04-30T08:48:11Z	METRIC step_duration=0.474ms status=error
+[INFO]	2026-04-30T08:48:11Z	METRIC execution_duration=421.696ms status=success
+platform.report invocation-5: billedDurationMs=1551 memorySizeMB=128 maxMemoryUsedMB=101 initDurationMs=780.939 (cold start)
 
---- Invocation 6 (attempt 6 - final, propagates error) requestId=ba4605df ---
-[INFO]	2026-04-19T20:21:10Z	Applying operation=increment, fail_mode=always, attempt=6
-[ERROR]	2026-04-19T20:21:10Z	Simulated permanent failure in apply_counter_operation
-[INFO]	2026-04-19T20:21:10Z	METRIC {"metric_type": "step_duration", "step": "apply_counter_operation", "duration_ms": 0.435, "status": "error"}
-[INFO]	2026-04-19T20:21:10Z	METRIC {"metric_type": "execution_duration", "duration_ms": 321.099, "status": "error"}
-[ERROR]	2026-04-19T20:21:10Z	Execution failed - CallableRuntimeError: Simulated permanent failure in apply_counter_operation
-platform.report invocation-6: billedDurationMs=528 memorySizeMB=128 maxMemoryUsedMB=96 status=success
+--- Invocation 6 (attempt 6 - final, propagates error) requestId=998219b9-3dd1-47c9-93b8-8355bfc13236 ---
+[INFO]	2026-04-30T08:48:44Z	Applying operation=increment, fail_mode=always, attempt=6
+[ERROR]	2026-04-30T08:48:44Z	Simulated permanent failure in apply_counter_operation
+[INFO]	2026-04-30T08:48:44Z	METRIC step_duration=0.361ms status=error
+[INFO]	2026-04-30T08:48:45Z	METRIC execution_duration=171.828ms status=error
+[ERROR]	2026-04-30T08:48:45Z	Execution failed - CallableRuntimeError: Simulated permanent failure in apply_counter_operation
+platform.report invocation-6: billedDurationMs=263 memorySizeMB=128 maxMemoryUsedMB=101 status=success
+
+runtime: python:3.14.DurableFunction.v13
 
 --- Retry schedule observed ---
-attempt 1: 20:17:58
-attempt 2: 20:18:08 (+10s)
-attempt 3: 20:18:20 (+12s)
-attempt 4: 20:18:43 (+23s)
-attempt 5: 20:19:43 (+60s)
-attempt 6: 20:21:10 (+87s)
+attempt 1: 08:47:16
+attempt 2: 08:47:18 (+2s)
+attempt 3: 08:47:27 (+9s)
+attempt 4: 08:47:44 (+17s)
+attempt 5: 08:48:11 (+27s)
+attempt 6: 08:48:44 (+33s)
+Total duration: 1 min 28 sec
+
+Note on non-determinism: this calendar (2-9-17-27-33s) differs from previous
+measurements with the same SDK version (e.g., 5-8-17-7-10s observed in
+April 22 with v13 logs, and 10-12-23-60-87s reported with v12). Confirms
+that the durable runtime retry algorithm is not strictly deterministic.

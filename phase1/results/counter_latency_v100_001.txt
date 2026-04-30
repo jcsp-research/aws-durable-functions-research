@@ -11,17 +11,22 @@ Response:
   }
 }
 
-Function Logs (CloudWatch requestId=1d4e1d78-7578-4b28-8069-152716ab68aa):
+Function Logs (CloudWatch requestId=2cbebc28-1f69-45af-a7f4-480a39ccbe63):
 
-[INFO]	2026-04-19T23:41:16Z	Received event={'test_case': 'counter_latency_v100_001', 'state': {'value': 100, 'version': 100}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'none'}
-[INFO]	2026-04-19T23:41:16Z	Initializing counter state
-[INFO]	2026-04-19T23:41:16Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_v100_001", "step": "initialize_counter", "duration_ms": 0.48, "status": "success"}
-[INFO]	2026-04-19T23:41:16Z	Applying operation=increment, amount=1, fail_mode=none, current_state={'value': 100, 'version': 100}
-[INFO]	2026-04-19T23:41:16Z	Updated state={'value': 101, 'version': 101}
-[INFO]	2026-04-19T23:41:17Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_v100_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "none", "duration_ms": 11.184, "status": "success"}
-[INFO]	2026-04-19T23:41:17Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 101, 'version': 101}
-[INFO]	2026-04-19T23:41:17Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_v100_001", "step": "build_response", "duration_ms": 0.191, "status": "success"}
-[INFO]	2026-04-19T23:41:17Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_latency_v100_001", "size_kb": 0.029, "state_version": 101, "counter_value": 101}
-[INFO]	2026-04-19T23:41:17Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_latency_v100_001", "operation": "increment", "fail_mode": "none", "duration_ms": 723.572, "status": "success"}
+[INFO]	2026-04-30T07:28:50Z	Received event={'test_case': 'counter_latency_v100_001', 'state': {'value': 100, 'version': 100}, 'operation': 'increment', 'amount': 1, 'fail_mode': 'none'}
+[INFO]	2026-04-30T07:28:50Z	Initializing counter state
+[INFO]	2026-04-30T07:28:50Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_v100_001", "step": "initialize_counter", "duration_ms": 19.144, "status": "success"}
+[INFO]	2026-04-30T07:28:50Z	Applying operation=increment, amount=1, fail_mode=none, current_state={'value': 100, 'version': 100}
+[INFO]	2026-04-30T07:28:50Z	Updated state={'value': 101, 'version': 101}
+[INFO]	2026-04-30T07:28:50Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_v100_001", "step": "apply_counter_operation", "operation": "increment", "fail_mode": "none", "duration_ms": 0.439, "status": "success"}
+[INFO]	2026-04-30T07:28:50Z	Returning result={'message': 'fase1-counter-durable executed successfully', 'counter_value': 101, 'version': 101}
+[INFO]	2026-04-30T07:28:50Z	METRIC {"metric_type": "step_duration", "test_case": "counter_latency_v100_001", "step": "build_response", "duration_ms": 0.377, "status": "success"}
+[INFO]	2026-04-30T07:28:50Z	METRIC {"metric_type": "checkpoint_size", "test_case": "counter_latency_v100_001", "size_kb": 0.029, "state_version": 101, "counter_value": 101}
+[INFO]	2026-04-30T07:28:50Z	METRIC {"metric_type": "execution_duration", "test_case": "counter_latency_v100_001", "operation": "increment", "fail_mode": "none", "duration_ms": 719.793, "status": "success"}
 
-platform.report: requestId=1d4e1d78 durationMs=1020.142 billedDurationMs=1738 memorySizeMB=128 maxMemoryUsedMB=92 initDurationMs=717.04 status=success
+platform.report: requestId=2cbebc28-1f69-45af-a7f4-480a39ccbe63 durationMs=1035.25 billedDurationMs=1744 memorySizeMB=128 maxMemoryUsedMB=100 initDurationMs=707.844 status=success
+runtime: python:3.14.DurableFunction.v13
+
+Key observation: checkpoint size at version=101 is 0.029 KB (vs 0.025 KB at version=1).
+This 0.004 KB difference (16% growth over 100 operations) confirms that the SDK
+serializes only the current execution context, not the historical state log.
